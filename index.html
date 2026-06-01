@@ -992,6 +992,7 @@
   .val-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   .val-field { display: flex; flex-direction: column; gap: 5px; }
   .val-field > span { font-size: 11px; font-weight: 600; color: var(--ink-soft); letter-spacing: .02em; }
+  .val-field > span em { display: block; font-weight: 400; font-style: normal; font-size: 9.5px; color: var(--ink-muted); margin-top: 2px; line-height: 1.3; }
   .val-input {
     font: inherit; font-size: 14px; width: 100%;
     padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm);
@@ -1984,26 +1985,33 @@
 
   <section class="card section">
     <div class="section-head">
-      <div class="section-title"><span class="section-num">§ D</span>Despesas mensais (R$)</div>
-      <div class="section-desc">base para o cálculo do EBITDA</div>
+      <div class="section-title"><span class="section-num">§ D</span>Custos mensais (R$/mês)</div>
+      <div class="section-desc">agrupados em blocos · base para o EBITDA</div>
     </div>
     <div class="val-grid">
-      <label class="val-field"><span>Salários</span>
-        <input class="val-input num" id="val-salarios" type="text" inputmode="decimal" data-vfield="salarios" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Encargos</span>
-        <input class="val-input num" id="val-encargos" type="text" inputmode="decimal" data-vfield="encargos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Pró-labore</span>
-        <input class="val-input num" id="val-prolabore" type="text" inputmode="decimal" data-vfield="prolabore" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Aluguel</span>
-        <input class="val-input num" id="val-aluguel" type="text" inputmode="decimal" data-vfield="aluguel" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Energia</span>
-        <input class="val-input num" id="val-energia" type="text" inputmode="decimal" data-vfield="energia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Marketing</span>
+      <label class="val-field"><span>Folha (equipe)<em>salários, encargos, pró-labore, benefícios</em></span>
+        <input class="val-input num" id="val-folha" type="text" inputmode="decimal" data-vfield="folha" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Ocupação (estrutura)<em>aluguel, condomínio, IPTU</em></span>
+        <input class="val-input num" id="val-ocupacao" type="text" inputmode="decimal" data-vfield="ocupacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Operação<em>energia, água, telefone, internet, material, limpeza</em></span>
+        <input class="val-input num" id="val-operacao" type="text" inputmode="decimal" data-vfield="operacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Tecnologia (sistemas)<em>ERP, Trier, Farmagnus, licenças</em></span>
+        <input class="val-input num" id="val-tecnologia" type="text" inputmode="decimal" data-vfield="tecnologia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Marketing<em>Google, Facebook, panfletagem, rádio</em></span>
         <input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Sistemas</span>
-        <input class="val-input num" id="val-sistemas" type="text" inputmode="decimal" data-vfield="sistemas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Outras despesas</span>
-        <input class="val-input num" id="val-outras" type="text" inputmode="decimal" data-vfield="outras" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ A</span>Patrimônio (R$)</div>
+      <div class="section-desc">saldos atuais · ajusta o valor patrimonial</div>
+    </div>
+    <div class="val-grid">
+      <label class="val-field"><span>Equipamentos (ativos)<em>computadores, mobiliário, ar-condicionado, geladeiras</em></span>
+        <input class="val-input num" id="val-equipamentos" type="text" inputmode="decimal" data-vfield="equipamentos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Dívidas (saldo)<em>capital de giro, empréstimos, financiamentos</em></span>
+        <input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
     </div>
     <div class="val-mult-row">
       <span class="val-mult-label">Múltiplo de EBITDA para o valuation:</span>
@@ -2012,24 +2020,9 @@
     </div>
   </section>
 
-  <section class="card section">
-    <div class="section-head">
-      <div class="section-title"><span class="section-num">§ C</span>Posição financeira (R$)</div>
-      <div class="section-desc">converte o valor da operação em valuation patrimonial</div>
-    </div>
-    <div class="val-grid">
-      <label class="val-field"><span>Contas a pagar</span>
-        <input class="val-input num" id="val-contasPagar" type="text" inputmode="decimal" data-vfield="contasPagar" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Contas a receber</span>
-        <input class="val-input num" id="val-contasReceber" type="text" inputmode="decimal" data-vfield="contasReceber" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Caixa (saldo em conta corrente)</span>
-        <input class="val-input num" id="val-caixa" type="text" inputmode="decimal" data-vfield="caixa" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-    </div>
-  </section>
-
   <div id="valuation-results"></div>
 
-  <p class="val-method">Metodologia: EBITDA = (faturamento − CMV) anualizado − despesas operacionais anuais. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Valuation patrimonial (equity) = valor da operação (EV) + caixa + contas a receber − contas a pagar. Score do investidor pondera rentabilidade, margem, giro, cobertura, produtividade, maturidade e concorrência. Estimativas indicativas — não substituem laudo de avaliação.</p>
+  <p class="val-method">Metodologia: EBITDA = (Faturamento − CMV − Folha − Ocupação − Operação − Tecnologia − Marketing), anualizado. EBITDA % = EBITDA ÷ Receita. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo. Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
 </div><!-- /#valuation-view -->
 
   <footer class="colophon">
@@ -2281,9 +2274,8 @@
     return {
       cidade: '', estado: '', imovel: 'alugada', area: 100,
       tempoOp: 0, concorrentes: 0,
-      salarios: 0, encargos: 0, prolabore: 0, aluguel: 0,
-      energia: 0, marketing: 0, sistemas: 0, outras: 0,
-      contasPagar: 0, contasReceber: 0, caixa: 0,
+      folha: 0, ocupacao: 0, operacao: 0, tecnologia: 0, marketing: 0,
+      equipamentos: 0, dividas: 0,
       multMin: 3, multMax: 5,
     };
   }
@@ -2325,8 +2317,17 @@
     if (!state.valuation || typeof state.valuation !== 'object') {
       state.valuation = defaultValuation();
     } else {
+      const v = state.valuation;
+      // Migração da estrutura antiga (campos granulares) -> blocos consolidados
+      if (v.folha === undefined && (v.salarios !== undefined || v.aluguel !== undefined)) {
+        v.folha = (parseBR(v.salarios) || 0) + (parseBR(v.encargos) || 0) + (parseBR(v.prolabore) || 0);
+        v.ocupacao = parseBR(v.aluguel) || 0;
+        v.operacao = (parseBR(v.energia) || 0) + (parseBR(v.outras) || 0);
+        v.tecnologia = parseBR(v.sistemas) || 0;
+        // marketing mantém o mesmo nome
+      }
       const dv = defaultValuation();
-      for (const k in dv) { if (!(k in state.valuation)) state.valuation[k] = dv[k]; }
+      for (const k in dv) { if (!(k in v)) v[k] = dv[k]; }
     }
 
     // Clean up orphan period keys (Q1-Q4, S1-S2, ANO) stored in state.inputs
@@ -3107,8 +3108,9 @@
     const fatAno = fatMes * 12;
     const lucroBrutoAno = (fatMes - cmvMes) * 12;
 
-    const despMes = valNum('salarios') + valNum('encargos') + valNum('prolabore') + valNum('aluguel')
-      + valNum('energia') + valNum('marketing') + valNum('sistemas') + valNum('outras');
+    const folha = valNum('folha'), ocupacao = valNum('ocupacao'), operacao = valNum('operacao');
+    const tecnologia = valNum('tecnologia'), marketing = valNum('marketing');
+    const despMes = folha + ocupacao + operacao + tecnologia + marketing;
     const despAno = despMes * 12;
 
     const ebitdaAno = lucroBrutoAno - despAno;
@@ -3140,14 +3142,12 @@
     const multOt = multMin + (multMax - multMin) * (scOt.score / 100);
     const valPotencial = ebitdaPos * multOt + capitalLiberavel;
 
-    // Posição financeira -> ajuste patrimonial (EV -> equity)
-    const contasPagar = valNum('contasPagar');
-    const contasReceber = valNum('contasReceber');
-    const caixa = valNum('caixa');
-    const posicaoLiquida = caixa + contasReceber - contasPagar;
-    const temPatrimonio = (contasPagar || contasReceber || caixa) ? true : false;
-    const valEquity = valBase + posicaoLiquida;
-    const valEquityPot = valPotencial + posicaoLiquida;
+    // Patrimônio -> ajuste patrimonial (EV -> equity)
+    const equipamentos = valNum('equipamentos');
+    const dividas = valNum('dividas');
+    const patrimonioOperacional = estqAtual + equipamentos - dividas;
+    const valEquity = valBase - dividas;
+    const valEquityPot = valPotencial - dividas;
 
     return {
       baseYear: baseYear, fatAno: fatAno, lucroBrutoAno: lucroBrutoAno, margem: ind.margem || 0,
@@ -3157,8 +3157,8 @@
       multMin: multMin, multMax: multMax, multAj: multAj, valBase: valBase, valMin: valMin, valMax: valMax,
       scoreOt: scOt.score, multOt: multOt, valPotencial: valPotencial, ganho: valPotencial - valBase,
       valFatMin: fatAno * 0.30, valFatMax: fatAno * 0.45,
-      contasPagar: contasPagar, contasReceber: contasReceber, caixa: caixa,
-      posicaoLiquida: posicaoLiquida, temPatrimonio: temPatrimonio,
+      folha: folha, ocupacao: ocupacao, operacao: operacao, tecnologia: tecnologia, marketingMes: marketing,
+      equipamentos: equipamentos, dividas: dividas, patrimonioOperacional: patrimonioOperacional,
       valEquity: valEquity, valEquityPot: valEquityPot,
       hasData: fatAno > 0,
     };
@@ -3173,8 +3173,7 @@
     set('val-area', v.area || '');
     set('val-tempoOp', v.tempoOp || '');
     set('val-concorrentes', v.concorrentes || '');
-    const money = ['salarios','encargos','prolabore','aluguel','energia','marketing','sistemas','outras',
-      'contasPagar','contasReceber','caixa'];
+    const money = ['folha','ocupacao','operacao','tecnologia','marketing','equipamentos','dividas'];
     for (let i = 0; i < money.length; i++) {
       const f = money[i];
       set('val-' + f, v[f] ? Number(v[f]).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '');
@@ -3262,25 +3261,23 @@
         ' em caixa e melhora os indicadores de giro/cobertura, elevando o múltiplo aplicável.</div>' +
     '</section>';
 
-    // Valuation patrimonial (equity) — ajuste pela posição financeira
+    // Patrimônio operacional + valuation patrimonial (equity = EV − dívidas)
     html += '<section class="card section">' +
-      '<div class="section-head"><div class="section-title"><span class="section-num">§ E</span>Valuation patrimonial (equity)</div>' +
-      '<div class="section-desc">valor da operação + posição financeira</div></div>' +
+      '<div class="section-head"><div class="section-title"><span class="section-num">§ E</span>Patrimônio &amp; valor patrimonial</div>' +
+      '<div class="section-desc">estoque + equipamentos − dívidas</div></div>' +
       '<div class="val-equity-calc">' +
-        '<span class="val-eq-term">Operação (EV)<b>' + fmtBRL(r.valBase) + '</b></span>' +
+        '<span class="val-eq-term">Estoque<b>' + fmtBRL(r.estqAtual) + '</b></span>' +
         '<span class="val-eq-op">+</span>' +
-        '<span class="val-eq-term">Caixa<b>' + fmtBRL(r.caixa) + '</b></span>' +
-        '<span class="val-eq-op">+</span>' +
-        '<span class="val-eq-term">A receber<b>' + fmtBRL(r.contasReceber) + '</b></span>' +
+        '<span class="val-eq-term">Equipamentos<b>' + fmtBRL(r.equipamentos) + '</b></span>' +
         '<span class="val-eq-op">−</span>' +
-        '<span class="val-eq-term">A pagar<b>' + fmtBRL(r.contasPagar) + '</b></span>' +
+        '<span class="val-eq-term">Dívidas<b>' + fmtBRL(r.dividas) + '</b></span>' +
         '<span class="val-eq-op">=</span>' +
-        '<span class="val-eq-term val-eq-result">Valuation patrimonial<b>' + fmtBRL(r.valEquity) + '</b></span>' +
+        '<span class="val-eq-term val-eq-result">Patrimônio operacional<b>' + fmtBRL(r.patrimonioOperacional) + '</b></span>' +
       '</div>' +
       '<div class="val-pot-grid">' +
-        valStatCard('Posição financeira líquida', fmtBRL(r.posicaoLiquida), 'caixa + a receber − a pagar', r.posicaoLiquida >= 0 ? 'good' : 'alert') +
-        valStatCard('Valuation patrimonial', fmtBRL(r.valEquity), 'operação atual + posição financeira', 'good') +
-        valStatCard('Patrimonial potencial', fmtBRL(r.valEquityPot), 'operação otimizada + posição financeira', 'good') +
+        valStatCard('Patrimônio operacional', fmtBRL(r.patrimonioOperacional), 'estoque + equipamentos − dívidas', r.patrimonioOperacional >= 0 ? 'good' : 'alert') +
+        valStatCard('Valuation patrimonial (equity)', fmtBRL(r.valEquity), 'valor da operação − dívidas', r.valEquity >= 0 ? 'good' : 'alert') +
+        valStatCard('Patrimonial potencial', fmtBRL(r.valEquityPot), 'operação otimizada − dívidas', 'good') +
       '</div>' +
     '</section>';
 
