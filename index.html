@@ -1005,6 +1005,11 @@
   .val-table td.col-num input, .val-table td.col-num select { width: 100%; }
   .val-table td.col-num input.val-text, .val-table td.col-num select.val-input { text-align: left; }
   .val-table thead th.col-num { text-align: right; min-width: 0; }
+  .val-table th.col-pct, .val-table td.col-pct { width: 74px; text-align: right; color: var(--ink-muted);
+    font-variant-numeric: tabular-nums; font-size: 12.5px; }
+  .val-table tfoot td { border-top: 2px solid var(--border); border-bottom: none; padding-top: 10px; }
+  .val-table tfoot .val-total-label { font-weight: 700; color: var(--ink); }
+  .val-table tfoot .val-total-val { font-weight: 800; color: var(--red); font-variant-numeric: tabular-nums; text-align: right; }
   @media (max-width: 720px) { .val-table td.col-num { width: 150px; } }
   .val-mult-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 16px;
     padding-top: 14px; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--ink-soft); }
@@ -2001,19 +2006,27 @@
       <div class="section-desc">agrupados em blocos · base para o EBITDA</div>
     </div>
     <div class="table-wrap"><table class="data-table val-table">
-      <thead><tr><th>Indicador</th><th class="col-num">Valor / mês</th></tr></thead>
+      <thead><tr><th>Indicador</th><th class="col-num">Valor / mês</th><th class="col-pct">%</th></tr></thead>
       <tbody>
         <tr><td class="label">Folha (equipe)<small>salários, encargos, pró-labore, benefícios</small></td>
-          <td class="col-num"><input class="val-input num" id="val-folha" type="text" inputmode="decimal" data-vfield="folha" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-folha" type="text" inputmode="decimal" data-vfield="folha" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="folha">—</td></tr>
         <tr><td class="label">Ocupação (estrutura)<small>aluguel, condomínio, IPTU</small></td>
-          <td class="col-num"><input class="val-input num" id="val-ocupacao" type="text" inputmode="decimal" data-vfield="ocupacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-ocupacao" type="text" inputmode="decimal" data-vfield="ocupacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="ocupacao">—</td></tr>
         <tr><td class="label">Operação<small>energia, água, telefone, internet, material, limpeza</small></td>
-          <td class="col-num"><input class="val-input num" id="val-operacao" type="text" inputmode="decimal" data-vfield="operacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-operacao" type="text" inputmode="decimal" data-vfield="operacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="operacao">—</td></tr>
         <tr><td class="label">Tecnologia (sistemas)<small>ERP, Trier, Farmagnus, licenças</small></td>
-          <td class="col-num"><input class="val-input num" id="val-tecnologia" type="text" inputmode="decimal" data-vfield="tecnologia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-tecnologia" type="text" inputmode="decimal" data-vfield="tecnologia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="tecnologia">—</td></tr>
         <tr><td class="label">Marketing<small>Google, Facebook, panfletagem, rádio</small></td>
-          <td class="col-num"><input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="marketing">—</td></tr>
       </tbody>
+      <tfoot><tr><td class="label val-total-label">Total de custos</td>
+        <td class="col-num val-total-val" data-vtotal="custos">—</td>
+        <td class="col-pct val-total-val">100%</td></tr></tfoot>
     </table></div>
   </section>
 
@@ -2023,13 +2036,18 @@
       <div class="section-desc">saldos atuais · ajusta o valor patrimonial</div>
     </div>
     <div class="table-wrap"><table class="data-table val-table">
-      <thead><tr><th>Indicador</th><th class="col-num">Saldo</th></tr></thead>
+      <thead><tr><th>Indicador</th><th class="col-num">Saldo</th><th class="col-pct">%</th></tr></thead>
       <tbody>
         <tr><td class="label">Equipamentos (ativos)<small>computadores, mobiliário, ar-condicionado, geladeiras</small></td>
-          <td class="col-num"><input class="val-input num" id="val-equipamentos" type="text" inputmode="decimal" data-vfield="equipamentos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-equipamentos" type="text" inputmode="decimal" data-vfield="equipamentos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="equipamentos">—</td></tr>
         <tr><td class="label">Dívidas (saldo)<small>capital de giro, empréstimos, financiamentos</small></td>
-          <td class="col-num"><input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+          <td class="col-num"><input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="dividas">—</td></tr>
       </tbody>
+      <tfoot><tr><td class="label val-total-label">Total</td>
+        <td class="col-num val-total-val" data-vtotal="patrimonio">—</td>
+        <td class="col-pct val-total-val">100%</td></tr></tfoot>
     </table></div>
     <div class="val-mult-row">
       <span class="val-mult-label">Múltiplo de EBITDA para o valuation:</span>
@@ -3220,7 +3238,30 @@
     }
     set('val-multMin', v.multMin || 3);
     set('val-multMax', v.multMax || 5);
+    renderValuationTotals();
     renderValuationResults();
+  }
+
+  function renderValuationTotals() {
+    const v = state.valuation || {};
+    function setTxt(sel, txt) { const el = document.querySelector(sel); if (el) el.textContent = txt; }
+    function pct(part, total) {
+      if (total <= 0) return '—';
+      return (part / total * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+    }
+    const grupos = {
+      custos: ['folha','ocupacao','operacao','tecnologia','marketing'],
+      patrimonio: ['equipamentos','dividas'],
+    };
+    Object.keys(grupos).forEach(function(g) {
+      const campos = grupos[g];
+      let total = 0;
+      for (let i = 0; i < campos.length; i++) total += parseBR(v[campos[i]]) || 0;
+      for (let i = 0; i < campos.length; i++) {
+        setTxt('[data-vpct="' + campos[i] + '"]', pct(parseBR(v[campos[i]]) || 0, total));
+      }
+      setTxt('[data-vtotal="' + g + '"]', total > 0 ? fmtBRL(total) : '—');
+    });
   }
 
   window.onValuationInput = function(el) {
@@ -3228,6 +3269,7 @@
     if (!f || !state.valuation) return;
     const isNum = el.getAttribute('data-vnum') === '1';
     state.valuation[f] = isNum ? parseBR(el.value) : el.value;
+    renderValuationTotals();
     renderValuationResults();
     save();
   };
