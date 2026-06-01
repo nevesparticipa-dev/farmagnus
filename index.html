@@ -1,0 +1,4062 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Diagnóstico Farmagnus · Unidade Penha-Gravatá</title>
+<meta name="description" content="Dashboard operacional Drogarias Farmagnus - Unidade Penha-Gravatá. KPIs, mix por categoria, PMC vs Livre.">
+<meta name="theme-color" content="#dc2626">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Farmagnus">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2RjMjYyNiIgcng9IjQwIi8+PHJlY3QgeD0iNzgiIHk9IjQwIiB3aWR0aD0iMjQiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIgcng9IjQiLz48cmVjdCB4PSI0MCIgeT0iNzgiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjQiIGZpbGw9IndoaXRlIiByeD0iNCIvPjwvc3ZnPg==">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZGMyNjI2IiByeD0iNiIvPjxyZWN0IHg9IjEwIiB5PSI1IiB3aWR0aD0iNCIgaGVpZ2h0PSIxNCIgZmlsbD0id2hpdGUiIHJ4PSIxIi8+PHJlY3QgeD0iNSIgeT0iMTAiIHdpZHRoPSIxNCIgaGVpZ2h0PSI0IiBmaWxsPSJ3aGl0ZSIgcng9IjEiLz48L3N2Zz4=">
+<link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"Diagnóstico Farmagnus","short_name":"Farmagnus","description":"Dashboard operacional Drogarias Farmagnus","start_url":".","display":"standalone","background_color":"%23fafafa","theme_color":"%23dc2626","icons":[{"src":"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2RjMjYyNiIgcng9IjQwIi8+PHJlY3QgeD0iNzgiIHk9IjQwIiB3aWR0aD0iMjQiIGhlaWdodD0iMTAwIiBmaWxsPSJ3aGl0ZSIgcng9IjQiLz48cmVjdCB4PSI0MCIgeT0iNzgiIHdpZHRoPSIxMDAiIGhlaWdodD0iMjQiIGZpbGw9IndoaXRlIiByeD0iNCIvPjwvc3ZnPg==","sizes":"180x180","type":"image/svg+xml"}]}'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #dc2626;
+    --red-dark: #b91c1c;
+    --red-soft: #fef2f2;
+    --red-tint: #fee2e2;
+    --green: #16a34a;
+    --green-dark: #15803d;
+    --green-soft: #f0fdf4;
+    --green-tint: #dcfce7;
+    --amber: #d97706;
+    --amber-tint: #fef3c7;
+    --bg: #fafafa;
+    --bg-card: #ffffff;
+    --border: #e5e7eb;
+    --border-light: #f3f4f6;
+    --ink: #0f172a;
+    --ink-soft: #475569;
+    --ink-muted: #94a3b8;
+    --ink-faint: #cbd5e1;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding-bottom: 48px;
+  }
+  .container { max-width: 1440px; margin: 0 auto; padding: 0 24px; }
+
+  /* TOP NAV */
+  .topnav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topnav-row {
+    display: flex; align-items: center; gap: 18px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex; align-items: center;
+    flex-shrink: 0;
+  }
+  .brand-img {
+    height: 44px;
+    width: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .topnav-center {
+    display: flex; align-items: center; gap: 10px;
+    flex: 1; min-width: 200px;
+  }
+  .topnav-title {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+  }
+  .topnav-divider { color: var(--ink-faint); }
+  .topnav-subtitle {
+    font-size: 12px; color: var(--ink-soft); font-weight: 400;
+  }
+
+  .save-indicator {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--ink-soft);
+    padding: 3px 9px;
+    background: var(--green-soft);
+    border-radius: 100px;
+    margin-left: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .save-indicator .save-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--ink-muted);
+  }
+  .save-indicator.saved { color: var(--green-dark); }
+  .save-indicator.saved .save-dot { background: var(--green); }
+  .save-indicator.saving .save-dot { background: var(--amber); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .topnav-actions {
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap;
+  }
+  .topnav-sep {
+    width: 1px; height: 22px;
+    background: var(--border);
+    margin: 0 4px;
+    align-self: center;
+  }
+
+  .year-tabs {
+    display: inline-flex; gap: 2px;
+    background: var(--bg);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .year-tabs button {
+    font: inherit; font-size: 11.5px; font-weight: 600;
+    background: transparent; color: var(--ink-soft);
+    border: none; cursor: pointer;
+    padding: 5px 11px; border-radius: 6px;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .year-tabs button:hover { color: var(--ink); background: var(--bg-card); }
+  .year-tabs button.active {
+    background: var(--red);
+    color: white;
+    box-shadow: 0 1px 3px rgba(220, 38, 38, 0.3);
+  }
+  .year-tabs button.active:hover { background: var(--red-dark); }
+  .year-tabs button .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--ink-faint);
+  }
+  .year-tabs button.active .dot { background: white; }
+  .year-tabs button.add-year-btn {
+    color: var(--ink-muted);
+    padding: 5px 8px;
+  }
+  .year-tabs button.add-year-btn:hover {
+    color: var(--red); background: var(--red-soft);
+  }
+  .year-tabs button.add-year-btn svg {
+    width: 12px; height: 12px;
+  }
+  .year-tabs button.comparativo-tab {
+    /* Visually distinct — sits at the end after a soft gap */
+    margin-left: 2px;
+    padding-left: 11px;
+    border-left: 1px solid var(--border);
+    border-radius: 0 6px 6px 0;
+  }
+
+  .btn {
+    font: inherit; font-size: 11.5px; font-weight: 500;
+    background: var(--bg-card); color: var(--ink);
+    border: 1px solid var(--border); cursor: pointer;
+    padding: 5px 9px; border-radius: 7px;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn:hover { background: var(--bg); border-color: var(--ink-faint); }
+  .btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .btn.btn-icon {
+    /* Compact icon-only utility — discoverable via tooltip */
+    padding: 6px;
+    width: 28px; height: 28px;
+    justify-content: center;
+  }
+  .btn.btn-icon svg { width: 13px; height: 13px; }
+  .btn.btn-primary {
+    background: var(--ink); color: white; border-color: var(--ink);
+  }
+  .btn.btn-primary:hover { background: var(--ink-soft); }
+  .btn.btn-ghost {
+    background: transparent; color: var(--ink-soft); border-color: transparent;
+  }
+  .btn.btn-ghost:hover { color: var(--ink); background: var(--bg); }
+  .btn.btn-danger {
+    color: var(--red);
+  }
+  .btn.btn-danger:hover { background: var(--red-soft); border-color: var(--red); }
+
+  /* HERO */
+  .hero {
+    padding: 24px 0 20px;
+  }
+  .hero-breadcrumb {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11.5px; color: var(--ink-soft);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-breadcrumb .sep { color: var(--ink-faint); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+  .pill-red {
+    background: var(--red-tint);
+    color: var(--red-dark);
+    border: 1px solid var(--red-tint);
+  }
+  .pill svg { width: 11px; height: 11px; }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    color: var(--ink);
+  }
+  .hero-title-accent { color: var(--red); }
+  .hero-year {
+    font-size: 0.45em;
+    font-weight: 500;
+    color: var(--ink-muted);
+    vertical-align: super;
+    margin-left: 6px;
+    letter-spacing: 0;
+  }
+  .hero-tagline {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    max-width: 640px;
+    font-style: italic;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* PERIOD CARD */
+  .period-card {
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 24px;
+    flex-wrap: wrap;
+  }
+  .period-stats {
+    display: flex; align-items: center; gap: 24px;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+  .period-stat { display: flex; flex-direction: column; gap: 2px; }
+  .period-stat-label {
+    font-size: 10px; color: var(--ink-muted);
+    font-weight: 500; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .period-stat-value {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .period-stat-value svg { width: 13px; height: 13px; color: var(--ink-muted); }
+  .progress-bar {
+    flex: 1; min-width: 120px; max-width: 280px;
+    height: 6px; background: var(--border-light);
+    border-radius: 100px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--red);
+    border-radius: 100px;
+    transition: width 0.4s;
+  }
+
+  /* SCENARIO TABS */
+  .scenario-tabs {
+    display: inline-flex; gap: 3px;
+    background: var(--bg);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .scenario-tabs button {
+    font: inherit; font-size: 11px; font-weight: 600;
+    background: transparent; color: var(--ink-soft);
+    border: none; cursor: pointer;
+    padding: 6px 13px; border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .scenario-tabs button:hover { color: var(--ink); }
+  .scenario-tabs button.active {
+    background: var(--red); color: white;
+    box-shadow: 0 1px 3px rgba(220, 38, 38, 0.3);
+  }
+
+  /* KPI GRID (TOP — 5 hero cards with sparklines) */
+  .kpi-hero-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) auto;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .kpi-hero {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px 10px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .kpi-hero:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .kpi-hero-icon {
+    width: 24px; height: 24px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+    color: white;
+  }
+  .kpi-hero-icon svg { width: 12px; height: 12px; }
+  .kpi-hero-icon.amber { background: var(--amber); }
+  .kpi-hero-icon.red { background: var(--red); }
+  .kpi-hero-icon.muted { background: var(--ink-muted); }
+  .kpi-hero-label {
+    font-size: 10.5px; color: var(--ink-soft);
+    font-weight: 500; margin-bottom: 3px;
+  }
+  .kpi-hero-value {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+  .kpi-hero-sub {
+    font-size: 10px;
+    color: var(--ink-muted);
+    margin-bottom: 6px;
+  }
+  .kpi-hero-sparkline {
+    height: 24px;
+    width: 100%;
+    display: block;
+  }
+
+  /* CHART TYPE TOGGLE — vertical, sits at end of KPI grid */
+  .chart-options-vertical {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 8px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 6px;
+    width: 88px;
+  }
+  .chart-options-vertical .chart-options-label {
+    font-size: 8.5px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .chart-toggle-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--bg);
+    padding: 2px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .chart-toggle-vertical button {
+    font: inherit;
+    font-size: 10.5px;
+    font-weight: 600;
+    background: transparent;
+    color: var(--ink-soft);
+    border: none;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: all 0.15s;
+    text-align: center;
+    width: 100%;
+  }
+  .chart-toggle-vertical button:hover { color: var(--ink); }
+  .chart-toggle-vertical button.active {
+    background: var(--ink);
+    color: white;
+  }
+
+  /* SECTION (general wrapper) */
+  .section {
+    margin-bottom: 16px;
+    padding: 16px 20px;
+  }
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 20px; flex-wrap: wrap;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .section-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-num {
+    font-size: 10px; color: var(--red);
+    font-weight: 700; letter-spacing: 0.06em;
+    padding: 2px 7px; background: var(--red-soft);
+    border-radius: 5px;
+    margin-right: 2px;
+  }
+  .section-desc {
+    font-size: 12px; color: var(--ink-muted);
+    font-style: italic;
+  }
+  .section-desc strong {
+    color: var(--red); font-weight: 600; font-style: normal;
+  }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+  .data-table {
+    width: 100%; border-collapse: collapse;
+    min-width: 800px;
+  }
+  .data-table thead th {
+    font-size: 10px; font-weight: 600;
+    color: var(--ink-muted); letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+  }
+  .data-table thead th.col-num {
+    text-align: center; min-width: 108px;
+  }
+  .data-table thead th.col-num.current {
+    color: var(--red); background: var(--red-soft);
+    border-radius: 6px 6px 0 0;
+  }
+  .data-table thead th.col-avg {
+    text-align: right; color: var(--red);
+    border-left: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .data-table tbody td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+  }
+  .data-table tbody td.col-num { text-align: center; padding: 5px 6px; }
+  .data-table tbody td.col-num.current {
+    background: var(--red-soft);
+  }
+  .data-table tbody td.col-avg {
+    text-align: right;
+    border-left: 1px solid var(--border);
+    background: var(--bg);
+    font-weight: 600;
+    color: var(--red);
+  }
+  .data-table tbody td.label {
+    font-size: 12px; font-weight: 500; color: var(--ink);
+    min-width: 200px;
+  }
+  .data-table tbody td.label small {
+    display: block; font-weight: 400; color: var(--ink-muted);
+    font-size: 10.5px; margin-top: 1px;
+  }
+  .data-table tbody tr:hover { background: var(--bg); }
+  .data-table tbody tr:hover td.col-num.current { background: var(--red-tint); }
+
+  /* INPUTS */
+  input.num {
+    font: inherit; font-family: 'Inter', monospace;
+    font-size: 12px; font-variant-numeric: tabular-nums;
+    width: 100%; min-width: 90px;
+    text-align: right;
+    padding: 6px 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink); transition: all 0.15s;
+    font-weight: 500;
+  }
+  input.num::placeholder { color: var(--ink-faint); font-weight: 400; }
+  input.num:hover { border-color: var(--ink-faint); }
+  input.num:focus {
+    outline: none; border-color: var(--red);
+    box-shadow: 0 0 0 2px var(--red-soft);
+  }
+  input.num.has-value { background: var(--green-soft); border-color: var(--green-tint); }
+  .data-table tbody td.col-num.current input.num {
+    border-color: var(--red);
+    background: white;
+  }
+
+  .readonly-value {
+    display: block;
+    font-family: 'Inter', monospace;
+    font-size: 12px; font-variant-numeric: tabular-nums;
+    text-align: right;
+    padding: 6px 8px;
+    color: var(--red-dark);
+    font-weight: 600;
+    background: var(--red-soft);
+    border-radius: 6px;
+    border: 1px solid var(--red-tint);
+  }
+  .readonly-value.empty {
+    color: var(--ink-muted); font-weight: 400;
+    background: var(--bg); border-color: var(--border-light);
+  }
+  .readonly-value.derived {
+    background: #faf5ff;
+    border-color: #e9d5ff;
+    color: #6d28d9;
+  }
+  .readonly-value.derived.empty {
+    background: var(--bg); border-color: var(--border-light);
+    color: var(--ink-muted);
+  }
+  .readonly-value small,
+  .computed small {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5px;
+    font-weight: 500;
+    color: var(--red);
+    opacity: 0.7;
+    margin-top: 3px;
+    letter-spacing: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .computed {
+    font-family: 'Inter', monospace;
+    font-size: 12px; font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  /* Derived row (calculated, not editable — e.g. Ticket médio) */
+  .derived-row { background: rgba(124, 58, 237, 0.025); }
+  .derived-row td.label {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .derived-row td.label .label-text {
+    display: flex; flex-direction: column;
+  }
+  .derived-row td.label .metric-icon { flex-shrink: 0; }
+  .derived-row .computed { color: #6d28d9; }
+
+  .info-strip {
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    background: var(--green-soft);
+    border-left: 3px solid var(--green);
+    border-radius: 6px;
+    font-size: 12px; color: var(--ink-soft);
+    line-height: 1.4;
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+  }
+  .info-strip-cta {
+    margin-left: auto;
+    padding: 4px 10px;
+    background: var(--ink); color: white;
+    font-size: 10.5px; font-weight: 600;
+    border-radius: 5px; cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .info-strip-cta:hover { background: var(--red); }
+
+  /* KPI GRID (§02 — 7 metric cards) */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    transition: all 0.15s;
+  }
+  .kpi-card:hover { border-color: var(--border); }
+  .kpi-card .kpi-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px;
+  }
+  .kpi-head-left {
+    display: flex; align-items: center; gap: 7px;
+    min-width: 0;
+  }
+  .metric-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--green); color: white;
+    flex-shrink: 0;
+  }
+  .metric-icon svg { width: 10px; height: 10px; }
+  .metric-icon.amber { background: var(--amber); }
+  .metric-icon.red { background: var(--red); }
+  .metric-icon.muted { background: var(--ink-muted); }
+  .metric-icon.sm { width: 14px; height: 14px; }
+  .metric-icon.sm svg { width: 8px; height: 8px; }
+  .kpi-name {
+    font-size: 10px; font-weight: 500; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--ink-faint);
+  }
+  .status-dot.good { background: var(--green); }
+  .status-dot.warn { background: var(--amber); }
+  .status-dot.alert { background: var(--red); }
+  .status-dot.neutral { background: var(--ink-faint); }
+  .kpi-value {
+    font-size: 20px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.1;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .kpi-bench {
+    font-size: 10px; color: var(--ink-muted);
+    border-top: 1px solid var(--border-light);
+    padding-top: 6px;
+  }
+  .kpi-bench strong { color: var(--ink-soft); font-weight: 600; }
+
+  /* MIX VIEW TABS / PILLS */
+  .mix-view-tabs {
+    display: flex; gap: 3px; flex-wrap: wrap;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .mix-view-tabs button {
+    font: inherit; font-size: 11px; font-weight: 600;
+    background: var(--bg-card); color: var(--ink-soft);
+    border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; transition: all 0.15s;
+    position: relative;
+  }
+  .mix-view-tabs button:hover {
+    color: var(--ink); border-color: var(--ink-faint);
+  }
+  .mix-view-tabs button.active {
+    background: var(--red); color: white;
+    border-color: var(--red);
+  }
+  .mix-view-tabs button[data-view="ANO"] {
+    font-weight: 700;
+    margin-right: 6px;
+    border-color: var(--ink-faint);
+    color: var(--ink);
+  }
+  .mix-view-tabs button[data-view="ANO"].active {
+    background: var(--ink); border-color: var(--ink);
+    color: white;
+  }
+  .mix-view-tabs button.filled::after {
+    content: '';
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 1.5px solid var(--bg-card);
+  }
+  .mix-context-label {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .mix-context-label strong {
+    color: var(--red); font-weight: 600; font-style: normal;
+  }
+
+  /* MIX TABLE */
+  .mix-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .mix-table th, .mix-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12px;
+  }
+  .mix-table thead th {
+    font-size: 10px; color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    font-weight: 600; text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  .mix-table thead th:first-child,
+  .mix-table thead th.tag-col,
+  .mix-table thead th.obs-col { text-align: left; }
+  .mix-table tbody td {
+    text-align: right;
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .mix-table tbody td.label {
+    text-align: left; font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+  .mix-table tbody td.tag { text-align: left; }
+  .mix-table tbody td.obs {
+    text-align: left; font-size: 11px;
+    color: var(--ink-muted); font-style: italic;
+    font-weight: 400; font-family: 'Inter', sans-serif;
+  }
+  .mix-table tbody td.mix-input-cell { padding: 4px 10px; }
+  .mix-table tfoot td {
+    border-top: 1px solid var(--ink);
+    border-bottom: none;
+    padding: 10px;
+    background: var(--bg);
+    font-weight: 700;
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    font-size: 12px;
+  }
+  .mix-table tfoot td.label {
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+  }
+  .pmc-tag {
+    display: inline-block;
+    padding: 2px 8px; border-radius: 100px;
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .pmc-tag.yes { background: var(--red-soft); color: var(--red-dark); }
+  .pmc-tag.no { background: var(--green-soft); color: var(--green-dark); }
+
+  /* RECONCILE STRIP */
+  .reconcile {
+    margin-top: 10px;
+    padding: 9px 14px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--ink-faint);
+    display: flex; gap: 18px; flex-wrap: wrap;
+    align-items: center;
+    font-size: 11px;
+  }
+  .reconcile.matched { border-left-color: var(--green); background: var(--green-soft); }
+  .reconcile.diff { border-left-color: var(--amber); background: var(--amber-tint); }
+  .reconcile .rec-block { display: flex; align-items: center; gap: 6px; }
+  .reconcile .lbl {
+    color: var(--ink-muted);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .reconcile .val {
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .reconcile .delta {
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .reconcile.matched .delta { color: var(--green-dark); }
+  .reconcile.diff .delta { color: var(--amber); }
+
+  /* PMC vs LIVRE */
+  .pmc-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .pmc-card-large {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    background: var(--bg-card);
+    position: relative;
+  }
+  .pmc-card-large.regulated {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--red-soft) 100%);
+    border-color: var(--red-tint);
+  }
+  .pmc-card-large.free {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--green-soft) 100%);
+    border-color: var(--green-tint);
+  }
+  .pmc-eyebrow {
+    font-size: 9px; font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .pmc-title {
+    font-size: 17px; font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .pmc-title em {
+    font-style: normal;
+    color: var(--red);
+  }
+  .free .pmc-title em { color: var(--green-dark); }
+  .pmc-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .pmc-stat-label {
+    font-size: 9.5px; font-weight: 500;
+    color: var(--ink-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  .pmc-stat-value {
+    font-size: 18px; font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .pmc-note {
+    margin-top: 14px; padding-top: 10px;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  /* DIAG LIST */
+  .diag-list { display: flex; flex-direction: column; gap: 5px; }
+  .diag-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: 160px 110px 1fr 140px;
+    gap: 16px;
+    align-items: center;
+    transition: all 0.15s;
+  }
+  .diag-row:hover { border-color: var(--border); background: var(--bg); }
+  .diag-name {
+    font-size: 12.5px; font-weight: 600; color: var(--ink);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .diag-value {
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .diag-reading {
+    font-size: 11.5px; color: var(--ink-soft); line-height: 1.35;
+  }
+  .diag-status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    justify-content: flex-end;
+  }
+  .diag-status.good { color: var(--green-dark); }
+  .diag-status.warn { color: var(--amber); }
+  .diag-status.alert { color: var(--red); }
+  .diag-status.neutral { color: var(--ink-muted); }
+
+  /* FOOTER */
+  footer.colophon {
+    margin-top: 20px; padding: 12px 0;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
+    font-size: 10px; color: var(--ink-muted);
+    letter-spacing: 0.02em;
+  }
+  footer.colophon em { font-style: italic; color: var(--ink-soft); }
+
+  /* TOOLTIPS */
+  [data-tooltip] {
+    position: relative;
+  }
+  [data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    background: var(--ink);
+    color: white;
+    padding: 9px 13px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    white-space: pre-line;
+    width: max-content;
+    max-width: 280px;
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: left;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    transform: translateX(-50%) translateY(4px);
+  }
+  [data-tooltip]::after {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease;
+    z-index: 100;
+  }
+  [data-tooltip]:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  [data-tooltip]:hover::after {
+    opacity: 1;
+  }
+
+  /* COMPARATIVO VIEW */
+  body[data-view="comparativo"] #year-view { display: none; }
+  body[data-view="year"] #comparativo-view { display: none; }
+
+  .comp-hero {
+    padding: 24px 0 20px;
+  }
+  .comp-empty {
+    background: var(--bg-card);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+  .comp-empty-msg {
+    font-size: 14px; font-style: italic;
+  }
+  .comp-score-card {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--green-soft) 100%);
+    border: 1px solid var(--green-tint);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    margin-bottom: 16px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .comp-score-card.warn {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--amber-tint) 100%);
+    border-color: var(--amber-tint);
+  }
+  .comp-score-card.alert {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--red-soft) 100%);
+    border-color: var(--red-tint);
+  }
+  .comp-score-eyebrow {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .comp-score-value {
+    font-size: 64px; font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1;
+    color: var(--green-dark);
+    font-variant-numeric: tabular-nums;
+    display: inline-block;
+  }
+  .comp-score-card.warn .comp-score-value { color: var(--amber); }
+  .comp-score-card.alert .comp-score-value { color: var(--red-dark); }
+  .comp-score-value small {
+    font-size: 22px; font-weight: 600;
+    color: var(--ink-muted);
+    margin-left: 2px;
+  }
+  .comp-score-verdict {
+    font-size: 14px; color: var(--ink-soft);
+    font-style: italic; margin-top: 6px;
+    font-weight: 500;
+  }
+  .comp-score-bar {
+    height: 6px;
+    background: var(--border-light);
+    border-radius: 100px;
+    overflow: hidden;
+    margin: 14px auto 0;
+    max-width: 360px;
+  }
+  .comp-score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red) 0%, var(--amber) 50%, var(--green) 100%);
+    border-radius: 100px;
+    transition: width 0.6s ease;
+  }
+
+  .comp-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .comp-summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .comp-summary-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .comp-summary-label {
+    font-size: 11px; color: var(--ink-soft);
+    font-weight: 600; letter-spacing: 0.02em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .comp-name-cell {
+    display: inline-flex; align-items: flex-start; gap: 8px;
+  }
+  .comp-name-cell .metric-icon { margin-top: 1px; }
+  .comp-summary-delta {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+  .comp-summary-delta.good { background: var(--green-soft); color: var(--green-dark); }
+  .comp-summary-delta.warn { background: var(--amber-tint); color: var(--amber); }
+  .comp-summary-delta.alert { background: var(--red-soft); color: var(--red-dark); }
+  .comp-summary-delta.stable { background: var(--bg); color: var(--ink-soft); }
+  .comp-summary-values {
+    display: flex; align-items: flex-end; gap: 8px;
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .comp-summary-year-block { flex: 1; }
+  .comp-summary-year-block small {
+    display: block;
+    font-size: 9px; color: var(--ink-muted);
+    margin-bottom: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .comp-summary-year-block .v {
+    font-size: 14px; font-weight: 700;
+    color: var(--ink);
+  }
+  .comp-summary-year-block.next .v { color: var(--red); }
+  .comp-arrow { color: var(--ink-faint); font-size: 14px; padding-bottom: 1px; }
+
+  .comp-table-wrap { overflow-x: auto; }
+  .comp-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  .comp-table thead th {
+    font-size: 10px; color: var(--ink-muted);
+    font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 8px 12px; text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-table thead th:first-child { text-align: left; }
+  .comp-table thead th.status-col { text-align: center; }
+  .comp-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 12.5px;
+    font-family: 'Inter', monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: var(--ink);
+  }
+  .comp-table tbody td.name {
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    font-weight: 600;
+  }
+  .comp-table tbody td.name small {
+    display: block;
+    font-weight: 400; color: var(--ink-muted);
+    font-size: 10.5px; margin-top: 1px;
+  }
+  .comp-table tbody td.delta-cell { font-weight: 700; }
+  .comp-table tbody td.delta-cell.up { color: var(--green-dark); }
+  .comp-table tbody td.delta-cell.down { color: var(--red-dark); }
+  .comp-table tbody td.delta-cell.neutral { color: var(--ink-muted); }
+  .comp-table tbody td.status-cell {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  .comp-status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10.5px; font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+  .comp-status-pill.good { background: var(--green-soft); color: var(--green-dark); }
+  .comp-status-pill.warn { background: var(--amber-tint); color: var(--amber); }
+  .comp-status-pill.alert { background: var(--red-soft); color: var(--red-dark); }
+  .comp-status-pill.neutral { background: var(--bg); color: var(--ink-muted); }
+  .comp-status-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .comp-status-pill.good .dot { background: var(--green); }
+  .comp-status-pill.warn .dot { background: var(--amber); }
+  .comp-status-pill.alert .dot { background: var(--red); }
+  .comp-status-pill.neutral .dot { background: var(--ink-faint); }
+
+  .comp-readings { display: flex; flex-direction: column; gap: 7px; }
+  .comp-reading {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    line-height: 1.45;
+    border-left: 3px solid var(--ink-faint);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .comp-reading.good { border-left-color: var(--green); background: var(--green-soft); }
+  .comp-reading.warn { border-left-color: var(--amber); background: var(--amber-tint); }
+  .comp-reading.alert { border-left-color: var(--red); background: var(--red-soft); }
+  .comp-reading strong { color: var(--ink); }
+
+  .comp-actions { list-style: none; padding: 0; margin: 0; counter-reset: action-counter; }
+  .comp-actions li {
+    counter-increment: action-counter;
+    padding: 11px 16px 11px 48px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    position: relative;
+  }
+  .comp-actions li::before {
+    content: counter(action-counter);
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    width: 26px; height: 26px;
+    background: var(--red); color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 12px;
+    font-family: 'Inter', monospace;
+  }
+
+  /* Comparativo chart */
+  .comp-chart-tabs {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .comp-chart-tab {
+    font: inherit; font-size: 11px; font-weight: 600;
+    background: var(--bg-card); color: var(--ink-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .comp-chart-tab:hover {
+    border-color: var(--red-tint);
+    color: var(--red-dark);
+  }
+  .comp-chart-tab.active {
+    background: var(--red); color: white;
+    border-color: var(--red);
+  }
+  .comp-chart-tab.active .metric-icon {
+    background: rgba(255,255,255,0.25);
+  }
+  .comp-chart-tab .metric-icon { width: 14px; height: 14px; }
+  .comp-chart-tab .metric-icon svg { width: 8px; height: 8px; }
+  .comp-chart-container {
+    width: 100%;
+    min-height: 200px;
+    position: relative;
+  }
+  .comp-chart-container svg {
+    width: 100%; height: auto;
+    display: block;
+  }
+  .comp-chart-empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 12px;
+    font-style: italic;
+  }
+  .comp-chart-legend {
+    display: flex; gap: 18px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    justify-content: center;
+  }
+  .comp-chart-legend .legend-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 600;
+  }
+  .comp-chart-legend .legend-line {
+    display: inline-block;
+    width: 22px; height: 2px;
+    border-radius: 1px;
+  }
+  .comp-chart-legend .legend-line.gray { background: #9ca3af; }
+  .comp-chart-legend .legend-line.red { background: var(--red); }
+
+  /* AI prompt CTA card */
+  .comp-ai-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f0fdf4 100%);
+    border: 1px solid #e0d4f5;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-top: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    box-shadow: var(--shadow-sm);
+  }
+  .comp-ai-text { flex: 1; min-width: 220px; }
+  .comp-ai-eyebrow {
+    font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #7c3aed; font-weight: 700;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .comp-ai-eyebrow svg { width: 12px; height: 12px; }
+  .comp-ai-title {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .comp-ai-desc {
+    font-size: 11.5px; color: var(--ink-soft);
+    line-height: 1.45;
+  }
+  .comp-ai-btn {
+    font: inherit; font-size: 12px; font-weight: 700;
+    background: #7c3aed; color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 7px;
+    white-space: nowrap;
+  }
+  .comp-ai-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+  .comp-ai-btn svg { width: 14px; height: 14px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1200px) {
+    .kpi-hero-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-options-vertical {
+      grid-column: span 2;
+      width: auto;
+      flex-direction: row;
+      gap: 10px;
+      padding: 8px 12px;
+    }
+    .chart-options-vertical .chart-options-label {
+      margin-bottom: 0;
+      align-self: center;
+    }
+    .chart-toggle-vertical {
+      flex-direction: row;
+      flex: 1;
+      justify-content: center;
+    }
+  }
+  @media (max-width: 900px) {
+    .container { padding: 0 16px; }
+    .topnav-center { order: 3; width: 100%; }
+    .pmc-compare { grid-template-columns: 1fr; }
+    .diag-row { grid-template-columns: 1fr; gap: 8px; }
+    .diag-status { justify-content: flex-start; }
+    .period-card { flex-direction: column; align-items: stretch; }
+    .scenario-tabs { width: 100%; overflow-x: auto; }
+  }
+  @media (max-width: 600px) {
+    .kpi-hero-grid { grid-template-columns: 1fr; }
+    .chart-options-vertical { grid-column: span 1; }
+    .pmc-stats { grid-template-columns: 1fr; }
+    .brand-img { height: 34px; }
+    .year-tabs button { padding: 6px 10px; font-size: 11px; }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .save-indicator, .scenario-tabs, .topnav-actions, .topnav { display: none !important; }
+    .container { max-width: 100%; padding: 0; }
+    .section, .kpi-hero, .pmc-card-large { page-break-inside: avoid; }
+    input.num { border: 1px solid #ccc; background: white; }
+  }
+</style>
+</head>
+<body data-view="year">
+
+<header class="topnav">
+  <div class="container">
+    <div class="topnav-row">
+      <div class="brand">
+        <img src="data:image/jpeg;base64,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" alt="Drogarias Farmagnus - Unidade Penha-Gravatá" class="brand-img">
+      </div>
+
+      <div class="topnav-center">
+        <span class="topnav-title">Diagnóstico</span>
+        <span class="topnav-divider">·</span>
+        <span class="topnav-subtitle">Farmácia Operacional</span>
+        <span class="save-indicator" id="save-indicator">
+          <span class="save-dot"></span>
+          <span id="save-text">Aguardando</span>
+        </span>
+      </div>
+
+      <div class="topnav-actions">
+        <div class="year-tabs" id="year-tabs"><!-- rendered by renderYearTabs() --></div>
+
+        <div class="topnav-sep"></div>
+
+        <button class="btn btn-icon" onclick="exportSelfContained()" title="Compartilhar — baixar HTML com seus dados embutidos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        </button>
+        <button class="btn btn-icon" onclick="copyShareLink()" title="Copiar link compartilhável com seus dados">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+        <button class="btn btn-icon" onclick="document.getElementById('import-file').click()" title="Importar dados de um arquivo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <input type="file" id="import-file" accept=".json,.html" style="display:none" onchange="importDataFile(event)">
+        <button class="btn btn-icon" onclick="loadSample()" title="Carregar dados de exemplo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </button>
+        <button class="btn btn-icon" onclick="window.print()" title="Imprimir página">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
+
+        <div class="topnav-sep"></div>
+
+        <button class="btn btn-icon btn-danger" onclick="resetAll()" title="Limpar dados do ano atual">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+<div id="year-view">
+
+  <section class="hero">
+    <div class="hero-breadcrumb">
+      <span>Relatório</span>
+      <span class="sep">·</span>
+      <span>Operacional</span>
+      <span class="pill pill-red" id="status-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="status-badge">Em curso · 5/12 meses</span>
+      </span>
+    </div>
+    <h1 class="hero-title" id="page-title">
+      Diagnóstico
+      <span class="hero-title-accent">em execução</span>
+      <span class="hero-year" id="page-year">2026</span>
+    </h1>
+    <p class="hero-tagline" id="page-tagline">Análise viva do ano corrente. Cada mês fechado reposiciona os indicadores.</p>
+  </section>
+
+  <section class="card period-card">
+    <div class="period-stats">
+      <div class="period-stat">
+        <span class="period-stat-label">Período</span>
+        <span class="period-stat-value">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="period-stat">Maio · 2026</span>
+        </span>
+      </div>
+      <div class="period-stat">
+        <span class="period-stat-label">Avanço</span>
+        <span class="period-stat-value"><span id="progress-stat">5 de 12 meses</span></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:41.6%"></div></div>
+    </div>
+    <div class="scenario-tabs" id="scenario-tabs">
+      <button data-scen="month" class="active">Mês a mês</button>
+      <button data-scen="quarter">Trimestre</button>
+      <button data-scen="semester">Semestre</button>
+      <button data-scen="year">Anual</button>
+    </div>
+  </section>
+
+  <section class="kpi-hero-grid">
+    <div class="kpi-hero" data-tooltip="Receita bruta média por mês.&#10;&#10;→ Soma do faturamento ÷ meses preenchidos">
+      <div class="kpi-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <div class="kpi-hero-label" id="snap-fat-label">Faturamento mensal</div>
+      <div class="kpi-hero-value" id="snap-fat">—</div>
+      <div class="kpi-hero-sub" id="snap-fat-sub">aguardando dados</div>
+      <svg class="kpi-hero-sparkline" id="spark-fat" viewBox="0 0 280 24" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="kpi-hero" data-tooltip="Quanto sobra do faturamento após pagar o custo da mercadoria.&#10;&#10;→ (Faturamento − CMV) ÷ Faturamento">
+      <div class="kpi-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
+      <div class="kpi-hero-label">Margem bruta</div>
+      <div class="kpi-hero-value" id="snap-mar">—</div>
+      <div class="kpi-hero-sub">benchmark 30%–45%</div>
+      <svg class="kpi-hero-sparkline" id="spark-mar" viewBox="0 0 280 24" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="kpi-hero" data-tooltip="Velocidade com que o estoque é vendido por mês. Quanto mais alto, mais ágil o capital roda.&#10;&#10;→ CMV ÷ Estoque médio a custo">
+      <div class="kpi-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+      <div class="kpi-hero-label" id="snap-giro-label">Giro mensal</div>
+      <div class="kpi-hero-value" id="snap-giro">—</div>
+      <div class="kpi-hero-sub" id="snap-giro-bench">meta 0,67x a 1,0x</div>
+      <svg class="kpi-hero-sparkline" id="spark-giro" viewBox="0 0 280 24" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="kpi-hero" data-tooltip="Quanto seu estoque deveria valer para manter giro mensal saudável de 0,80x (meio do intervalo ideal 0,67x a 1,0x). Acima disso, capital fica empoçado.&#10;&#10;→ CMV mensal ÷ 0,80x">
+      <div class="kpi-hero-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+      <div class="kpi-hero-label">Estoque ideal</div>
+      <div class="kpi-hero-value" id="snap-estq-ideal">—</div>
+      <div class="kpi-hero-sub" id="snap-estq-ideal-sub">alvo 37 dias</div>
+      <svg class="kpi-hero-sparkline" id="spark-estq-ideal" viewBox="0 0 280 24" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="kpi-hero" data-tooltip="Dias que o estoque atual sustenta as vendas mantendo o ritmo médio. Cobertura alta = capital empoçado.&#10;&#10;→ Estoque ÷ (CMV ÷ 30)">
+      <div class="kpi-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div class="kpi-hero-label">Cobertura</div>
+      <div class="kpi-hero-value" id="snap-cob">—</div>
+      <div class="kpi-hero-sub">meta 30 a 45 dias</div>
+      <svg class="kpi-hero-sparkline" id="spark-cob" viewBox="0 0 280 24" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="chart-options-vertical">
+      <span class="chart-options-label">Visual.</span>
+      <div class="chart-toggle-vertical" id="chart-toggle">
+        <button data-chart="line" class="active">Linha</button>
+        <button data-chart="area">Área</button>
+        <button data-chart="bars">Barras</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ 01</span>Dados de entrada</div>
+      <div class="section-desc" id="input-desc">Preencha os meses já fechados — a média se ajusta sozinha.</div>
+    </div>
+    <div id="input-section"></div>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ 02</span>Indicadores calculados</div>
+      <div class="section-desc" id="kpi-desc">cores indicam posição frente ao benchmark</div>
+    </div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+  </section>
+
+  <section class="card section">
+    <div id="mix-section"></div>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ 04</span>PMC versus preço livre</div>
+      <div class="section-desc">onde está a margem real do negócio</div>
+    </div>
+    <div class="mix-context-label" id="pmc-context-label">Aguardando dados</div>
+    <div class="pmc-compare">
+      <div class="pmc-card-large regulated">
+        <div class="pmc-eyebrow">Categoria · regulada</div>
+        <h3 class="pmc-title">Com <em>PMC</em></h3>
+        <div class="pmc-stats">
+          <div><div class="pmc-stat-label">Faturamento</div><div class="pmc-stat-value" id="pmc-fat">—</div></div>
+          <div><div class="pmc-stat-label">% do total</div><div class="pmc-stat-value" id="pmc-pct">—</div></div>
+          <div><div class="pmc-stat-label">Margem R$</div><div class="pmc-stat-value" id="pmc-marg">—</div></div>
+          <div><div class="pmc-stat-label">Margem %</div><div class="pmc-stat-value" id="pmc-pctmarg">—</div></div>
+        </div>
+        <p class="pmc-note">Liberados, similares, genéricos e prescrição. Margem espremida pelo teto da CMED.</p>
+      </div>
+      <div class="pmc-card-large free">
+        <div class="pmc-eyebrow">Categoria · livre</div>
+        <h3 class="pmc-title">Sem <em>PMC</em></h3>
+        <div class="pmc-stats">
+          <div><div class="pmc-stat-label">Faturamento</div><div class="pmc-stat-value" id="free-fat">—</div></div>
+          <div><div class="pmc-stat-label">% do total</div><div class="pmc-stat-value" id="free-pct">—</div></div>
+          <div><div class="pmc-stat-label">Margem R$</div><div class="pmc-stat-value" id="free-marg">—</div></div>
+          <div><div class="pmc-stat-label">Margem %</div><div class="pmc-stat-value" id="free-pctmarg">—</div></div>
+        </div>
+        <p class="pmc-note">Perfumaria — preço livre, é onde se constrói a margem real da farmácia.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ 05</span>Leitura crítica</div>
+      <div class="section-desc" id="diag-desc">base mensal do que está preenchido</div>
+    </div>
+    <div class="diag-list" id="diag-list"></div>
+  </section>
+
+</div><!-- /#year-view -->
+
+<div id="comparativo-view">
+  <section class="hero comp-hero">
+    <div class="hero-breadcrumb">
+      <span>Relatório</span>
+      <span class="sep">·</span>
+      <span>Análise gerencial</span>
+      <span class="pill pill-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><polyline points="7 12 12 7 17 12 22 7"/></svg>
+        <span data-comp-pair>2025 → 2026</span>
+      </span>
+    </div>
+    <h1 class="hero-title">
+      Diagnóstico
+      <span class="hero-title-accent">comparativo</span>
+      <span class="hero-year" data-comp-pair>2025 → 2026</span>
+    </h1>
+    <p class="hero-tagline">Análise ano contra ano · variações, leituras críticas e plano de ação automatizado.</p>
+  </section>
+
+  <div id="comp-empty" class="comp-empty">
+    <div class="comp-empty-msg" id="comp-empty-msg">Preencha dados em dois anos para gerar o comparativo.</div>
+  </div>
+
+  <div id="comp-content" style="display:none">
+    <section class="card comp-score-card" id="comp-score-card">
+      <div class="comp-score-eyebrow">Nota geral da operação</div>
+      <div class="comp-score-value"><span id="comp-score-num">—</span><small>/100</small></div>
+      <div class="comp-score-verdict" id="comp-score-verdict">—</div>
+      <div class="comp-score-bar"><div class="comp-score-fill" id="comp-score-fill" style="width:0%"></div></div>
+    </section>
+
+    <section class="comp-summary-grid" id="comp-summary-grid"></section>
+
+    <section class="card section comp-chart-section">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">§ A</span>Evolução operacional</div>
+        <div class="section-desc">mês a mês · <span data-comp-vs>2025 vs 2026</span></div>
+      </div>
+      <div class="comp-chart-tabs" id="comp-chart-tabs">
+        <button class="comp-chart-tab active" data-metric="fat" onclick="renderCompChart('fat')"><span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>Faturamento</button>
+        <button class="comp-chart-tab" data-metric="margem" onclick="renderCompChart('margem')"><span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></span>Margem</button>
+        <button class="comp-chart-tab" data-metric="giro" onclick="renderCompChart('giro')"><span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>Giro</button>
+        <button class="comp-chart-tab" data-metric="cobertura" onclick="renderCompChart('cobertura')"><span class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Cobertura</button>
+      </div>
+      <div class="comp-chart-container" id="comp-chart-svg"></div>
+      <div class="comp-chart-legend">
+        <span class="legend-item"><span class="legend-line gray"></span><span data-year-old>2025</span></span>
+        <span class="legend-item"><span class="legend-line red"></span><span data-year-new>2026</span></span>
+      </div>
+    </section>
+
+    <section class="card section">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">§ B</span>Indicadores comparados</div>
+        <div class="section-desc">médias mensais · <span data-comp-vs>2025 vs 2026</span></div>
+      </div>
+      <div class="comp-table-wrap">
+        <table class="comp-table" id="comp-table">
+          <thead>
+            <tr>
+              <th>Indicador</th>
+              <th data-th-old>2025</th>
+              <th data-th-new>2026</th>
+              <th>Variação</th>
+              <th class="status-col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="comp-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card section">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">§ C</span>Leitura crítica comparativa</div>
+        <div class="section-desc">o que melhorou, o que piorou, e por quê</div>
+      </div>
+      <div class="comp-readings" id="comp-readings"></div>
+    </section>
+
+    <section class="card section">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">§ D</span>Top 5 ações prioritárias</div>
+        <div class="section-desc">plano de ação derivado do diagnóstico</div>
+      </div>
+      <ol class="comp-actions" id="comp-actions"></ol>
+    </section>
+
+    <div class="comp-ai-card">
+      <div class="comp-ai-text">
+        <div class="comp-ai-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l1.5 4.5L18 8l-4.5 1.5L12 14l-1.5-4.5L6 8l4.5-1.5z"/><path d="M19 14l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/><path d="M5 16l.8 2.4L8 19l-2.2.6L5 22l-.8-2.4L2 19l2.2-.6z"/></svg>
+          Aprofundar diagnóstico
+        </div>
+        <div class="comp-ai-title">Quer uma análise ainda mais detalhada?</div>
+        <div class="comp-ai-desc">Gera um prompt completo com seus dados + benchmarks setoriais + contexto da farmácia. Cola no Claude.ai, ChatGPT ou Gemini pra receber uma análise consultiva grátis.</div>
+      </div>
+      <button class="comp-ai-btn" onclick="copyAIPrompt()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copiar prompt IA
+      </button>
+    </div>
+  </div>
+</div><!-- /#comparativo-view -->
+
+  <footer class="colophon">
+    <div>DADOS SALVOS LOCALMENTE NO NAVEGADOR · <em>nada é enviado para fora do seu computador</em></div>
+    <div id="last-saved">—</div>
+  </footer>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  const STORAGE_KEY = 'farmacia_diagnostico_v7';
+  const LEGACY_KEYS = ['farmacia_diagnostico_v6','farmacia_diagnostico_v5','farmacia_diagnostico_v4','farmacia_diagnostico_v3','farmacia_diagnostico_v2','farmacia_diagnostico'];
+
+  const SCENARIOS = {
+    month: {
+      label: 'mês a mês',
+      periods: [
+        {key:'01', label:'Jan'},{key:'02', label:'Fev'},{key:'03', label:'Mar'},
+        {key:'04', label:'Abr'},{key:'05', label:'Mai'},{key:'06', label:'Jun'},
+        {key:'07', label:'Jul'},{key:'08', label:'Ago'},{key:'09', label:'Set'},
+        {key:'10', label:'Out'},{key:'11', label:'Nov'},{key:'12', label:'Dez'},
+      ],
+      monthsPerPeriod: 1,
+    },
+    quarter: {
+      label: 'trimestre',
+      periods: [
+        {key:'Q1', label:'1º Tri'},{key:'Q2', label:'2º Tri'},
+        {key:'Q3', label:'3º Tri'},{key:'Q4', label:'4º Tri'},
+      ],
+      monthsPerPeriod: 3,
+    },
+    semester: {
+      label: 'semestre',
+      periods: [{key:'S1', label:'1º Sem'},{key:'S2', label:'2º Sem'}],
+      monthsPerPeriod: 6,
+    },
+    year: {
+      label: 'anual',
+      periods: [{key:'ANO', label:'Ano completo'}],
+      monthsPerPeriod: 12,
+    },
+  };
+
+  const PERIOD_TO_MONTHS = {
+    'Q1': ['01','02','03'], 'Q2': ['04','05','06'],
+    'Q3': ['07','08','09'], 'Q4': ['10','11','12'],
+    'S1': ['01','02','03','04','05','06'],
+    'S2': ['07','08','09','10','11','12'],
+    'ANO': ['01','02','03','04','05','06','07','08','09','10','11','12'],
+  };
+
+  const FLOW_FIELDS = ['fat','cmv','cup'];
+
+  const INPUT_FIELDS = [
+    { key: 'fat', label: 'Faturamento bruto', help: 'Receita total do período', fmt: 'brl', placeholder: '0,00' },
+    { key: 'cmv', label: 'CMV', help: 'Custo da mercadoria vendida', fmt: 'brl', placeholder: '0,00' },
+    { key: 'estq', label: 'Estoque médio a custo', help: 'Estoque avaliado a custo', fmt: 'brl', placeholder: '0,00' },
+    { key: 'cup', label: 'Cupons / atendimentos', help: 'Total de NFC-e ou cupons', fmt: 'num', placeholder: '0' },
+    { key: 'ticket', label: 'Ticket médio', help: 'Faturamento ÷ Cupons (calculado)', fmt: 'brl', derived: true,
+      iconKey: 'ticket' },
+    { key: 'fte', label: 'Colaboradores (FTE)', help: 'Equivalente a tempo integral', fmt: 'dec', placeholder: '0,00' },
+  ];
+
+  // Shared icons used across all sections — keys cover both KPI_DEFS, DIAG_DEFS, and COMP_INDICATORS aliases
+  const METRIC_ICONS = {
+    fat:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    margem:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>',
+    markup:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+    giro:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+    estoque:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+    cobert:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    cobertura: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    ticket:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+    fat_fte:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    fatFte:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    cup_fte:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2"/><path d="M5 11h14v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8z"/></svg>',
+  };
+  function getMetricIcon(key, size) {
+    const svg = METRIC_ICONS[key];
+    if (!svg) return '';
+    let cls = 'metric-icon';
+    if (key === 'estoque') cls += ' amber';
+    if (size === 'sm') cls += ' sm';
+    return '<span class="' + cls + '">' + svg + '</span>';
+  }
+
+  const KPI_DEFS = [
+    { key: 'ticket', name: 'Ticket médio', fmt: 'brl', bench: 'R$ 45 – R$ 90',
+      desc: 'Valor médio gasto por cliente em cada cupom emitido.',
+      formula: 'Faturamento ÷ Nº de cupons',
+      calc: m => safe(m.fat / m.cup),
+      status: v => v === 0 ? 'neutral' : v < 45 ? 'warn' : v > 90 ? 'warn' : 'good' },
+    { key: 'margem', name: 'Margem bruta', fmt: 'pct', bench: '30% – 45%',
+      desc: 'Quanto sobra do faturamento após pagar o custo da mercadoria vendida.',
+      formula: '(Faturamento − CMV) ÷ Faturamento',
+      calc: m => safe((m.fat - m.cmv) / m.fat),
+      status: v => v === 0 ? 'neutral' : v < 0.30 ? 'alert' : 'good' },
+    { key: 'markup', name: 'Markup médio', fmt: 'mult', bench: '1,5x – 1,9x',
+      desc: 'Multiplicador médio aplicado sobre o custo da mercadoria para chegar ao preço de venda.',
+      formula: 'Faturamento ÷ CMV',
+      calc: m => safe(m.fat / m.cmv),
+      status: v => v === 0 ? 'neutral' : v < 1.4 ? 'alert' : 'good' },
+    { key: 'giro', name: 'Giro mensal', fmt: 'dec', bench: '0,67x – 1,0x',
+      desc: 'Quantas vezes o estoque é trocado em um mês. Quanto maior, mais ágil o capital roda.',
+      formula: 'CMV ÷ Estoque médio a custo',
+      calc: m => safe(m.cmv / m.estq),
+      status: v => v === 0 ? 'neutral' : v < 0.67 ? 'alert' : v > 1.0 ? 'warn' : 'good' },
+    { key: 'cobert', name: 'Cobertura de estoque', fmt: 'dias', bench: '30 – 45 dias',
+      desc: 'Quantos dias o estoque atual sustenta as vendas no ritmo médio. Cobertura alta = capital empoçado.',
+      formula: 'Estoque ÷ (CMV ÷ 30)',
+      calc: m => safe(m.estq / (m.cmv / 30)),
+      status: v => v === 0 ? 'neutral' : v > 60 ? 'alert' : v > 45 ? 'warn' : v < 25 ? 'warn' : 'good' },
+    { key: 'fat_fte', name: 'Faturamento / FTE', fmt: 'brl', bench: 'R$ 35k – R$ 55k',
+      desc: 'Receita gerada por colaborador equivalente tempo integral. Mede produtividade financeira.',
+      formula: 'Faturamento ÷ FTE',
+      calc: m => safe(m.fat / m.fte),
+      status: v => v === 0 ? 'neutral' : v < 35000 ? 'warn' : 'good' },
+    { key: 'cup_fte', name: 'Cupons / FTE', fmt: 'num', bench: 'produtividade',
+      desc: 'Atendimentos médios realizados por colaborador equivalente. Mede produtividade operacional.',
+      formula: 'Nº de cupons ÷ FTE',
+      calc: m => safe(m.cup / m.fte),
+      status: () => 'neutral' },
+  ];
+
+  const CATEGORIES = [
+    { key: 'gen',  name: 'Genérico',   pmc: 'yes', obs: 'PMC com desconto mínimo legal de 35%.' },
+    { key: 'lib',  name: 'Liberados',  pmc: 'yes', obs: 'MIP isento de prescrição, regulado pela CMED.' },
+    { key: 'perf', name: 'Perfumaria', pmc: 'no',  obs: 'Preço livre — categoria âncora de rentabilidade.' },
+    { key: 'pres', name: 'Prescrição', pmc: 'yes', obs: 'Tarja vermelha/preta — margem limitada pelo PMC.' },
+    { key: 'sim',  name: 'Similar',    pmc: 'yes', obs: 'PMC aplicável — disputa direta com genéricos.' },
+  ];
+
+  const DIAG_DEFS = [
+    { key: 'margem', name: 'Margem bruta', fmt: 'pct',
+      desc: 'Quanto sobra do faturamento após pagar o custo da mercadoria vendida.',
+      formula: '(Faturamento − CMV) ÷ Faturamento',
+      reading: v => v === 0 ? 'Preencha os dados para ver a leitura.'
+                : v < 0.30 ? 'Margem aperta — revisar markup e mix; perfumaria deveria estar puxando.'
+                : v > 0.45 ? 'Margem acima da média.'
+                : 'Margem saudável para perfil drugstore.' },
+    { key: 'giro', name: 'Giro mensal', fmt: 'dec',
+      desc: 'Quantas vezes o estoque é trocado em um mês. Quanto maior, mais ágil o capital roda.',
+      formula: 'CMV ÷ Estoque médio a custo',
+      reading: v => v === 0 ? 'Preencha os dados para ver a leitura.'
+                : v < 0.67 ? 'Giro abaixo do ideal. Olhar cobertura e ABC.'
+                : v > 1.2 ? 'Giro muito alto — risco de ruptura.'
+                : 'Giro dentro da faixa saudável.' },
+    { key: 'cobert', name: 'Cobertura', fmt: 'dias',
+      desc: 'Quantos dias o estoque atual sustenta as vendas no ritmo médio.',
+      formula: 'Estoque ÷ (CMV ÷ 30)',
+      reading: v => v === 0 ? 'Preencha os dados para ver a leitura.'
+                : v > 60 ? 'Capital empoçado em estoque.'
+                : v > 45 ? 'Cobertura folgada.'
+                : v < 25 ? 'Risco de ruptura.'
+                : 'Cobertura adequada.' },
+    { key: 'ticket', name: 'Ticket médio', fmt: 'brl',
+      desc: 'Valor médio gasto por cliente em cada cupom emitido.',
+      formula: 'Faturamento ÷ Nº de cupons',
+      reading: v => v === 0 ? 'Preencha os dados para ver a leitura.'
+                : v < 45 ? 'Oportunidade de cross-sell.'
+                : v > 90 ? 'Ticket elevado.'
+                : 'Ticket dentro do esperado.' },
+    { key: 'fat_fte', name: 'Faturamento / FTE', fmt: 'brl',
+      desc: 'Receita gerada por colaborador equivalente tempo integral.',
+      formula: 'Faturamento ÷ FTE',
+      reading: v => v === 0 ? 'Preencha os dados para ver a leitura.'
+                : v < 35000 ? 'Produtividade baixa.'
+                : 'Produtividade saudável.' },
+  ];
+
+  // Dynamic "current month" — the first month of the in-progress year without complete data.
+  // A month is considered "filled" when both Faturamento and CMV are present.
+  function isMonthFilledForYear(year, monthKey) {
+    const inputs = state.inputs && state.inputs[year];
+    if (!inputs || !inputs[monthKey]) return false;
+    const m = inputs[monthKey];
+    return m.fat > 0 && m.cmv > 0;
+  }
+  function getCurrentMonthForYear(year) {
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    for (let i = 0; i < monthKeys.length; i++) {
+      if (!isMonthFilledForYear(year, monthKeys[i])) return i + 1; // 1-indexed
+    }
+    return 13; // year complete
+  }
+  function getMonthsFilledCountForYear(year) {
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    let count = 0;
+    for (let i = 0; i < monthKeys.length; i++) {
+      if (isMonthFilledForYear(year, monthKeys[i])) count++;
+    }
+    return count;
+  }
+  // Legacy helpers — kept for any remaining references
+  function isMonth2026Filled(monthKey) { return isMonthFilledForYear(getCurrentYearInProgress(), monthKey); }
+  function getCurrentMonth2026() { return getCurrentMonthForYear(getCurrentYearInProgress()); }
+  function getMonthsFilled2026Count() { return getMonthsFilledCountForYear(getCurrentYearInProgress()); }
+  function getCurrentMonth() { return getCurrentMonth2026(); }
+
+  const PAGE_CONFIGS = {
+    '2025': {
+      title: 'Diagnóstico <span class="hero-title-accent">consolidado</span>',
+      subtitle: 'Ano encerrado · retrato completo do que foi executado. Base de referência para o plano de 2026.',
+      badge: 'Encerrado · 12/12 meses',
+      period: 'Ano fechado · 2025',
+      progress: '12 de 12 meses',
+      progressPct: 100,
+      inputDesc: 'Preencha os 12 meses do ano consolidado.',
+      snapLabel: '2025',
+    },
+    '2026': {
+      title: 'Diagnóstico <span class="hero-title-accent">em execução</span>',
+      subtitle: 'Análise viva do ano corrente. Cada mês fechado reposiciona os indicadores.',
+      // badge/period/progress/progressPct computed dynamically in updatePageHeader
+      inputDesc: 'Preencha os meses já fechados — a média se ajusta sozinha.',
+      snapLabel: '2026',
+    },
+  };
+
+  const MONTH_NAMES_SHORT = {
+    '01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun',
+    '07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'
+  };
+
+  const MONTH_FULL_NAMES = {
+    '01': 'Janeiro', '02': 'Fevereiro', '03': 'Março',
+    '04': 'Abril', '05': 'Maio', '06': 'Junho',
+    '07': 'Julho', '08': 'Agosto', '09': 'Setembro',
+    '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
+  };
+
+  // ============ STATE ============
+  function defaultState() {
+    return {
+      currentYear: '2026',
+      scenarios: { '2025': 'month', '2026': 'month' },
+      inputs: { '2025': {}, '2026': {} },
+      mix: { '2025': {}, '2026': {} },
+      monthlyMix: { '2025': {}, '2026': {} },
+      mixView: { '2025': 'ANO', '2026': 'ANO' },
+      chartType: 'line',
+    };
+  }
+  let state = defaultState();
+
+  function ensureStateShape() {
+    if (!state || typeof state !== 'object') state = defaultState();
+    // List of years tracked by the app (most recent = "em curso")
+    if (!Array.isArray(state.years) || state.years.length === 0) {
+      state.years = ['2025', '2026'];
+    }
+    // Sort years ascending and dedupe
+    state.years = Array.from(new Set(state.years.map(String))).sort();
+
+    if (!state.currentYear) state.currentYear = state.years[state.years.length - 1];
+    if (state.currentYear !== 'comparativo' && state.years.indexOf(state.currentYear) < 0) {
+      state.currentYear = state.years[state.years.length - 1];
+    }
+
+    if (!state.scenarios) state.scenarios = {};
+    if (!state.inputs) state.inputs = {};
+    if (!state.mix) state.mix = {};
+    if (!state.monthlyMix) state.monthlyMix = {};
+    if (!state.mixView) state.mixView = {};
+    // Bootstrap per-year buckets for every tracked year
+    for (let i = 0; i < state.years.length; i++) {
+      const yr = state.years[i];
+      if (!state.scenarios[yr]) state.scenarios[yr] = 'month';
+      if (!state.inputs[yr]) state.inputs[yr] = {};
+      if (!state.mix[yr]) state.mix[yr] = {};
+      if (!state.monthlyMix[yr]) state.monthlyMix[yr] = {};
+      if (!state.mixView[yr]) state.mixView[yr] = 'ANO';
+    }
+    if (!state.chartType) state.chartType = 'line';
+    if (!state.view) state.view = 'year';
+    if (!state.compChartMetric) state.compChartMetric = 'fat';
+
+    // Clean up orphan period keys (Q1-Q4, S1-S2, ANO) stored in state.inputs
+    // from older versions. Only monthly keys (01-12) should live in inputs.
+    const validMonthKeys = {'01':1,'02':1,'03':1,'04':1,'05':1,'06':1,'07':1,'08':1,'09':1,'10':1,'11':1,'12':1};
+    for (let yi = 0; yi < state.years.length; yi++) {
+      const yr = state.years[yi];
+      if (state.inputs[yr]) {
+        const keys = Object.keys(state.inputs[yr]);
+        for (let ki = 0; ki < keys.length; ki++) {
+          if (!validMonthKeys[keys[ki]]) {
+            delete state.inputs[yr][keys[ki]];
+          }
+        }
+      }
+    }
+  }
+  // Returns the year considered "in progress" — the most recent one tracked.
+  function getCurrentYearInProgress() {
+    return (state.years && state.years.length > 0)
+      ? state.years[state.years.length - 1]
+      : '2026';
+  }
+
+  // ============ HELPERS ============
+  function $(id) { return document.getElementById(id); }
+  function safe(n) { return isFinite(n) ? n : 0; }
+  function parseBR(str) {
+    if (typeof str === 'number') return str;
+    if (!str) return 0;
+    str = String(str).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.');
+    const n = parseFloat(str);
+    return isFinite(n) ? n : 0;
+  }
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function fmtBRL(n, decimals) {
+    if (!n && n !== 0) return '—';
+    if (n === 0) return '—';
+    if (decimals == null) decimals = 2;
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+  function fmtBRLk(n) {
+    if (!n) return '—';
+    return fmtBRL(n, 2);
+  }
+  function fmtPct(n) {
+    if (!n && n !== 0) return '—';
+    if (n === 0) return '—';
+    return (n * 100).toLocaleString('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) + '%';
+  }
+  function fmtNum(n) {
+    if (!n) return '—';
+    return n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+  }
+  function fmtDec(n) {
+    if (!n && n !== 0) return '—';
+    if (n === 0) return '—';
+    return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtMult(n) {
+    if (!n) return '—';
+    return n.toLocaleString('pt-BR', { maximumFractionDigits: 2, minimumFractionDigits: 2 }) + 'x';
+  }
+  function fmtDias(n) {
+    if (!n) return '—';
+    return Math.round(n).toLocaleString('pt-BR') + ' dias';
+  }
+  function formatValue(v, fmt) {
+    switch(fmt) {
+      case 'brl': return fmtBRL(v, 2);
+      case 'pct': return fmtPct(v);
+      case 'num': return fmtNum(v);
+      case 'dec': return fmtDec(v);
+      case 'mult': return fmtMult(v);
+      case 'dias': return fmtDias(v);
+      default: return String(v);
+    }
+  }
+  function inputFmt(v, fmt) {
+    if (!v) return '';
+    if (fmt === 'brl' || fmt === 'dec') {
+      return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    if (fmt === 'num') {
+      return v.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+    }
+    return String(v);
+  }
+
+  function getDisplayValue(year, periodKey, field) {
+    const yearData = (state.inputs && state.inputs[year]) || {};
+
+    // For aggregate period keys (Q1-Q4, S1-S2, ANO), ALWAYS derive from monthly inputs.
+    // This guarantees the Trimestre/Semestre/Anual views are exactly the sum of the
+    // corresponding months from Mês a mês — no orphan direct values can override.
+    const months = PERIOD_TO_MONTHS[periodKey];
+    if (months) {
+      const vals = [];
+      for (let i = 0; i < months.length; i++) {
+        const m = months[i];
+        const v = yearData[m] && yearData[m][field];
+        if (v && v > 0) vals.push(v);
+      }
+      if (vals.length === 0) return { value: 0, source: 'empty' };
+      const isFlow = FLOW_FIELDS.indexOf(field) >= 0;
+      const agg = isFlow
+        ? vals.reduce(function(a,b){return a+b;}, 0)
+        : vals.reduce(function(a,b){return a+b;}, 0) / vals.length;
+      return { value: agg, source: 'agg', monthsUsed: vals.length };
+    }
+
+    // For monthly keys (01-12), use the directly stored value.
+    const direct = yearData[periodKey] && yearData[periodKey][field];
+    if (direct && direct > 0) return { value: direct, source: 'direct' };
+    return { value: 0, source: 'empty' };
+  }
+
+  // ============ SAVE / LOAD ============
+  let saveTimer = null;
+  function showSaving() {
+    const el = $('save-indicator');
+    if (!el) return;
+    el.className = 'save-indicator saving';
+    const t = $('save-text');
+    if (t) t.textContent = 'Salvando...';
+  }
+  function showSaved() {
+    const el = $('save-indicator');
+    if (!el) return;
+    el.className = 'save-indicator saved';
+    const now = new Date();
+    const t = now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    const tEl = $('save-text');
+    if (tEl) tEl.textContent = 'Salvo · ' + t;
+    const lsEl = $('last-saved');
+    if (lsEl) lsEl.textContent = 'ÚLTIMO SALVAMENTO · ' + t;
+  }
+  function save() {
+    showSaving();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(showSaved, 250);
+    } catch(e) { console.error('Save failed:', e); }
+  }
+  function load() {
+    // PRIORITY 0 — URL hash (shared link with embedded data)
+    if (checkUrlHashForData()) {
+      save();
+      return;
+    }
+    // PRIORITY 1 — embedded state from a shared self-contained file
+    if (window.__FARMAGNUS_INITIAL_STATE__) {
+      try {
+        state = window.__FARMAGNUS_INITIAL_STATE__;
+        ensureStateShape();
+        save();
+        return;
+      } catch(e) {
+        console.error('Embedded state load failed:', e);
+      }
+    }
+    let raw = null;
+    try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) {}
+    if (raw) {
+      try {
+        state = JSON.parse(raw);
+        ensureStateShape();
+        return;
+      } catch(e) {}
+    }
+    for (let i = 0; i < LEGACY_KEYS.length; i++) {
+      let legacy = null;
+      try { legacy = localStorage.getItem(LEGACY_KEYS[i]); } catch(e) { continue; }
+      if (!legacy) continue;
+      try {
+        const old = JSON.parse(legacy);
+        if (old && old.currentYear) {
+          state = old;
+          ensureStateShape();
+          save();
+          return;
+        }
+      } catch(e) {}
+    }
+    ensureStateShape();
+  }
+
+  // ============ RENDER INPUT SECTION ============
+  function renderInputSection() {
+    const section = $('input-section');
+    if (!section) return;
+    const year = state.currentYear || '2026';
+    const scenKey = (state.scenarios && state.scenarios[year]) || 'month';
+    const scen = SCENARIOS[scenKey] || SCENARIOS.month;
+    const periods = scen.periods;
+
+    const isInProgressYear = (year === getCurrentYearInProgress());
+    const curMonth = (isInProgressYear && scenKey === 'month') ? getCurrentMonthForYear(year) : 0;
+
+    let headerCells = '<th>Indicador</th>';
+    for (let i = 0; i < periods.length; i++) {
+      const p = periods[i];
+      const isCurrent = (curMonth > 0 && (i+1) === curMonth);
+      const isClickable = (scenKey === 'month');
+      let cls = 'col-num';
+      if (isCurrent) cls += ' current';
+      if (isClickable) cls += ' clickable-month';
+      const onclickAttr = isClickable ? ' onclick="window.openMonthMix(\'' + p.key + '\')"' : '';
+      const titleAttr = isClickable ? ' title="Ver mix de ' + escapeHTML(p.label) + '"' : '';
+      const periodAttr = (scenKey === 'month') ? ' data-period="' + p.key + '"' : '';
+      headerCells += '<th class="' + cls + '"' + periodAttr + onclickAttr + titleAttr + '>' + escapeHTML(p.label) + '</th>';
+    }
+    if (periods.length > 1) headerCells += '<th class="col-avg">Média / mês</th>';
+
+    let bodyHTML = '';
+    for (let j = 0; j < INPUT_FIELDS.length; j++) {
+      const f = INPUT_FIELDS[j];
+      const labelHTML = (f.derived && f.iconKey)
+        ? '<td class="label">' + getMetricIcon(f.iconKey, 'sm') + '<span class="label-text">' + escapeHTML(f.label) + '<small>' + escapeHTML(f.help) + '</small></span></td>'
+        : '<td class="label">' + escapeHTML(f.label) + '<small>' + escapeHTML(f.help) + '</small></td>';
+      let rowCells = labelHTML;
+      for (let i = 0; i < periods.length; i++) {
+        const p = periods[i];
+        const isCurrent = (curMonth > 0 && (i+1) === curMonth);
+        const periodCellAttr = (scenKey === 'month') ? ' data-cell-period="' + p.key + '"' : '';
+
+        if (f.derived && f.key === 'ticket') {
+          // Computed from period totals: fat / cup
+          const fatDisp = getDisplayValue(year, p.key, 'fat');
+          const cupDisp = getDisplayValue(year, p.key, 'cup');
+          const v = (fatDisp.value > 0 && cupDisp.value > 0) ? fatDisp.value / cupDisp.value : 0;
+          const val = v > 0 ? inputFmt(v, f.fmt) : '—';
+          const emptyCls = v > 0 ? '' : ' empty';
+          rowCells += '<td class="col-num' + (isCurrent ? ' current' : '') + '"' + periodCellAttr + ' data-derived-period="' + p.key + '" data-derived-field="' + f.key + '">' +
+            '<span class="readonly-value derived' + emptyCls + '">' + val + '</span></td>';
+        } else if (scenKey === 'month') {
+          const disp = getDisplayValue(year, p.key, f.key);
+          const cls = disp.value > 0 ? 'has-value' : '';
+          const val = disp.value > 0 ? inputFmt(disp.value, f.fmt) : '';
+          rowCells += '<td class="col-num' + (isCurrent ? ' current' : '') + '"' + periodCellAttr + '>' +
+            '<input class="num ' + cls + '" type="text" inputmode="decimal" ' +
+            'placeholder="' + f.placeholder + '" value="' + val + '"' +
+            ' data-period="' + p.key + '" data-field="' + f.key + '" data-fmt="' + f.fmt + '">' +
+            '</td>';
+        } else {
+          const disp = getDisplayValue(year, p.key, f.key);
+          const val = disp.value > 0 ? inputFmt(disp.value, f.fmt) : '—';
+          const emptyCls = disp.value > 0 ? '' : ' empty';
+          let subText = '';
+          if (disp.value > 0 && FLOW_FIELDS.indexOf(f.key) >= 0 && disp.monthsUsed > 1) {
+            const monthlyAvg = disp.value / disp.monthsUsed;
+            subText = '<small>↳ ' + inputFmt(monthlyAvg, f.fmt) + '/mês</small>';
+          }
+          rowCells += '<td class="col-num">' +
+            '<span class="readonly-value' + emptyCls + '">' + val + subText + '</span></td>';
+        }
+      }
+      if (periods.length > 1) {
+        rowCells += '<td class="col-avg"><span class="computed" data-avgfield="' + f.key + '" data-fmt="' + f.fmt + '">—</span></td>';
+      }
+      bodyHTML += '<tr' + (f.derived ? ' class="derived-row"' : '') + '>' + rowCells + '</tr>';
+    }
+
+    let html = '';
+    if (scenKey !== 'month') {
+      html += '<div class="info-strip">Visualização agregada · os números vêm da soma dos meses preenchidos. Para editar, volte para Mês a mês.<button class="info-strip-cta" onclick="window.goToMonthly()">Ir para Mês a mês</button></div>';
+    }
+    html += '<div class="table-wrap"><table class="data-table">' +
+      '<thead><tr>' + headerCells + '</tr></thead>' +
+      '<tbody>' + bodyHTML + '</tbody>' +
+    '</table></div>';
+
+    section.innerHTML = html;
+    const inputs = section.querySelectorAll('input.num');
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('input', onInputChange);
+      inputs[i].addEventListener('blur', onInputBlur);
+      inputs[i].addEventListener('focus', onInputFocus);
+    }
+  }
+
+  // ============ MIX HELPERS ============
+  function hasYearlyMixData(year) {
+    const m = state.mix[year];
+    if (!m) return false;
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const c = CATEGORIES[i];
+      if (m[c.key] && (m[c.key].fat || m[c.key].cmv)) return true;
+    }
+    return false;
+  }
+  function hasMonthlyMixData(year, monthKey) {
+    const mm = state.monthlyMix[year] && state.monthlyMix[year][monthKey];
+    if (!mm) return false;
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const c = CATEGORIES[i];
+      if (mm[c.key] && (mm[c.key].fat || mm[c.key].cmv)) return true;
+    }
+    return false;
+  }
+  function getAggregatedYearlyMix(year) {
+    const monthly = state.monthlyMix[year] || {};
+    const monthsWithData = [];
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    for (let i = 0; i < monthKeys.length; i++) {
+      if (hasMonthlyMixData(year, monthKeys[i])) monthsWithData.push(monthKeys[i]);
+    }
+    if (monthsWithData.length > 0) {
+      const agg = {};
+      for (let i = 0; i < CATEGORIES.length; i++) {
+        const c = CATEGORIES[i];
+        let fat = 0, cmv = 0;
+        for (let j = 0; j < monthsWithData.length; j++) {
+          const m = monthsWithData[j];
+          fat += (monthly[m][c.key] && monthly[m][c.key].fat) || 0;
+          cmv += (monthly[m][c.key] && monthly[m][c.key].cmv) || 0;
+        }
+        agg[c.key] = { fat: fat, cmv: cmv };
+      }
+      return { data: agg, source: 'monthly', monthCount: monthsWithData.length };
+    }
+    return { data: state.mix[year] || {}, source: 'yearly', monthCount: 0 };
+  }
+
+  // ============ RENDER MIX SECTION ============
+  function renderMixSection() {
+    const section = $('mix-section');
+    if (!section) return;
+    const year = state.currentYear;
+    const viewKey = (state.mixView && state.mixView[year]) || 'ANO';
+    const isMonthly = viewKey !== 'ANO';
+
+    let mixData;
+    let contextLabel;
+    let subtitle;
+    let isReadOnly = false;
+    let aggMonthCount = 0;
+
+    if (isMonthly) {
+      mixData = (state.monthlyMix[year] && state.monthlyMix[year][viewKey]) || {};
+      contextLabel = MONTH_FULL_NAMES[viewKey] + ' · ' + year;
+      subtitle = 'preenchendo o mix de ' + MONTH_FULL_NAMES[viewKey].toLowerCase();
+    } else {
+      const agg = getAggregatedYearlyMix(year);
+      if (agg.source === 'monthly') {
+        mixData = agg.data;
+        isReadOnly = true;
+        aggMonthCount = agg.monthCount;
+        const monthsText = aggMonthCount === 1 ? '1 mês' : aggMonthCount + ' meses';
+        contextLabel = 'Visão anual · ' + year + ' · soma de ' + monthsText;
+        subtitle = 'agregado automático dos meses preenchidos · clique em um mês para editar';
+      } else {
+        mixData = state.mix[year] || {};
+        contextLabel = 'Visão anual · ' + year;
+        subtitle = 'snapshot consolidado · sem dados mensais ainda';
+      }
+    }
+
+    let pillsHTML = '<div class="mix-view-tabs">';
+    const anoFilled = (hasYearlyMixData(year) || aggMonthCount > 0) ? ' filled' : '';
+    const anoActive = viewKey === 'ANO' ? ' active' : '';
+    pillsHTML += '<button class="' + anoActive + anoFilled + '" data-view="ANO" onclick="window.setMixView(\'ANO\')">Anual</button>';
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    for (let i = 0; i < monthKeys.length; i++) {
+      const k = monthKeys[i];
+      const filled = hasMonthlyMixData(year, k) ? ' filled' : '';
+      const active = viewKey === k ? ' active' : '';
+      pillsHTML += '<button class="' + active + filled + '" data-view="' + k + '" onclick="window.setMixView(\'' + k + '\')">' + MONTH_NAMES_SHORT[k] + '</button>';
+    }
+    pillsHTML += '</div>';
+
+    let rowsHTML = '';
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const c = CATEGORIES[i];
+      const pmcText = c.pmc === 'yes' ? 'Sim' : 'Não';
+      const fat = (mixData[c.key] && mixData[c.key].fat) || 0;
+      const cmv = (mixData[c.key] && mixData[c.key].cmv) || 0;
+      let fatCell, cmvCell;
+      if (isReadOnly) {
+        const fatTxt = fat > 0 ? inputFmt(fat, 'brl') : '—';
+        const cmvTxt = cmv > 0 ? inputFmt(cmv, 'brl') : '—';
+        const fatEmpty = fat > 0 ? '' : ' empty';
+        const cmvEmpty = cmv > 0 ? '' : ' empty';
+        fatCell = '<td class="mix-input-cell"><span class="readonly-value' + fatEmpty + '">' + fatTxt + '</span></td>';
+        cmvCell = '<td class="mix-input-cell"><span class="readonly-value' + cmvEmpty + '">' + cmvTxt + '</span></td>';
+      } else {
+        const fatVal = fat ? inputFmt(fat, 'brl') : '';
+        const cmvVal = cmv ? inputFmt(cmv, 'brl') : '';
+        const fatCls = fat ? 'has-value' : '';
+        const cmvCls = cmv ? 'has-value' : '';
+        fatCell = '<td class="mix-input-cell"><input class="num ' + fatCls + '" type="text" inputmode="decimal" placeholder="0,00" value="' + fatVal + '" data-mix="fat" data-cat="' + c.key + '"></td>';
+        cmvCell = '<td class="mix-input-cell"><input class="num ' + cmvCls + '" type="text" inputmode="decimal" placeholder="0,00" value="' + cmvVal + '" data-mix="cmv" data-cat="' + c.key + '"></td>';
+      }
+      rowsHTML += '<tr>' +
+        '<td class="label">' + escapeHTML(c.name) + '</td>' +
+        fatCell +
+        '<td data-mixpct="' + c.key + '">—</td>' +
+        cmvCell +
+        '<td data-mixmarg="' + c.key + '">—</td>' +
+        '<td data-mixmargpct="' + c.key + '">—</td>' +
+        '<td class="tag"><span class="pmc-tag ' + c.pmc + '">' + pmcText + '</span></td>' +
+        '<td class="obs">' + escapeHTML(c.obs) + '</td>' +
+      '</tr>';
+    }
+
+    let reconcileHTML = '';
+    if (isMonthly) {
+      const monthInputs = (state.inputs[year] && state.inputs[year][viewKey]) || {};
+      const monthFatTotal = monthInputs.fat || 0;
+      reconcileHTML = '<div class="reconcile" id="mix-reconcile">' +
+        '<div class="rec-block"><span class="lbl">Faturamento §01:</span><span class="val" id="mix-rec-input">' + (monthFatTotal ? fmtBRL(monthFatTotal) : '—') + '</span></div>' +
+        '<div class="rec-block"><span class="lbl">Soma do mix:</span><span class="val" id="mix-rec-mix">—</span></div>' +
+        '<div class="rec-block"><span class="lbl">Diferença:</span><span class="delta" id="mix-rec-delta">—</span></div>' +
+      '</div>';
+    }
+
+    const html = '' +
+      '<div class="section-head">' +
+        '<div class="section-title"><span class="section-num">§ 03</span>Mix por categoria</div>' +
+        '<div class="section-desc">' + escapeHTML(subtitle) + '</div>' +
+      '</div>' +
+      pillsHTML +
+      '<div class="mix-context-label">Visualizando: <strong>' + escapeHTML(contextLabel) + '</strong></div>' +
+      '<div class="table-wrap"><table class="mix-table">' +
+        '<thead><tr>' +
+          '<th>Categoria</th><th>Faturamento</th><th>% total</th>' +
+          '<th>CMV</th><th>Margem R$</th><th>Margem %</th>' +
+          '<th class="tag-col">PMC?</th><th class="obs-col">Observação</th>' +
+        '</tr></thead>' +
+        '<tbody>' + rowsHTML + '</tbody>' +
+        '<tfoot><tr>' +
+          '<td class="label">TOTAL</td>' +
+          '<td id="mix-total-fat">—</td>' +
+          '<td id="mix-total-pct">100,0%</td>' +
+          '<td id="mix-total-cmv">—</td>' +
+          '<td id="mix-total-marg">—</td>' +
+          '<td id="mix-total-pct-marg">—</td>' +
+          '<td></td><td></td>' +
+        '</tr></tfoot>' +
+      '</table></div>' +
+      reconcileHTML;
+
+    section.innerHTML = html;
+    const inputs = section.querySelectorAll('input.num');
+    for (let i = 0; i < inputs.length; i++) {
+      inputs[i].addEventListener('input', onMixChange);
+      inputs[i].addEventListener('blur', onMixBlur);
+      inputs[i].addEventListener('focus', onInputFocus);
+    }
+  }
+
+  function renderKpiCards() {
+    const grid = $('kpi-grid');
+    if (!grid) return;
+    let html = '';
+    for (let i = 0; i < KPI_DEFS.length; i++) {
+      const k = KPI_DEFS[i];
+      const tipText = (k.desc || '') + (k.formula ? '\n\n→ ' + k.formula : '');
+      html += '<div class="kpi-card" data-tooltip="' + escapeHTML(tipText) + '">' +
+        '<div class="kpi-head">' +
+          '<div class="kpi-head-left">' +
+            getMetricIcon(k.key, 'sm') +
+            '<span class="kpi-name">' + escapeHTML(k.name) + '</span>' +
+          '</div>' +
+          '<span class="status-dot neutral" data-status="' + k.key + '"></span>' +
+        '</div>' +
+        '<div class="kpi-value" data-kpi="' + k.key + '" data-fmt="' + k.fmt + '">—</div>' +
+        '<div class="kpi-bench"><strong>Faixa:</strong> ' + escapeHTML(k.bench) + '</div>' +
+      '</div>';
+    }
+    grid.innerHTML = html;
+  }
+
+  function renderDiagList() {
+    const list = $('diag-list');
+    if (!list) return;
+    let html = '';
+    for (let i = 0; i < DIAG_DEFS.length; i++) {
+      const d = DIAG_DEFS[i];
+      const tipText = (d.desc || '') + (d.formula ? '\n\n→ ' + d.formula : '');
+      html += '<div class="diag-row" data-tooltip="' + escapeHTML(tipText) + '">' +
+        '<div class="diag-name">' + getMetricIcon(d.key) + escapeHTML(d.name) + '</div>' +
+        '<div class="diag-value" data-diagval="' + d.key + '" data-fmt="' + d.fmt + '">—</div>' +
+        '<div class="diag-reading" data-diagread="' + d.key + '">' + escapeHTML(d.reading(0)) + '</div>' +
+        '<div class="diag-status neutral" data-diagstat="' + d.key + '"><span class="status-dot neutral"></span>aguardando</div>' +
+      '</div>';
+    }
+    list.innerHTML = html;
+  }
+
+  function updatePageHeader() {
+    const year = state.currentYear || getCurrentYearInProgress();
+    const inProgYear = getCurrentYearInProgress();
+    const isInProgress = (year === inProgYear);
+
+    // Pick template: in-progress year uses '2026'-style config, older years use '2025'-style
+    const templateKey = isInProgress ? '2026' : '2025';
+    const config = PAGE_CONFIGS[templateKey] || PAGE_CONFIGS['2026'];
+
+    syncTabUI();
+    if ($('page-title')) $('page-title').innerHTML = config.title + ' <span class="hero-year">' + year + '</span>';
+    if ($('page-tagline')) $('page-tagline').textContent = config.subtitle;
+
+    let badge, period, progress, progressPct;
+    if (isInProgress) {
+      const filled = getMonthsFilledCountForYear(year);
+      const cur = getCurrentMonthForYear(year);
+      progressPct = (filled / 12) * 100;
+      if (filled === 0) {
+        badge = 'Em curso · 0/12 meses';
+        period = 'Aguardando primeiro mês · ' + year;
+        progress = '0 de 12 meses preenchidos';
+      } else if (filled === 12) {
+        badge = 'Em curso · 12/12 meses';
+        period = 'Ano completo · ' + year;
+        progress = '12 de 12 meses preenchidos';
+      } else {
+        const curMonthName = MONTH_FULL_NAMES[String(cur).padStart(2,'0')] || ('Mês ' + cur);
+        badge = 'Em curso · ' + filled + '/12 meses';
+        period = curMonthName + ' · ' + year;
+        progress = filled + ' de 12 meses preenchidos';
+      }
+    } else {
+      // Older completed year — assume it's done; if not, show filled count
+      const filled = getMonthsFilledCountForYear(year);
+      progressPct = 100;
+      badge = 'Encerrado · 12/12 meses';
+      period = 'Ano fechado · ' + year;
+      progress = (filled === 12 ? '12' : filled) + ' de 12 meses';
+    }
+
+    if ($('status-badge')) $('status-badge').textContent = badge;
+    if ($('period-stat')) $('period-stat').textContent = period;
+    if ($('progress-stat')) $('progress-stat').textContent = progress;
+    if ($('progress-fill')) $('progress-fill').style.width = progressPct + '%';
+    if ($('input-desc')) $('input-desc').textContent = config.inputDesc;
+
+    const scenKey = (state.scenarios && state.scenarios[year]) || 'month';
+    const scenBtns = document.querySelectorAll('#scenario-tabs button');
+    for (let i = 0; i < scenBtns.length; i++) {
+      scenBtns[i].classList.toggle('active', scenBtns[i].getAttribute('data-scen') === scenKey);
+    }
+  }
+
+  function updateCurrentMonthHighlight() {
+    // Only meaningful when viewing the in-progress year in monthly scenario
+    const inProgYear = getCurrentYearInProgress();
+    if (state.currentYear !== inProgYear) return;
+    const scenKey = (state.scenarios && state.scenarios[inProgYear]) || 'month';
+    if (scenKey !== 'month') return;
+
+    const cur = getCurrentMonthForYear(inProgYear); // 1..12, or 13 if all filled
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+
+    // Clear .current from all header THs and body TDs that have data-period
+    const headers = document.querySelectorAll('.data-table thead th[data-period]');
+    for (let i = 0; i < headers.length; i++) headers[i].classList.remove('current');
+    const cells = document.querySelectorAll('.data-table tbody td[data-cell-period]');
+    for (let i = 0; i < cells.length; i++) cells[i].classList.remove('current');
+
+    if (cur > 12) return; // year complete, no highlight
+
+    const targetKey = monthKeys[cur - 1];
+    const targetHeader = document.querySelector('.data-table thead th[data-period="' + targetKey + '"]');
+    if (targetHeader) targetHeader.classList.add('current');
+    const targetCells = document.querySelectorAll('.data-table tbody td[data-cell-period="' + targetKey + '"]');
+    for (let i = 0; i < targetCells.length; i++) targetCells[i].classList.add('current');
+  }
+
+  // ============ INPUT HANDLERS ============
+  function onInputFocus(e) {
+    const v = parseBR(e.target.value);
+    if (v) e.target.value = String(v).replace('.', ',');
+    e.target.select();
+  }
+  function onInputChange(e) {
+    const year = state.currentYear;
+    const period = e.target.getAttribute('data-period');
+    const field = e.target.getAttribute('data-field');
+    const val = parseBR(e.target.value);
+    if (!state.inputs[year]) state.inputs[year] = {};
+    if (!state.inputs[year][period]) state.inputs[year][period] = {};
+    state.inputs[year][period][field] = val;
+    if (val > 0) e.target.classList.add('has-value');
+    else e.target.classList.remove('has-value');
+    recompute();
+    // Move red highlight to the new current month if filling progressed
+    updateCurrentMonthHighlight();
+    // Refresh dynamic page header (badge "X/12 meses", progress bar)
+    if (year === getCurrentYearInProgress()) updatePageHeader();
+    save();
+  }
+  function onInputBlur(e) {
+    const val = parseBR(e.target.value);
+    const fmt = e.target.getAttribute('data-fmt');
+    e.target.value = val ? inputFmt(val, fmt) : '';
+    if (val > 0) e.target.classList.add('has-value');
+    else e.target.classList.remove('has-value');
+  }
+  function onMixChange(e) {
+    const year = state.currentYear;
+    const viewKey = (state.mixView && state.mixView[year]) || 'ANO';
+    const cat = e.target.getAttribute('data-cat');
+    const field = e.target.getAttribute('data-mix');
+    const val = parseBR(e.target.value);
+    if (viewKey === 'ANO') {
+      if (!state.mix[year]) state.mix[year] = {};
+      if (!state.mix[year][cat]) state.mix[year][cat] = {};
+      state.mix[year][cat][field] = val;
+    } else {
+      if (!state.monthlyMix[year]) state.monthlyMix[year] = {};
+      if (!state.monthlyMix[year][viewKey]) state.monthlyMix[year][viewKey] = {};
+      if (!state.monthlyMix[year][viewKey][cat]) state.monthlyMix[year][viewKey][cat] = {};
+      state.monthlyMix[year][viewKey][cat][field] = val;
+    }
+    if (val > 0) e.target.classList.add('has-value');
+    else e.target.classList.remove('has-value');
+    recomputeMix();
+    save();
+  }
+  function onMixBlur(e) {
+    const val = parseBR(e.target.value);
+    e.target.value = val ? inputFmt(val, 'brl') : '';
+    if (val > 0) e.target.classList.add('has-value');
+    else e.target.classList.remove('has-value');
+  }
+
+  // ============ NAVIGATION ============
+  function switchYear(target) {
+    if (target === 'comparativo') {
+      state.view = 'comparativo';
+      document.body.setAttribute('data-view', 'comparativo');
+      syncTabUI();
+      renderComparativo();
+      save();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    state.view = 'year';
+    state.currentYear = target;
+    document.body.setAttribute('data-view', 'year');
+    syncTabUI();
+    updatePageHeader();
+    renderInputSection();
+    renderMixSection();
+    recompute();
+    recomputeMix();
+    save();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  window.switchYear = switchYear;
+
+  function renderYearTabs() {
+    const wrap = $('year-tabs');
+    if (!wrap) return;
+    const years = state.years || ['2025','2026'];
+    let html = '';
+    for (let i = 0; i < years.length; i++) {
+      const y = years[i];
+      const active = (state.view !== 'comparativo' && state.currentYear === y) ? ' active' : '';
+      html += '<button class="' + active.trim() + '" data-year="' + y + '" onclick="window.switchYear(\'' + y + '\')"><span class="dot"></span>' + y + '</button>';
+    }
+    html += '<button class="add-year-btn" onclick="window.addNewYear()" title="Adicionar próximo ano">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+    '</button>';
+    const compActive = (state.view === 'comparativo') ? ' active' : '';
+    html += '<button class="comparativo-tab' + compActive + '" data-year="comparativo" onclick="window.switchYear(\'comparativo\')"><span class="dot"></span>Comparativo</button>';
+    wrap.innerHTML = html;
+  }
+
+  window.addNewYear = function() {
+    const years = state.years || ['2025','2026'];
+    const maxY = Math.max.apply(null, years.map(Number));
+    const newYear = String(maxY + 1);
+    if (years.indexOf(newYear) >= 0) return;
+    if (!confirm('Adicionar ano ' + newYear + ' ao diagnóstico?\n\n' + newYear + ' passará a ser o ano em curso. ' + maxY + ' será tratado como ano executado.')) return;
+    state.years.push(newYear);
+    state.years.sort();
+    state.scenarios[newYear] = 'month';
+    state.inputs[newYear] = {};
+    state.mix[newYear] = {};
+    state.monthlyMix[newYear] = {};
+    state.mixView[newYear] = 'ANO';
+    state.currentYear = newYear;
+    state.view = 'year';
+    document.body.setAttribute('data-view', 'year');
+    save();
+    renderYearTabs();
+    updatePageHeader();
+    renderInputSection();
+    renderMixSection();
+    recompute();
+    recomputeMix();
+  };
+
+  function syncTabUI() {
+    // Re-render entire year tabs to reflect dynamic year list + active states
+    renderYearTabs();
+  }
+
+  function switchScenario(scen) {
+    const year = state.currentYear;
+    state.scenarios[year] = scen;
+    updatePageHeader();
+    renderInputSection();
+    recompute();
+    save();
+  }
+  function switchChartType(chartType) {
+    state.chartType = chartType;
+    const btns = document.querySelectorAll('#chart-toggle button');
+    for (let i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-chart') === chartType);
+    }
+    recompute();
+    save();
+  }
+
+  // ============ COMPARATIVO ============
+  // Builds the full indicator set from raw monthly averages
+  function computeIndicators(m) {
+    return {
+      raw: m,
+      fat: m.fat,
+      cmv: m.cmv,
+      estq: m.estq,
+      cup: m.cup,
+      fte: m.fte,
+      margem: safe((m.fat - m.cmv) / m.fat),
+      giro: safe(m.cmv / m.estq),
+      cobertura: safe(m.estq / (m.cmv / 30)),
+      markup: safe(m.fat / m.cmv),
+      ticket: safe(m.fat / m.cup),
+      fatFte: safe(m.fat / m.fte),
+      estqIdeal: safe(m.cmv / 0.80),
+    };
+  }
+
+  // Definition of each indicator used in the comparativo
+  const COMP_INDICATORS = [
+    { key: 'fat',       name: 'Faturamento mensal', desc: 'média mensal preenchida',
+      fmt: 'brl', bigger: 'better',
+      absStatus: function(v) { return v === 0 ? 'neutral' : 'good'; } },
+    { key: 'margem',    name: 'Margem bruta',       desc: 'benchmark 30%–45%',
+      fmt: 'pct', bigger: 'better',
+      absStatus: function(v) { return v === 0 ? 'neutral' : v < 0.30 ? 'alert' : v > 0.45 ? 'warn' : 'good'; } },
+    { key: 'markup',    name: 'Markup médio',       desc: 'benchmark 1,5x–1,9x',
+      fmt: 'mult', bigger: 'better',
+      absStatus: function(v) { return v === 0 ? 'neutral' : v < 1.4 ? 'alert' : 'good'; } },
+    { key: 'giro',      name: 'Giro mensal',        desc: 'meta 0,67x–1,0x',
+      fmt: 'dec', bigger: 'better',
+      absStatus: function(v) { return v === 0 ? 'neutral' : v < 0.67 ? 'alert' : v > 1.2 ? 'warn' : 'good'; } },
+    { key: 'cobertura', name: 'Cobertura de estoque', desc: 'meta 30–45 dias',
+      fmt: 'dias', bigger: 'worse',
+      absStatus: function(v) { return v === 0 ? 'neutral' : v > 60 ? 'alert' : v > 45 ? 'warn' : v < 25 ? 'warn' : 'good'; } },
+    { key: 'ticket',    name: 'Ticket médio',       desc: 'benchmark R$ 45–90',
+      fmt: 'brl', bigger: 'better',
+      absStatus: function(v) { return v === 0 ? 'neutral' : v < 45 ? 'warn' : v > 90 ? 'warn' : 'good'; } },
+    { key: 'fatFte',    name: 'Faturamento / FTE',  desc: 'benchmark R$ 35k–55k',
+      fmt: 'brl', bigger: 'better',
+      absStatus: function(v) { return v === 0 ? 'neutral' : v < 35000 ? 'warn' : 'good'; } },
+  ];
+
+  function getDeltaStatus(ind, v25, v26) {
+    if (v25 === 0 || v26 === 0) {
+      return { delta: 0, deltaText: '—', status: 'neutral', direction: 'neutral', label: '—', scorePts: 50 };
+    }
+    const isPct = ind.fmt === 'pct';
+    let delta, deltaText;
+    if (isPct) {
+      delta = v26 - v25;
+      const sign = delta > 0 ? '+' : '';
+      deltaText = sign + (delta * 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' pp';
+    } else {
+      delta = (v26 - v25) / v25;
+      const sign = delta > 0 ? '+' : '';
+      deltaText = sign + (delta * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+    }
+    const threshold = isPct ? 0.01 : 0.05;
+    let direction = 'stable';
+    if (Math.abs(delta) > threshold) {
+      if (ind.bigger === 'better') direction = delta > 0 ? 'better' : 'worse';
+      else if (ind.bigger === 'worse') direction = delta < 0 ? 'better' : 'worse';
+    }
+    const abs26 = ind.absStatus(v26);
+    let status;
+    if (direction === 'better' && abs26 === 'good') status = 'good';
+    else if (direction === 'better' && abs26 === 'warn') status = 'warn';
+    else if (direction === 'better' && abs26 === 'alert') status = 'warn';
+    else if (direction === 'stable' && abs26 === 'good') status = 'good';
+    else if (direction === 'stable' && abs26 === 'warn') status = 'warn';
+    else if (direction === 'stable' && abs26 === 'alert') status = 'alert';
+    else if (direction === 'worse' && abs26 === 'good') status = 'warn';
+    else status = 'alert';
+
+    const labels = { good: 'Excelente', warn: 'Atenção', alert: 'Crítico', neutral: '—' };
+    // Override labels for special cases
+    let label = labels[status];
+    if (direction === 'better' && abs26 === 'good') label = 'Excelente';
+    else if (direction === 'better' && abs26 !== 'good') label = 'Evoluindo';
+    else if (direction === 'stable' && abs26 === 'good') label = 'Bom';
+    else if (direction === 'worse' && abs26 === 'good') label = 'Vigiar';
+
+    let scorePts;
+    if (direction === 'better' && abs26 === 'good') scorePts = 95;
+    else if (direction === 'better' && abs26 === 'warn') scorePts = 75;
+    else if (direction === 'better' && abs26 === 'alert') scorePts = 55;
+    else if (direction === 'stable' && abs26 === 'good') scorePts = 85;
+    else if (direction === 'stable' && abs26 === 'warn') scorePts = 50;
+    else if (direction === 'stable' && abs26 === 'alert') scorePts = 25;
+    else if (direction === 'worse' && abs26 === 'good') scorePts = 65;
+    else if (direction === 'worse' && abs26 === 'warn') scorePts = 35;
+    else scorePts = 15;
+
+    return { delta: delta, deltaText: deltaText, status: status, direction: direction, label: label, scorePts: scorePts, abs26: abs26 };
+  }
+
+  function generateReadings(i25, i26) {
+    const out = [];
+    // Crescimento vs margem
+    if (i26.fat > i25.fat * 1.05 && i26.margem >= i25.margem - 0.005) {
+      out.push({ status: 'good', text: 'A operação <strong>cresceu sem sacrificar a margem</strong> — sinal de mix saudável e disciplina de preço.' });
+    } else if (i26.fat > i25.fat * 1.05 && i26.margem < i25.margem - 0.01) {
+      out.push({ status: 'warn', text: 'Faturamento cresceu, mas <strong>a margem caiu</strong> — verificar mix, descontos e pressão competitiva.' });
+    } else if (i26.fat < i25.fat * 0.95) {
+      out.push({ status: 'alert', text: 'Queda de faturamento relevante em 2026 — revisar fluxo de clientes e mix de produtos.' });
+    }
+    // Giro
+    if (i26.giro > i25.giro * 1.10) {
+      out.push({ status: 'good', text: 'O <strong>giro mensal aumentou</strong> significativamente — gestão de estoque mais eficiente.' });
+    } else if (i26.giro < i25.giro * 0.90) {
+      out.push({ status: 'alert', text: 'O <strong>giro caiu</strong> — capital empoçando mais que no ano anterior.' });
+    }
+    // Cobertura
+    if (i26.cobertura > 0) {
+      if (i26.cobertura >= 30 && i26.cobertura <= 45) {
+        out.push({ status: 'good', text: 'Cobertura dentro da faixa saudável (30–45 dias).' });
+      } else if (i26.cobertura > 60) {
+        out.push({ status: 'alert', text: 'Cobertura em <strong>' + Math.round(i26.cobertura) + ' dias</strong> — muito acima do ideal de 30–45.' });
+      } else if (i26.cobertura > 45) {
+        if (i25.cobertura > i26.cobertura) {
+          out.push({ status: 'warn', text: 'Cobertura reduziu de ' + Math.round(i25.cobertura) + ' para ' + Math.round(i26.cobertura) + ' dias, mas ainda acima do ideal.' });
+        } else {
+          out.push({ status: 'warn', text: 'Cobertura acima do ideal (' + Math.round(i26.cobertura) + ' dias).' });
+        }
+      } else if (i26.cobertura < 25) {
+        out.push({ status: 'warn', text: 'Cobertura baixa (' + Math.round(i26.cobertura) + ' dias) — risco de ruptura.' });
+      }
+    }
+    // Excesso de estoque
+    if (i26.estqIdeal > 0 && i26.estq > 0) {
+      const excesso = i26.estq - i26.estqIdeal;
+      if (excesso > i26.estqIdeal * 0.20) {
+        out.push({ status: 'alert', text: 'Excesso de estoque estimado em <strong>' + fmtBRL(excesso, 0) + '</strong> — capital empoçado que poderia girar.' });
+      }
+    }
+    // Produtividade
+    if (i26.fatFte > 0 && i25.fatFte > 0) {
+      if (i26.fatFte > i25.fatFte * 1.10) {
+        out.push({ status: 'good', text: 'Produtividade por colaborador <strong>melhorou</strong> — receita por FTE subiu ' + ((i26.fatFte / i25.fatFte - 1) * 100).toFixed(1).replace('.', ',') + '%.' });
+      } else if (i26.fatFte < i25.fatFte * 0.95) {
+        out.push({ status: 'warn', text: 'Produtividade por colaborador <strong>caiu</strong> — revisar dimensionamento da equipe.' });
+      }
+    }
+    // Ticket médio
+    if (i26.ticket > 0 && i25.ticket > 0) {
+      if (i26.ticket > i25.ticket * 1.05) {
+        out.push({ status: 'good', text: 'Ticket médio subiu — clientes gastando mais por atendimento (mix ou cross-sell melhorando).' });
+      } else if (i26.ticket < i25.ticket * 0.95) {
+        out.push({ status: 'warn', text: 'Ticket médio caiu — oportunidade de cross-sell e revisão de combo.' });
+      }
+    }
+    // Markup
+    if (i26.markup > 0 && i25.markup > 0 && i26.markup < 1.4) {
+      out.push({ status: 'alert', text: 'Markup abaixo de 1,4x — margem operacional sob pressão estrutural.' });
+    }
+    return out;
+  }
+
+  function generateActions(i25, i26) {
+    const actions = [];
+    if (i26.cobertura > 60) {
+      actions.push('Reduzir cobertura de estoque para 30–45 dias — revisar política de compras e ABC');
+    } else if (i26.cobertura > 45) {
+      actions.push('Ajustar cobertura para alvo de 37 dias — refinar reposição automática no Trier');
+    }
+    if (i26.giro < 0.67 && i26.giro > 0) {
+      actions.push('Revisar curva ABC mensal — itens C parados estão drenando o giro');
+    }
+    if (i26.margem < 0.32 && i26.margem > 0) {
+      actions.push('Renegociar com a indústria e reforçar mix de perfumaria (categoria âncora de margem)');
+    }
+    if (i26.estqIdeal > 0 && i26.estq > i26.estqIdeal * 1.20) {
+      actions.push('Liberar capital de giro: meta de redução de ' + fmtBRL(i26.estq - i26.estqIdeal, 0) + ' em estoque excessivo');
+    }
+    if (i26.ticket < 45 && i26.ticket > 0) {
+      actions.push('Treinar equipe em cross-sell e combos — ticket médio abaixo do benchmark');
+    }
+    if (i26.fatFte < 35000 && i26.fatFte > 0) {
+      actions.push('Reavaliar dimensionamento de FTE — produtividade abaixo do benchmark setorial');
+    }
+    if (i26.fat > i25.fat * 1.05 && i26.margem < i25.margem - 0.01) {
+      actions.push('Mapear queda de margem mês a mês — identificar se é mix, desconto ou ruptura curva A');
+    }
+    // Garantir ao menos 5 itens
+    if (actions.length < 5) actions.push('Implementar análise mensal de ruptura curva A (estimar venda perdida)');
+    if (actions.length < 5) actions.push('Automatizar ponto de pedido no Trier com base em giro e sazonalidade');
+    if (actions.length < 5) actions.push('Painel Power BI semanal com KPIs deste dashboard para acompanhamento da equipe');
+    if (actions.length < 5) actions.push('Revisão trimestral do mix por categoria, focando margem absoluta de perfumaria');
+    return actions.slice(0, 5);
+  }
+
+  function getScoreVerdict(score) {
+    if (score >= 85) return { text: 'Operação excelente · pronta para escalar', cls: '' };
+    if (score >= 70) return { text: 'Operação saudável · com oportunidades de eficiência', cls: '' };
+    if (score >= 50) return { text: 'Operação em transição · pontos relevantes de atenção', cls: 'warn' };
+    return { text: 'Operação em alerta · ações urgentes necessárias', cls: 'alert' };
+  }
+
+  // Returns [yearOld, yearNew] — the two most recent years to compare.
+  // Falls back to ['2025','2026'] if state.years is shorter.
+  function getComparativoPair() {
+    const years = (state.years && state.years.length > 0) ? state.years : ['2025','2026'];
+    if (years.length === 1) return [years[0], years[0]];
+    return [years[years.length - 2], years[years.length - 1]];
+  }
+
+  function renderComparativo() {
+    const pair = getComparativoPair();
+    const yearOld = pair[0];
+    const yearNew = pair[1];
+
+    // Update hero/labels with the active comparison pair
+    const labelEls = document.querySelectorAll('[data-comp-pair]');
+    for (let i = 0; i < labelEls.length; i++) {
+      labelEls[i].textContent = yearOld + ' → ' + yearNew;
+    }
+    const vsEls = document.querySelectorAll('[data-comp-vs]');
+    for (let i = 0; i < vsEls.length; i++) {
+      vsEls[i].textContent = yearOld + ' vs ' + yearNew;
+    }
+    const oldYearEls = document.querySelectorAll('[data-year-old]');
+    for (let i = 0; i < oldYearEls.length; i++) oldYearEls[i].textContent = yearOld;
+    const newYearEls = document.querySelectorAll('[data-year-new]');
+    for (let i = 0; i < newYearEls.length; i++) newYearEls[i].textContent = yearNew;
+
+    const dataOld = getMonthlyAvgForYear(yearOld);
+    const dataNew = getMonthlyAvgForYear(yearNew);
+    const hasOld = dataOld.fat > 0 || dataOld.cmv > 0;
+    const hasNew = dataNew.fat > 0 || dataNew.cmv > 0;
+    const sameYear = (yearOld === yearNew);
+
+    const emptyEl = $('comp-empty');
+    const contentEl = $('comp-content');
+    if (sameYear || !hasOld || !hasNew) {
+      if (emptyEl) emptyEl.style.display = 'block';
+      if (contentEl) contentEl.style.display = 'none';
+      let msg;
+      if (sameYear) msg = 'Adicione um segundo ano com o botão "+" no topo para gerar o comparativo.';
+      else if (!hasOld && !hasNew) msg = 'Preencha dados em ' + yearOld + ' e ' + yearNew + ' para gerar o comparativo. Use o botão "Exemplo" no topo para popular com dados de demonstração.';
+      else if (!hasOld) msg = 'Falta preencher ' + yearOld + ' para comparar com ' + yearNew + '. Clique em "' + yearOld + '" no topo para inserir dados.';
+      else msg = 'Falta preencher ' + yearNew + ' para comparar com ' + yearOld + '.';
+      if ($('comp-empty-msg')) $('comp-empty-msg').textContent = msg;
+      return;
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (contentEl) contentEl.style.display = 'block';
+
+    const iOld = computeIndicators(dataOld);
+    const iNew = computeIndicators(dataNew);
+
+    // Compute deltas & score
+    const deltas = {};
+    let totalPts = 0, indCount = 0;
+    for (let i = 0; i < COMP_INDICATORS.length; i++) {
+      const ind = COMP_INDICATORS[i];
+      const d = getDeltaStatus(ind, iOld[ind.key], iNew[ind.key]);
+      deltas[ind.key] = d;
+      if (iOld[ind.key] > 0 && iNew[ind.key] > 0) { totalPts += d.scorePts; indCount++; }
+    }
+    const score = indCount > 0 ? Math.round(totalPts / indCount) : 0;
+    const verdict = getScoreVerdict(score);
+
+    // Score card
+    if ($('comp-score-num')) $('comp-score-num').textContent = score;
+    if ($('comp-score-verdict')) $('comp-score-verdict').textContent = verdict.text;
+    if ($('comp-score-fill')) $('comp-score-fill').style.width = score + '%';
+    const scoreCard = $('comp-score-card');
+    if (scoreCard) {
+      scoreCard.classList.remove('warn','alert');
+      if (verdict.cls) scoreCard.classList.add(verdict.cls);
+    }
+
+    // Summary grid (top 4 highlights)
+    const summaryKeys = ['fat', 'margem', 'giro', 'cobertura'];
+    let summaryHTML = '';
+    for (let i = 0; i < summaryKeys.length; i++) {
+      const k = summaryKeys[i];
+      const ind = COMP_INDICATORS.find(function(x){return x.key===k;});
+      const d = deltas[k];
+      const vOld = formatValue(iOld[k], ind.fmt);
+      const vNew = formatValue(iNew[k], ind.fmt);
+      summaryHTML += '<div class="comp-summary-card">' +
+        '<div class="comp-summary-head">' +
+          '<span class="comp-summary-label">' + getMetricIcon(k, 'sm') + escapeHTML(ind.name) + '</span>' +
+          '<span class="comp-summary-delta ' + d.status + '">' + escapeHTML(d.deltaText) + '</span>' +
+        '</div>' +
+        '<div class="comp-summary-values">' +
+          '<div class="comp-summary-year-block"><small>' + escapeHTML(yearOld) + '</small><span class="v">' + vOld + '</span></div>' +
+          '<span class="comp-arrow">→</span>' +
+          '<div class="comp-summary-year-block next"><small>' + escapeHTML(yearNew) + '</small><span class="v">' + vNew + '</span></div>' +
+        '</div>' +
+      '</div>';
+    }
+    if ($('comp-summary-grid')) $('comp-summary-grid').innerHTML = summaryHTML;
+
+    // Table headers (yearOld / yearNew columns)
+    const thOld = document.querySelector('#comp-table thead th[data-th-old]');
+    const thNew = document.querySelector('#comp-table thead th[data-th-new]');
+    if (thOld) thOld.textContent = yearOld;
+    if (thNew) thNew.textContent = yearNew;
+
+    // Detailed table
+    let tableHTML = '';
+    for (let i = 0; i < COMP_INDICATORS.length; i++) {
+      const ind = COMP_INDICATORS[i];
+      const d = deltas[ind.key];
+      const vOld = iOld[ind.key] > 0 ? formatValue(iOld[ind.key], ind.fmt) : '—';
+      const vNew = iNew[ind.key] > 0 ? formatValue(iNew[ind.key], ind.fmt) : '—';
+      const deltaCls = d.direction === 'better' ? 'up' : d.direction === 'worse' ? 'down' : 'neutral';
+      tableHTML += '<tr>' +
+        '<td class="name"><span class="comp-name-cell">' + getMetricIcon(ind.key, 'sm') + '<span>' + escapeHTML(ind.name) + '<small>' + escapeHTML(ind.desc) + '</small></span></span></td>' +
+        '<td>' + vOld + '</td>' +
+        '<td>' + vNew + '</td>' +
+        '<td class="delta-cell ' + deltaCls + '">' + escapeHTML(d.deltaText) + '</td>' +
+        '<td class="status-cell"><span class="comp-status-pill ' + d.status + '"><span class="dot"></span>' + escapeHTML(d.label) + '</span></td>' +
+      '</tr>';
+    }
+    if ($('comp-table-body')) $('comp-table-body').innerHTML = tableHTML;
+
+    // Readings
+    const readings = generateReadings(iOld, iNew);
+    let readingsHTML = '';
+    if (readings.length === 0) {
+      readingsHTML = '<div class="comp-reading">Sem desvios relevantes detectados — operação estável entre os anos.</div>';
+    } else {
+      for (let i = 0; i < readings.length; i++) {
+        readingsHTML += '<div class="comp-reading ' + readings[i].status + '">' + readings[i].text + '</div>';
+      }
+    }
+    if ($('comp-readings')) $('comp-readings').innerHTML = readingsHTML;
+
+    // Actions
+    const actions = generateActions(iOld, iNew);
+    let actionsHTML = '';
+    for (let i = 0; i < actions.length; i++) {
+      actionsHTML += '<li>' + escapeHTML(actions[i]) + '</li>';
+    }
+    if ($('comp-actions')) $('comp-actions').innerHTML = actionsHTML;
+
+    // Chart — render with last-selected metric (default: fat)
+    renderCompChart(state.compChartMetric || 'fat');
+  }
+
+  // ============ COMPARATIVO CHART ============
+  function getMonthlyMetricSeries(year, metricKey) {
+    const monthly = state.inputs[year] || {};
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const values = [];
+    for (let i = 0; i < monthKeys.length; i++) {
+      const m = monthly[monthKeys[i]];
+      if (!m) { values.push(null); continue; }
+      let v = null;
+      if (metricKey === 'fat') v = m.fat > 0 ? m.fat : null;
+      else if (metricKey === 'margem') v = (m.fat > 0 && m.cmv > 0) ? (m.fat - m.cmv) / m.fat : null;
+      else if (metricKey === 'giro') v = (m.cmv > 0 && m.estq > 0) ? m.cmv / m.estq : null;
+      else if (metricKey === 'cobertura') v = (m.estq > 0 && m.cmv > 0) ? m.estq / (m.cmv / 30) : null;
+      values.push(v);
+    }
+    return values;
+  }
+
+  function niceCeil(n) {
+    if (n <= 0) return 1;
+    const order = Math.pow(10, Math.floor(Math.log10(n)));
+    const normalized = n / order;
+    let nice;
+    if (normalized <= 1) nice = 1;
+    else if (normalized <= 2) nice = 2;
+    else if (normalized <= 5) nice = 5;
+    else nice = 10;
+    return nice * order;
+  }
+
+  function formatChartValue(v, fmt) {
+    if (v === null || !isFinite(v)) return '';
+    if (v === 0) return '0';
+    if (fmt === 'pct') return (v * 100).toFixed(0) + '%';
+    if (fmt === 'dec') return v.toFixed(2).replace('.', ',');
+    if (fmt === 'dias') return Math.round(v) + 'd';
+    if (fmt === 'brl') {
+      if (v >= 1000000) return 'R$ ' + (v/1000000).toFixed(1).replace('.', ',') + 'M';
+      if (v >= 1000) return 'R$ ' + Math.round(v/1000) + 'k';
+      return 'R$ ' + Math.round(v);
+    }
+    return String(v);
+  }
+
+  const COMP_CHART_FMT = { fat: 'brl', margem: 'pct', giro: 'dec', cobertura: 'dias' };
+  const COMP_CHART_NAMES = { fat: 'Faturamento', margem: 'Margem', giro: 'Giro mensal', cobertura: 'Cobertura' };
+
+  window.renderCompChart = function(metricKey) {
+    if (!metricKey) metricKey = state.compChartMetric || 'fat';
+    state.compChartMetric = metricKey;
+    save();
+
+    const pair = getComparativoPair();
+    const yearOld = pair[0];
+    const yearNew = pair[1];
+
+    const fmt = COMP_CHART_FMT[metricKey] || 'dec';
+    const seriesOld = getMonthlyMetricSeries(yearOld, metricKey);
+    const seriesNew = getMonthlyMetricSeries(yearNew, metricKey);
+
+    // Max value for y-axis scaling
+    let max = 0;
+    for (let i = 0; i < seriesOld.length; i++) if (seriesOld[i] !== null && seriesOld[i] > max) max = seriesOld[i];
+    for (let i = 0; i < seriesNew.length; i++) if (seriesNew[i] !== null && seriesNew[i] > max) max = seriesNew[i];
+
+    const container = $('comp-chart-svg');
+    if (!container) return;
+
+    // Update tab active state
+    const tabs = document.querySelectorAll('.comp-chart-tab');
+    for (let i = 0; i < tabs.length; i++) {
+      tabs[i].classList.toggle('active', tabs[i].getAttribute('data-metric') === metricKey);
+    }
+
+    if (max === 0) {
+      container.innerHTML = '<div class="comp-chart-empty">Sem dados para "' + COMP_CHART_NAMES[metricKey] + '". Preencha os meses para ver a evolução.</div>';
+      return;
+    }
+
+    const niceMax = niceCeil(max * 1.08);
+
+    // SVG dimensions
+    const W = 800, H = 260;
+    const padL = 60, padR = 20, padT = 16, padB = 32;
+    const plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+
+    function makeLine(series, color, isAccent) {
+      const points = [];
+      for (let i = 0; i < series.length; i++) {
+        if (series[i] !== null) {
+          const x = padL + (i / 11) * plotW;
+          const y = padT + plotH - (series[i] / niceMax) * plotH;
+          points.push({ x: x, y: y, v: series[i], i: i });
+        }
+      }
+      if (points.length === 0) return '';
+      let path = 'M ' + points[0].x.toFixed(1) + ' ' + points[0].y.toFixed(1);
+      for (let i = 1; i < points.length; i++) {
+        path += ' L ' + points[i].x.toFixed(1) + ' ' + points[i].y.toFixed(1);
+      }
+      let html = '<path d="' + path + '" stroke="' + color + '" stroke-width="' + (isAccent ? '2.5' : '2') + '" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+      for (let i = 0; i < points.length; i++) {
+        const tip = COMP_CHART_NAMES[metricKey] + ': ' + formatChartValue(points[i].v, fmt);
+        html += '<circle cx="' + points[i].x.toFixed(1) + '" cy="' + points[i].y.toFixed(1) + '" r="' + (isAccent ? '4' : '3.5') + '" fill="' + color + '" stroke="white" stroke-width="1.5"><title>' + tip + '</title></circle>';
+      }
+      return html;
+    }
+
+    // Y-axis gridlines + labels (5 lines)
+    let gridlines = '';
+    let yLabels = '';
+    for (let i = 0; i <= 4; i++) {
+      const y = padT + (i / 4) * plotH;
+      const val = niceMax * (1 - i / 4);
+      gridlines += '<line x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + y.toFixed(1) + '" stroke="#e5e7eb" stroke-width="0.5"/>';
+      yLabels += '<text x="' + (padL - 8) + '" y="' + (y + 3).toFixed(1) + '" font-size="9" fill="#9ca3af" text-anchor="end" font-family="Inter, sans-serif">' + formatChartValue(val, fmt) + '</text>';
+    }
+
+    // X-axis labels (months)
+    const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    let xLabels = '';
+    for (let i = 0; i < 12; i++) {
+      const x = padL + (i / 11) * plotW;
+      xLabels += '<text x="' + x.toFixed(1) + '" y="' + (H - 10) + '" font-size="9" fill="#9ca3af" text-anchor="middle" font-family="Inter, sans-serif">' + months[i] + '</text>';
+    }
+
+    // Baseline
+    const baselineY = padT + plotH;
+    const baseline = '<line x1="' + padL + '" y1="' + baselineY.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + baselineY.toFixed(1) + '" stroke="#d1d5db" stroke-width="1"/>';
+
+    const lineOld = makeLine(seriesOld, '#9ca3af', false);
+    const lineNew = makeLine(seriesNew, '#dc2626', true);
+
+    container.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet">' +
+      gridlines + baseline + yLabels + xLabels + lineOld + lineNew +
+    '</svg>';
+  };
+
+  // ============ AI PROMPT GENERATION ============
+  function buildAIPrompt() {
+    const pair = getComparativoPair();
+    const yearOld = pair[0];
+    const yearNew = pair[1];
+    const dataOld = getMonthlyAvgForYear(yearOld);
+    const dataNew = getMonthlyAvgForYear(yearNew);
+    const iOld = computeIndicators(dataOld);
+    const iNew = computeIndicators(dataNew);
+
+    function fmt(v, type) {
+      if (!v || v === 0 || !isFinite(v)) return 'sem dados';
+      if (type === 'brl') return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+      if (type === 'pct') return (v * 100).toFixed(2).replace('.', ',') + '%';
+      if (type === 'dec') return v.toFixed(2).replace('.', ',') + 'x';
+      if (type === 'dias') return Math.round(v) + ' dias';
+      return String(v);
+    }
+
+    let p = '';
+    p += 'Você é um consultor sênior especialista em gestão de farmácias varejistas no Brasil.\n\n';
+    p += 'Analise os indicadores comparativos da **Drogarias Farmagnus** (unidade Penha-Gravatá, litoral de Santa Catarina) entre ' + yearOld + ' e ' + yearNew + ' e produza um diagnóstico executivo completo e crítico.\n\n';
+
+    p += '═══ CONTEXTO OPERACIONAL ═══\n';
+    p += '• Drogaria de bairro em região turística do litoral catarinense (Penha-Gravatá)\n';
+    p += '• Forte sazonalidade turística: pico em Jan-Fev (alto verão), vale em Jun-Set\n';
+    p += '• Regime tributário: Lucro Real\n';
+    p += '• ERP: Trier\n';
+    p += '• Mix relevante: perfumaria ~27% (categoria âncora de rentabilidade, preço livre)\n';
+    p += '• Demais categorias: prescrição, genéricos, similares, liberados/MIP (todas reguladas pela CMED via PMC)\n\n';
+
+    p += '═══ INDICADORES (MÉDIAS MENSAIS) ═══\n\n';
+    p += '▸ ' + yearOld + ' (' + (dataOld.fatCount || 0) + ' meses preenchidos):\n';
+    p += '  • Faturamento: ' + fmt(iOld.fat, 'brl') + '\n';
+    p += '  • CMV: ' + fmt(iOld.cmv, 'brl') + '\n';
+    p += '  • Estoque médio: ' + fmt(iOld.estq, 'brl') + '\n';
+    p += '  • Margem bruta: ' + fmt(iOld.margem, 'pct') + '\n';
+    p += '  • Markup: ' + fmt(iOld.markup, 'dec') + '\n';
+    p += '  • Giro mensal: ' + fmt(iOld.giro, 'dec') + '\n';
+    p += '  • Cobertura de estoque: ' + fmt(iOld.cobertura, 'dias') + '\n';
+    p += '  • Ticket médio: ' + fmt(iOld.ticket, 'brl') + '\n';
+    p += '  • Faturamento por FTE: ' + fmt(iOld.fatFte, 'brl') + '\n\n';
+
+    p += '▸ ' + yearNew + ' (' + (dataNew.fatCount || 0) + ' meses preenchidos):\n';
+    p += '  • Faturamento: ' + fmt(iNew.fat, 'brl') + '\n';
+    p += '  • CMV: ' + fmt(iNew.cmv, 'brl') + '\n';
+    p += '  • Estoque médio: ' + fmt(iNew.estq, 'brl') + '\n';
+    p += '  • Margem bruta: ' + fmt(iNew.margem, 'pct') + '\n';
+    p += '  • Markup: ' + fmt(iNew.markup, 'dec') + '\n';
+    p += '  • Giro mensal: ' + fmt(iNew.giro, 'dec') + '\n';
+    p += '  • Cobertura de estoque: ' + fmt(iNew.cobertura, 'dias') + '\n';
+    p += '  • Ticket médio: ' + fmt(iNew.ticket, 'brl') + '\n';
+    p += '  • Faturamento por FTE: ' + fmt(iNew.fatFte, 'brl') + '\n\n';
+
+    p += '═══ BENCHMARKS DE REFERÊNCIA ═══\n';
+    p += '• Margem ideal drugstore brasileiro: 30%-45%\n';
+    p += '• Giro mensal saudável: 0,67x-1,0x (cobertura 30-45 dias)\n';
+    p += '• Cobertura > 60 dias = capital empoçado em estoque\n';
+    p += '• Cobertura < 25 dias = risco real de ruptura\n';
+    p += '• Markup setorial saudável: 1,5x-1,9x\n';
+    p += '• Faturamento por FTE: R$ 35k-55k mês considerado bom\n\n';
+
+    p += '═══ INSTRUÇÕES DE ANÁLISE ═══\n\n';
+    p += 'Não apenas apresente os números — explique padrões, causas prováveis e impactos. Para cada movimento relevante, considere:\n';
+    p += '1. Magnitude da variação (em pp ou %)\n';
+    p += '2. Direção (melhorou, piorou, estável)\n';
+    p += '3. Causas operacionais prováveis (mix, sazonalidade, gestão de compras, ruptura, descontos, mudança no PDV)\n';
+    p += '4. Impacto financeiro estimado em reais\n';
+    p += '5. Impacto no capital de giro\n';
+    p += '6. Cruzamentos relevantes (ex: fat ↑ + margem ↓ = pressão competitiva ou mudança de mix)\n\n';
+
+    p += '═══ ESTRUTURA DA RESPOSTA ═══\n\n';
+    p += '**1. Diagnóstico executivo** (3-4 parágrafos densos, sem fluff)\n';
+    p += '**2. Top 3 ganhos** identificados em 2026 vs 2025\n';
+    p += '**3. Top 3 problemas** mais urgentes, com magnitude\n';
+    p += '**4. Insights não óbvios** — coisas que um gestor olhando só os números não perceberia\n';
+    p += '**5. Top 5 ações prioritárias** com prazo sugerido (30/60/90 dias)\n';
+    p += '**6. Estimativa de capital de giro liberável** se as ações forem executadas\n';
+    p += '**7. Nota geral 0-100** da operação, com justificativa baseada nos indicadores\n';
+    p += '**8. Próximo passo concreto** — uma única ação para começar amanhã\n\n';
+
+    p += 'Tom: consultoria sênior, direto, sem rodeios, em português brasileiro. Use markdown para estrutura. Seja crítico onde precisar ser.';
+
+    return p;
+  }
+
+  window.copyAIPrompt = function() {
+    try {
+      const txt = buildAIPrompt();
+
+      function showSuccess() {
+        const btn = document.querySelector('.comp-ai-btn');
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Prompt copiado!';
+          btn.style.background = '#10b981';
+          setTimeout(function() {
+            btn.innerHTML = original;
+            btn.style.background = '';
+          }, 2500);
+        }
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(showSuccess).catch(function() {
+          window.prompt('Copie este prompt e cole em Claude.ai, ChatGPT ou Gemini:', txt);
+        });
+      } else {
+        window.prompt('Copie este prompt e cole em Claude.ai, ChatGPT ou Gemini:', txt);
+      }
+    } catch(e) {
+      console.error('AI prompt build failed:', e);
+      alert('Erro ao gerar prompt: ' + e.message);
+    }
+  };
+
+  // ============ COMPUTE ============
+  function getMonthlyAvgForYear(year) {
+    const monthly = state.inputs[year] || {};
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+
+    function avgField(field) {
+      let sum = 0, count = 0;
+      for (let i = 0; i < monthKeys.length; i++) {
+        const v = monthly[monthKeys[i]] && monthly[monthKeys[i]][field];
+        if (v > 0) { sum += v; count++; }
+      }
+      if (count === 0) return { value: 0, count: 0 };
+      return { value: sum / count, count: count };
+    }
+
+    const fatR = avgField('fat');
+    const cmvR = avgField('cmv');
+    const estqR = avgField('estq');
+    const cupR = avgField('cup');
+    const fteR = avgField('fte');
+    return {
+      fat: fatR.value, fatCount: fatR.count,
+      cmv: cmvR.value, cmvCount: cmvR.count,
+      estq: estqR.value, estqCount: estqR.count,
+      cup: cupR.value, cupCount: cupR.count,
+      fte: fteR.value, fteCount: fteR.count,
+    };
+  }
+
+  function getMonthlyAvg() {
+    return getMonthlyAvgForYear(state.currentYear || '2026');
+  }
+
+  function getPeriodAvg(field) {
+    const year = state.currentYear || '2026';
+    const scenKey = (state.scenarios && state.scenarios[year]) || 'month';
+    const scen = SCENARIOS[scenKey] || SCENARIOS.month;
+    const vals = [];
+    for (let i = 0; i < scen.periods.length; i++) {
+      const v = getDisplayValue(year, scen.periods[i].key, field).value;
+      if (v > 0) vals.push(v);
+    }
+    if (vals.length === 0) return 0;
+    let sum = 0;
+    for (let i = 0; i < vals.length; i++) sum += vals[i];
+    return sum / vals.length;
+  }
+
+  // Returns the monthly average aligned to mix months when monthly mix exists,
+  // falling back to getMonthlyAvg() when no mix data is present.
+  // Used by §05 to mirror §04's data basis (same months).
+  function getMonthlyAvgFromMix() {
+    const year = state.currentYear || '2026';
+    const monthly = state.monthlyMix[year] || {};
+    const monthKeys = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const monthsWithMix = [];
+    for (let i = 0; i < monthKeys.length; i++) {
+      if (hasMonthlyMixData(year, monthKeys[i])) monthsWithMix.push(monthKeys[i]);
+    }
+    if (monthsWithMix.length === 0) {
+      const fallback = getMonthlyAvg();
+      fallback.source = 'inputs';
+      fallback.monthsWithMix = [];
+      return fallback;
+    }
+    // Aggregate Fat and CMV from monthly mix
+    let totalFat = 0, totalCmv = 0;
+    for (let i = 0; i < monthsWithMix.length; i++) {
+      const mk = monthsWithMix[i];
+      for (let j = 0; j < CATEGORIES.length; j++) {
+        const c = CATEGORIES[j];
+        totalFat += (monthly[mk][c.key] && monthly[mk][c.key].fat) || 0;
+        totalCmv += (monthly[mk][c.key] && monthly[mk][c.key].cmv) || 0;
+      }
+    }
+    const nMonths = monthsWithMix.length;
+    // Average §01 stock/count/fte over the SAME months that have mix
+    const inputs = state.inputs[year] || {};
+    let estqSum = 0, estqCount = 0;
+    let cupSum = 0, cupCount = 0;
+    let fteSum = 0, fteCount = 0;
+    for (let i = 0; i < monthsWithMix.length; i++) {
+      const mk = monthsWithMix[i];
+      const mData = inputs[mk] || {};
+      if (mData.estq > 0) { estqSum += mData.estq; estqCount++; }
+      if (mData.cup > 0) { cupSum += mData.cup; cupCount++; }
+      if (mData.fte > 0) { fteSum += mData.fte; fteCount++; }
+    }
+    return {
+      fat: totalFat / nMonths,
+      fatCount: nMonths,
+      cmv: totalCmv / nMonths,
+      cmvCount: nMonths,
+      estq: estqCount > 0 ? estqSum / estqCount : 0,
+      estqCount: estqCount,
+      cup: cupCount > 0 ? cupSum / cupCount : 0,
+      cupCount: cupCount,
+      fte: fteCount > 0 ? fteSum / fteCount : 0,
+      fteCount: fteCount,
+      monthsWithMix: monthsWithMix,
+      source: 'mix',
+    };
+  }
+
+  // SPARKLINE rendering — build SVG path from monthly values
+  function getMonthlyTrend(field, year) {
+    year = year || state.currentYear;
+    const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const yd = (state.inputs && state.inputs[year]) || {};
+    return months.map(m => (yd[m] && yd[m][field]) || 0);
+  }
+
+  function renderSparkline(svgId, values, color) {
+    const svg = $(svgId);
+    if (!svg) return;
+    color = color || '#16a34a';
+    const chartType = state.chartType || 'line';
+    const w = 280, h = 24, pad = 2;
+    const filled = values.filter(v => v > 0);
+
+    // Empty state - dashed placeholder line
+    if (filled.length < 1) {
+      svg.innerHTML = '<line x1="0" y1="' + (h - 4) + '" x2="' + w + '" y2="' + (h - 4) + '" stroke="' + color + '" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="3,3"/>';
+      return;
+    }
+
+    const min = Math.min(...filled);
+    const max = Math.max(...filled);
+    const range = max - min || max || 1;
+
+    // BARS — works with any number of data points (including just 1)
+    if (chartType === 'bars') {
+      const slotW = w / values.length;
+      const barW = Math.max(4, slotW - 3);
+      let bars = '';
+      for (let i = 0; i < values.length; i++) {
+        if (values[i] > 0) {
+          const x = i * slotW + (slotW - barW) / 2;
+          const barH = Math.max(3, ((values[i] - min) / range) * (h - 4) + 3);
+          const y = h - barH;
+          bars += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="' + color + '" rx="1.5"/>';
+        }
+      }
+      svg.innerHTML = bars;
+      return;
+    }
+
+    // LINE / AREA need ≥2 points; fallback to dashed line
+    if (filled.length < 2) {
+      svg.innerHTML = '<line x1="0" y1="' + (h - 4) + '" x2="' + w + '" y2="' + (h - 4) + '" stroke="' + color + '" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="3,3"/>';
+      return;
+    }
+
+    const points = [];
+    for (let i = 0; i < values.length; i++) {
+      if (values[i] > 0) {
+        const x = (i / (values.length - 1)) * w;
+        const y = h - pad - ((values[i] - min) / range) * (h - pad * 2);
+        points.push({x: x, y: y});
+      }
+    }
+
+    let path = 'M ' + points[0].x.toFixed(1) + ' ' + points[0].y.toFixed(1);
+    for (let i = 1; i < points.length; i++) {
+      const prev = points[i-1];
+      const curr = points[i];
+      const cx = (prev.x + curr.x) / 2;
+      path += ' Q ' + cx.toFixed(1) + ' ' + prev.y.toFixed(1) + ' ' + curr.x.toFixed(1) + ' ' + curr.y.toFixed(1);
+    }
+    const areaPath = path + ' L ' + points[points.length-1].x.toFixed(1) + ' ' + h + ' L ' + points[0].x.toFixed(1) + ' ' + h + ' Z';
+
+    if (chartType === 'area') {
+      svg.innerHTML =
+        '<defs><linearGradient id="grad-' + svgId + '" x1="0" x2="0" y1="0" y2="1">' +
+        '<stop offset="0%" stop-color="' + color + '" stop-opacity="0.55"/>' +
+        '<stop offset="100%" stop-color="' + color + '" stop-opacity="0.05"/>' +
+        '</linearGradient></defs>' +
+        '<path d="' + areaPath + '" fill="url(#grad-' + svgId + ')"/>' +
+        '<path d="' + path + '" stroke="' + color + '" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>';
+    } else {
+      // line (default)
+      svg.innerHTML =
+        '<defs><linearGradient id="grad-' + svgId + '" x1="0" x2="0" y1="0" y2="1">' +
+        '<stop offset="0%" stop-color="' + color + '" stop-opacity="0.18"/>' +
+        '<stop offset="100%" stop-color="' + color + '" stop-opacity="0"/>' +
+        '</linearGradient></defs>' +
+        '<path d="' + areaPath + '" fill="url(#grad-' + svgId + ')"/>' +
+        '<path d="' + path + '" stroke="' + color + '" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+  }
+
+  function recompute() {
+    const m = getMonthlyAvg();
+
+    // Build month reference text for §02 — list the months that have data
+    const yrInputs = state.inputs[state.currentYear] || {};
+    const monthKeysAll = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const filledMonthLabels = [];
+    for (let i = 0; i < monthKeysAll.length; i++) {
+      const mk = monthKeysAll[i];
+      if (yrInputs[mk] && (yrInputs[mk].fat > 0 || yrInputs[mk].cmv > 0 || yrInputs[mk].estq > 0)) {
+        filledMonthLabels.push(MONTH_NAMES_SHORT[mk]);
+      }
+    }
+    if ($('kpi-desc')) {
+      if (filledMonthLabels.length === 0) {
+        $('kpi-desc').textContent = 'aguardando preenchimento em § 01';
+      } else {
+        const countTxt = filledMonthLabels.length === 1 ? '1 mês' : filledMonthLabels.length + ' meses';
+        $('kpi-desc').innerHTML = 'média mensal · <strong>' + countTxt + '</strong> de referência: <strong>' + escapeHTML(filledMonthLabels.join(', ')) + '</strong> · ' + state.currentYear;
+      }
+    }
+
+    const avgEls = document.querySelectorAll('[data-avgfield]');
+    for (let i = 0; i < avgEls.length; i++) {
+      const el = avgEls[i];
+      const field = el.getAttribute('data-avgfield');
+      const fmt = el.getAttribute('data-fmt');
+      // MÉDIA column always shows the true monthly average:
+      // sum of monthly inputs ÷ count of months filled in Mês a mês.
+      // This is independent of the current scenario view (Tri/Sem/Ano).
+      let v;
+      if (field === 'ticket') {
+        v = (m.fat > 0 && m.cup > 0) ? m.fat / m.cup : 0;
+      } else {
+        v = m[field];
+      }
+      el.textContent = v > 0 ? inputFmt(v, fmt) : '—';
+    }
+
+    // Update derived-row cells (e.g. ticket per period) — live as fat/cup change
+    const derivedEls = document.querySelectorAll('[data-derived-field]');
+    const year = state.currentYear || '2026';
+    for (let i = 0; i < derivedEls.length; i++) {
+      const el = derivedEls[i];
+      const field = el.getAttribute('data-derived-field');
+      const period = el.getAttribute('data-derived-period');
+      const span = el.querySelector('span.readonly-value');
+      if (!span) continue;
+      let v = 0;
+      let fmt = 'brl';
+      if (field === 'ticket') {
+        const fatDisp = getDisplayValue(year, period, 'fat');
+        const cupDisp = getDisplayValue(year, period, 'cup');
+        v = (fatDisp.value > 0 && cupDisp.value > 0) ? fatDisp.value / cupDisp.value : 0;
+      }
+      if (v > 0) {
+        span.textContent = inputFmt(v, fmt);
+        span.classList.remove('empty');
+      } else {
+        span.textContent = '—';
+        span.classList.add('empty');
+      }
+    }
+
+    for (let i = 0; i < KPI_DEFS.length; i++) {
+      const k = KPI_DEFS[i];
+      const v = k.calc(m);
+      const valEl = document.querySelector('[data-kpi="' + k.key + '"]');
+      const statEl = document.querySelector('[data-status="' + k.key + '"]');
+      if (valEl) valEl.textContent = v ? formatValue(v, k.fmt) : '—';
+      if (statEl) statEl.className = 'status-dot ' + k.status(v);
+    }
+
+    // Snapshot
+    if ($('snap-fat')) $('snap-fat').textContent = m.fat ? fmtBRLk(m.fat) : '—';
+    if ($('snap-fat-label')) $('snap-fat-label').textContent = 'Faturamento mensal';
+    if ($('snap-fat-sub')) {
+      if (m.fat) {
+        const monthsText = m.fatCount === 1 ? '1 mês' : m.fatCount + ' meses';
+        $('snap-fat-sub').textContent = monthsText + ' preenchidos · base mensal';
+      } else {
+        $('snap-fat-sub').textContent = 'aguardando dados';
+      }
+    }
+    const margem = safe((m.fat - m.cmv) / m.fat);
+    if ($('snap-mar')) $('snap-mar').textContent = margem ? fmtPct(margem) : '—';
+    const giro = safe(m.cmv / m.estq);
+    if ($('snap-giro')) $('snap-giro').textContent = giro ? fmtMult(giro) : '—';
+    if ($('snap-giro-label')) $('snap-giro-label').textContent = 'Giro mensal';
+    if ($('snap-giro-bench')) $('snap-giro-bench').textContent = 'meta 0,67x a 1,0x';
+    const cobert = safe(m.estq / (m.cmv / 30));
+    if ($('snap-cob')) $('snap-cob').textContent = cobert ? fmtDias(cobert) : '—';
+
+    // Estoque ideal — capital ideal preso em estoque para giro mensal saudável de 0,80x
+    const IDEAL_GIRO = 0.80; // meio da faixa saudável (0,67x a 1,0x)
+    const estqIdeal = safe(m.cmv / IDEAL_GIRO);
+    if ($('snap-estq-ideal')) {
+      $('snap-estq-ideal').textContent = estqIdeal > 0 ? fmtBRL(estqIdeal, 2) : '—';
+    }
+    if ($('snap-estq-ideal-sub')) {
+      if (estqIdeal > 0 && m.estq > 0) {
+        const diff = m.estq - estqIdeal;
+        const diffPct = Math.abs(diff) / estqIdeal;
+        if (diffPct < 0.10) {
+          $('snap-estq-ideal-sub').innerHTML = '<span style="color:var(--green-dark);font-weight:600">alinhado ao ideal</span> · giro 0,80x';
+        } else if (diff > 0) {
+          $('snap-estq-ideal-sub').innerHTML = 'excesso <strong style="color:var(--red);font-weight:600">+' + fmtBRL(Math.abs(diff), 0) + '</strong>';
+        } else {
+          $('snap-estq-ideal-sub').innerHTML = 'falta <strong style="color:var(--amber);font-weight:600">−' + fmtBRL(Math.abs(diff), 0) + '</strong>';
+        }
+      } else {
+        $('snap-estq-ideal-sub').textContent = 'alvo: giro de 0,80x';
+      }
+    }
+
+    // Sparklines — monthly trends
+    const fatTrend = getMonthlyTrend('fat');
+    const margemTrend = fatTrend.map((f, i) => {
+      const cmv = ((state.inputs[state.currentYear] && state.inputs[state.currentYear][['01','02','03','04','05','06','07','08','09','10','11','12'][i]]) || {}).cmv || 0;
+      return f > 0 ? (f - cmv) / f : 0;
+    });
+    const giroTrend = fatTrend.map((f, i) => {
+      const md = (state.inputs[state.currentYear] && state.inputs[state.currentYear][['01','02','03','04','05','06','07','08','09','10','11','12'][i]]) || {};
+      return md.cmv > 0 && md.estq > 0 ? md.cmv / md.estq : 0;
+    });
+    const cobTrend = fatTrend.map((f, i) => {
+      const md = (state.inputs[state.currentYear] && state.inputs[state.currentYear][['01','02','03','04','05','06','07','08','09','10','11','12'][i]]) || {};
+      return md.cmv > 0 && md.estq > 0 ? md.estq / (md.cmv / 30) : 0;
+    });
+    renderSparkline('spark-fat', fatTrend, '#16a34a');
+    renderSparkline('spark-mar', margemTrend, '#16a34a');
+    renderSparkline('spark-giro', giroTrend, '#16a34a');
+    // Estoque ideal sparkline — shows actual estoque trend over time (amber to differentiate)
+    const estqTrend = getMonthlyTrend('estq');
+    renderSparkline('spark-estq-ideal', estqTrend, '#d97706');
+    renderSparkline('spark-cob', cobTrend, '#16a34a');
+
+    // Diagnostic — uses mix-aligned data when monthly mix exists (same base as §04)
+    const diagM = getMonthlyAvgFromMix();
+    const vals = {
+      margem: safe((diagM.fat - diagM.cmv) / diagM.fat),
+      giro: safe(diagM.cmv / diagM.estq),
+      cobert: safe(diagM.estq / (diagM.cmv / 30)),
+      ticket: safe(diagM.fat / diagM.cup),
+      fat_fte: safe(diagM.fat / diagM.fte),
+    };
+    if ($('diag-desc')) {
+      if (diagM.source === 'mix') {
+        const monthsText = diagM.monthsWithMix.length === 1 ? '1 mês' : diagM.monthsWithMix.length + ' meses';
+        $('diag-desc').textContent = 'mesma base do § 04 · soma de ' + monthsText + ' do mix mensal';
+      } else {
+        $('diag-desc').textContent = 'base mensal do § 01 · sem mix mensal preenchido';
+      }
+    }
+    for (let i = 0; i < DIAG_DEFS.length; i++) {
+      const d = DIAG_DEFS[i];
+      const v = vals[d.key] || 0;
+      const valEl = document.querySelector('[data-diagval="' + d.key + '"]');
+      const readEl = document.querySelector('[data-diagread="' + d.key + '"]');
+      const statEl = document.querySelector('[data-diagstat="' + d.key + '"]');
+      if (valEl) valEl.textContent = v ? formatValue(v, d.fmt) : '—';
+      if (readEl) readEl.textContent = d.reading(v);
+      let status = 'neutral';
+      for (let j = 0; j < KPI_DEFS.length; j++) {
+        if (KPI_DEFS[j].key === d.key) { status = KPI_DEFS[j].status(v); break; }
+      }
+      if (statEl) {
+        statEl.className = 'diag-status ' + status;
+        const lbl = status === 'good' ? 'saudável' : status === 'warn' ? 'atenção' : status === 'alert' ? 'crítico' : 'aguardando';
+        statEl.innerHTML = '<span class="status-dot ' + status + '"></span>' + lbl;
+      }
+    }
+  }
+
+  function recomputeMix() {
+    const year = state.currentYear;
+    const viewKey = (state.mixView && state.mixView[year]) || 'ANO';
+    const isMonthly = viewKey !== 'ANO';
+    let currentMixData;
+    if (isMonthly) {
+      currentMixData = (state.monthlyMix[year] && state.monthlyMix[year][viewKey]) || {};
+    } else {
+      const agg = getAggregatedYearlyMix(year);
+      currentMixData = agg.data;
+    }
+
+    let totalFat = 0, totalCmv = 0;
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const c = CATEGORIES[i];
+      totalFat += (currentMixData[c.key] && currentMixData[c.key].fat) || 0;
+      totalCmv += (currentMixData[c.key] && currentMixData[c.key].cmv) || 0;
+    }
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const c = CATEGORIES[i];
+      const fat = (currentMixData[c.key] && currentMixData[c.key].fat) || 0;
+      const cmv = (currentMixData[c.key] && currentMixData[c.key].cmv) || 0;
+      const marg = fat - cmv;
+      const margPct = safe(marg / fat);
+      const pct = safe(fat / totalFat);
+      const elP = document.querySelector('[data-mixpct="' + c.key + '"]');
+      const elM = document.querySelector('[data-mixmarg="' + c.key + '"]');
+      const elMP = document.querySelector('[data-mixmargpct="' + c.key + '"]');
+      if (elP) elP.textContent = fat ? fmtPct(pct) : '—';
+      if (elM) elM.textContent = fat ? fmtBRL(marg) : '—';
+      if (elMP) elMP.textContent = fat ? fmtPct(margPct) : '—';
+    }
+    if ($('mix-total-fat')) $('mix-total-fat').textContent = totalFat ? fmtBRL(totalFat) : '—';
+    if ($('mix-total-cmv')) $('mix-total-cmv').textContent = totalCmv ? fmtBRL(totalCmv) : '—';
+    if ($('mix-total-marg')) $('mix-total-marg').textContent = totalFat ? fmtBRL(totalFat - totalCmv) : '—';
+    if ($('mix-total-pct-marg')) $('mix-total-pct-marg').textContent = totalFat ? fmtPct((totalFat-totalCmv)/totalFat) : '—';
+
+    if (isMonthly) {
+      const monthInputs = (state.inputs[year] && state.inputs[year][viewKey]) || {};
+      const monthFatTotal = monthInputs.fat || 0;
+      const recEl = $('mix-reconcile');
+      const mixEl = $('mix-rec-mix');
+      const deltaEl = $('mix-rec-delta');
+      if (mixEl) mixEl.textContent = totalFat ? fmtBRL(totalFat) : '—';
+      if (recEl && deltaEl) {
+        if (totalFat > 0 && monthFatTotal > 0) {
+          const delta = totalFat - monthFatTotal;
+          const absPct = Math.abs(delta) / monthFatTotal;
+          if (absPct < 0.005) {
+            recEl.className = 'reconcile matched';
+            deltaEl.textContent = '✓ Bate';
+          } else {
+            recEl.className = 'reconcile diff';
+            const sign = delta > 0 ? '+' : '−';
+            deltaEl.textContent = sign + fmtBRL(Math.abs(delta)) + ' (' + (absPct * 100).toFixed(1).replace('.', ',') + '%)';
+          }
+        } else {
+          recEl.className = 'reconcile';
+          deltaEl.textContent = '—';
+        }
+      }
+    }
+
+    // §04 PMC
+    const agg = getAggregatedYearlyMix(year);
+    const aggData = agg.data;
+    let pmcFat = 0, pmcCmv = 0, freeFat = 0, freeCmv = 0, aggTotalFat = 0;
+    for (let i = 0; i < CATEGORIES.length; i++) {
+      const c = CATEGORIES[i];
+      const fat = (aggData[c.key] && aggData[c.key].fat) || 0;
+      const cmv = (aggData[c.key] && aggData[c.key].cmv) || 0;
+      aggTotalFat += fat;
+      if (c.pmc === 'yes') { pmcFat += fat; pmcCmv += cmv; }
+      else { freeFat += fat; freeCmv += cmv; }
+    }
+    if ($('pmc-fat')) $('pmc-fat').textContent = pmcFat ? fmtBRLk(pmcFat) : '—';
+    if ($('pmc-pct')) $('pmc-pct').textContent = aggTotalFat ? fmtPct(pmcFat/aggTotalFat) : '—';
+    if ($('pmc-marg')) $('pmc-marg').textContent = pmcFat ? fmtBRLk(pmcFat - pmcCmv) : '—';
+    if ($('pmc-pctmarg')) $('pmc-pctmarg').textContent = pmcFat ? fmtPct((pmcFat-pmcCmv)/pmcFat) : '—';
+    if ($('free-fat')) $('free-fat').textContent = freeFat ? fmtBRLk(freeFat) : '—';
+    if ($('free-pct')) $('free-pct').textContent = aggTotalFat ? fmtPct(freeFat/aggTotalFat) : '—';
+    if ($('free-marg')) $('free-marg').textContent = freeFat ? fmtBRLk(freeFat - freeCmv) : '—';
+    if ($('free-pctmarg')) $('free-pctmarg').textContent = freeFat ? fmtPct((freeFat-freeCmv)/freeFat) : '—';
+
+    if ($('pmc-context-label')) {
+      let label;
+      if (aggTotalFat === 0) {
+        label = 'Aguardando dados de mix';
+      } else if (agg.source === 'monthly') {
+        const monthsText = agg.monthCount === 1 ? '1 mês' : agg.monthCount + ' meses';
+        label = 'Visualizando: <strong>soma de ' + monthsText + ' preenchidos no mix mensal</strong> · Faturamento total: ' + fmtBRL(aggTotalFat);
+      } else {
+        label = 'Visualizando: <strong>snapshot anual</strong> · Faturamento total: ' + fmtBRL(aggTotalFat);
+      }
+      $('pmc-context-label').innerHTML = label;
+    }
+  }
+
+  // ============ MIX VIEW SWITCH ============
+  function setMixView(viewKey) {
+    const year = state.currentYear;
+    if (!state.mixView) state.mixView = {};
+    state.mixView[year] = viewKey;
+    renderMixSection();
+    recomputeMix();
+    save();
+    const sec = $('mix-section');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  window.openMonthMix = function(monthKey) { setMixView(monthKey); };
+  window.setMixView = setMixView;
+  window.goToMonthly = function() {
+    switchScenario('month');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ============ ACTIONS ============
+  window.loadSample = function() {
+    state = {
+      currentYear: state.currentYear,
+      scenarios: { '2025': 'month', '2026': 'month' },
+      inputs: {
+        '2026': {
+          '01': { fat: 480000, cmv: 278000, estq: 605000, cup: 6300, fte: 9 },
+          '02': { fat: 510000, cmv: 296000, estq: 612000, cup: 6700, fte: 9 },
+          '03': { fat: 460000, cmv: 267000, estq: 600000, cup: 6100, fte: 9 },
+          '04': { fat: 390000, cmv: 228000, estq: 595000, cup: 5400, fte: 9 },
+        },
+        '2025': {
+          '01': { fat: 450000, cmv: 263000, estq: 570000, cup: 5950, fte: 8.5 },
+          '02': { fat: 470000, cmv: 275000, estq: 580000, cup: 6150, fte: 8.5 },
+          '03': { fat: 420000, cmv: 247000, estq: 575000, cup: 5650, fte: 8.5 },
+          '04': { fat: 360000, cmv: 212000, estq: 580000, cup: 5000, fte: 8.5 },
+          '05': { fat: 320000, cmv: 190000, estq: 585000, cup: 4550, fte: 8.5 },
+          '06': { fat: 305000, cmv: 182000, estq: 590000, cup: 4300, fte: 8.5 },
+          '07': { fat: 300000, cmv: 180000, estq: 588000, cup: 4200, fte: 8.5 },
+          '08': { fat: 315000, cmv: 188000, estq: 585000, cup: 4400, fte: 8.5 },
+          '09': { fat: 330000, cmv: 195000, estq: 580000, cup: 4700, fte: 8.5 },
+          '10': { fat: 360000, cmv: 211000, estq: 575000, cup: 5050, fte: 8.5 },
+          '11': { fat: 400000, cmv: 234000, estq: 580000, cup: 5500, fte: 8.5 },
+          '12': { fat: 480000, cmv: 281000, estq: 590000, cup: 6400, fte: 8.5 },
+        },
+      },
+      mix: {
+        '2025': {
+          lib: { fat: 165000, cmv: 110000 },
+          sim: { fat: 215000, cmv: 152000 },
+          gen: { fat: 320000, cmv: 218000 },
+          pres: { fat: 345000, cmv: 245000 },
+          perf: { fat: 530000, cmv: 290000 },
+        },
+        '2026': {}
+      },
+      monthlyMix: {
+        '2026': {
+          '01': {
+            lib:  { fat: 41000,  cmv: 28000 },
+            sim:  { fat: 61000,  cmv: 43000 },
+            gen:  { fat: 92000,  cmv: 64000 },
+            pres: { fat: 118000, cmv: 84000 },
+            perf: { fat: 168000, cmv: 88000 },
+          },
+          '02': {
+            lib:  { fat: 44000,  cmv: 30000 },
+            sim:  { fat: 64000,  cmv: 45000 },
+            gen:  { fat: 98000,  cmv: 68000 },
+            pres: { fat: 125000, cmv: 89000 },
+            perf: { fat: 179000, cmv: 94000 },
+          },
+        },
+        '2025': {},
+      },
+      mixView: { '2025': 'ANO', '2026': 'ANO' },
+    };
+    save();
+    updatePageHeader();
+    renderInputSection();
+    renderMixSection();
+    recompute();
+    recomputeMix();
+  };
+
+  window.resetAll = function() {
+    if (!confirm('Limpar todos os dados de ' + state.currentYear + '?\n\n(Os dados do outro ano serão preservados.)')) return;
+    const year = state.currentYear;
+    state.inputs[year] = {};
+    state.mix[year] = {};
+    state.monthlyMix[year] = {};
+    save();
+    renderInputSection();
+    renderMixSection();
+    recompute();
+    recomputeMix();
+  };
+
+  // ============ EXPORT / IMPORT / SHARE ============
+  window.exportSelfContained = function() {
+    // Generates a copy of the current HTML page with state baked in,
+    // ready to send via WhatsApp/email/Drive — recipient opens and sees the same data.
+    try {
+      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const stateJson = JSON.stringify(state).replace(/<\/script>/gi, '<\\/script>');
+      const injection = '<script id="__farmagnus_initial_state__">window.__FARMAGNUS_INITIAL_STATE__ = ' + stateJson + ';\u003C/script\u003E\n';
+      // Insert just before the main IIFE
+      const marker = '<script>\n(function() {\n  \'use strict\';';
+      const idx = html.indexOf(marker);
+      if (idx < 0) { alert('Não foi possível preparar o arquivo. Tente novamente.'); return; }
+      // Clean previous embedded state if any
+      const cleaned = html.replace(/<script id="__farmagnus_initial_state__">[\s\S]*?<\/script>\n?/, '');
+      const idx2 = cleaned.indexOf(marker);
+      const modified = cleaned.slice(0, idx2) + injection + cleaned.slice(idx2);
+      const blob = new Blob([modified], { type: 'text/html;charset=utf-8' });
+      const link = document.createElement('a');
+      const stamp = new Date().toISOString().slice(0,10);
+      link.href = URL.createObjectURL(blob);
+      link.download = 'Diagnostico_Farmagnus_' + stamp + '.html';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(function(){ URL.revokeObjectURL(link.href); }, 100);
+    } catch(e) {
+      console.error('Export failed:', e);
+      alert('Erro ao exportar. Detalhes no console (F12).');
+    }
+  };
+
+  window.importDataFile = function(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const content = e.target.result;
+        let parsed;
+        if (file.name.endsWith('.html')) {
+          // Extract embedded state from HTML
+          const m = content.match(/window\.__FARMAGNUS_INITIAL_STATE__\s*=\s*(\{[\s\S]*?\});/);
+          if (!m) { alert('Esse arquivo HTML não contém dados embutidos.'); return; }
+          parsed = JSON.parse(m[1]);
+        } else {
+          parsed = JSON.parse(content);
+        }
+        if (!parsed || typeof parsed !== 'object' || !parsed.inputs) {
+          alert('Arquivo inválido — não é um diagnóstico Farmagnus exportado.');
+          return;
+        }
+        if (!confirm('Importar dados do arquivo "' + file.name + '"?\n\nIsso substituirá os dados atualmente salvos no navegador.')) return;
+        state = parsed;
+        ensureStateShape();
+        save();
+        updatePageHeader();
+        renderInputSection();
+        renderMixSection();
+        recompute();
+        recomputeMix();
+        if (state.view === 'comparativo') renderComparativo();
+        alert('Dados importados com sucesso.');
+      } catch(err) {
+        console.error('Import failed:', err);
+        alert('Erro ao importar: ' + err.message);
+      } finally {
+        // Reset input so the same file can be re-imported if needed
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  // Strip zero/empty values to reduce URL size
+  function compactState(s) {
+    const c = JSON.parse(JSON.stringify(s));
+    function clean(obj) {
+      if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+      for (const k in obj) {
+        const v = obj[k];
+        if (v === 0 || v === '' || v === null || v === undefined) {
+          delete obj[k];
+        } else if (typeof v === 'object' && !Array.isArray(v)) {
+          clean(v);
+          if (Object.keys(v).length === 0) delete obj[k];
+        }
+      }
+      return obj;
+    }
+    return clean(c);
+  }
+
+  function encodeStateForUrl(s) {
+    const compact = compactState(s);
+    const json = JSON.stringify(compact);
+    const utf8 = unescape(encodeURIComponent(json));
+    const b64 = btoa(utf8);
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function decodeStateFromUrl(urlSafe) {
+    try {
+      let b64 = urlSafe.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const utf8 = atob(b64);
+      const json = decodeURIComponent(escape(utf8));
+      return JSON.parse(json);
+    } catch(e) {
+      console.error('URL decode failed:', e);
+      return null;
+    }
+  }
+
+  window.copyShareLink = function() {
+    if (location.protocol === 'file:') {
+      const msg = 'Pra gerar um link compartilhável, o dashboard precisa estar hospedado em uma URL pública (http/https).\n\n' +
+        'PASSO A PASSO:\n' +
+        '1. Clique em "Compartilhar" pra baixar o HTML com seus dados embutidos\n' +
+        '2. Acesse https://app.netlify.com/drop\n' +
+        '3. Arraste o arquivo baixado pra área indicada\n' +
+        '4. Vai gerar uma URL pública (ex: https://abc.netlify.app)\n' +
+        '5. Use essa URL pra acessar o dashboard\n' +
+        '6. Depois disso, "Copiar link" funcionará normalmente\n\n' +
+        'Quer abrir o Netlify Drop agora?';
+      if (confirm(msg)) {
+        window.open('https://app.netlify.com/drop', '_blank');
+      }
+      return;
+    }
+    try {
+      const encoded = encodeStateForUrl(state);
+      const url = location.origin + location.pathname + '#d=' + encoded;
+
+      if (url.length > 8000) {
+        alert('Seus dados ficaram grandes demais pra caber em um link (' + Math.round(url.length / 1024) + ' KB de URL).\n\nUse o botão "Compartilhar" pra baixar como arquivo HTML.');
+        return;
+      }
+
+      function showSuccess() {
+        const btn = document.querySelector('[onclick="copyShareLink()"]');
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Link copiado!';
+          btn.style.background = 'var(--green-soft)';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.color = 'var(--green-dark)';
+          setTimeout(function() {
+            btn.innerHTML = original;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+          }, 2500);
+        }
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(showSuccess).catch(function() {
+          prompt('Copie este link e envie:', url);
+        });
+      } else {
+        prompt('Copie este link e envie:', url);
+      }
+    } catch(e) {
+      console.error('Share failed:', e);
+      alert('Erro ao gerar link.');
+    }
+  };
+
+  function checkUrlHashForData() {
+    if (!location.hash) return false;
+    const hash = location.hash;
+    if (hash.indexOf('#d=') !== 0) return false;
+    const encoded = hash.slice(3);
+    const decoded = decodeStateFromUrl(encoded);
+    if (decoded && decoded.inputs) {
+      state = decoded;
+      ensureStateShape();
+      try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
+      return true;
+    }
+    return false;
+  }
+
+  // ============ INIT ============
+  function init() {
+    const scenBtns = document.querySelectorAll('#scenario-tabs button');
+    for (let i = 0; i < scenBtns.length; i++) {
+      scenBtns[i].addEventListener('click', function() {
+        switchScenario(this.getAttribute('data-scen'));
+      });
+    }
+    const chartBtns = document.querySelectorAll('#chart-toggle button');
+    for (let i = 0; i < chartBtns.length; i++) {
+      chartBtns[i].addEventListener('click', function() {
+        switchChartType(this.getAttribute('data-chart'));
+      });
+    }
+    renderKpiCards();
+    renderDiagList();
+    load();
+    // Render dynamic year tabs after load (uses state.years)
+    renderYearTabs();
+    // Sync chart toggle button states with loaded chartType
+    const ct = state.chartType || 'line';
+    for (let i = 0; i < chartBtns.length; i++) {
+      chartBtns[i].classList.toggle('active', chartBtns[i].getAttribute('data-chart') === ct);
+    }
+    updatePageHeader();
+    renderInputSection();
+    renderMixSection();
+    recompute();
+    recomputeMix();
+
+    // Restore last view (year or comparativo)
+    if (state.view === 'comparativo') {
+      document.body.setAttribute('data-view', 'comparativo');
+      renderComparativo();
+    } else {
+      document.body.setAttribute('data-view', 'year');
+    }
+    syncTabUI();
+
+    window.addEventListener('beforeunload', function() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
