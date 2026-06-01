@@ -1058,6 +1058,12 @@
   .val-eq-result b { color: var(--green-dark); }
   .val-empty { text-align: center; color: var(--ink-muted); padding: 40px 20px; font-size: 14px; }
   .val-method { font-size: 10.5px; color: var(--ink-muted); margin-top: 16px; line-height: 1.5; }
+  .val-deck-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 18px 0 4px; }
+  .val-deck-btn { display: inline-flex; align-items: center; gap: 9px; font: inherit; font-size: 14px; font-weight: 700;
+    color: #fff; background: var(--green); border: none; border-radius: 10px; padding: 12px 18px; cursor: pointer; transition: background .15s; }
+  .val-deck-btn:hover { background: var(--green-dark); }
+  .val-deck-btn svg { width: 17px; height: 17px; }
+  .val-deck-hint { font-size: 12px; color: var(--ink-muted); flex: 1; min-width: 200px; }
 
   @media (max-width: 720px) {
     .val-grid, .val-stat-grid, .val-pot-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2033,6 +2039,14 @@
   </section>
 
   <div id="valuation-results"></div>
+
+  <div class="val-deck-actions">
+    <button class="val-deck-btn" onclick="window.generateSalesDeck()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="6"/><rect x="12" y="7" width="3" height="10"/><rect x="17" y="13" width="3" height="4"/></svg>
+      Gerar apresentação de venda
+    </button>
+    <span class="val-deck-hint">Baixa um arquivo HTML com dashboard, gráfico e os pontos fortes destacados — pronto para enviar a investidores.</span>
+  </div>
 
   <p class="val-method">Metodologia: EBITDA = (Faturamento − CMV − Folha − Ocupação − Operação − Tecnologia − Marketing), anualizado. EBITDA % = EBITDA ÷ Receita. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo. Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
 </div><!-- /#valuation-view -->
@@ -3295,6 +3309,197 @@
 
     box.innerHTML = html;
   }
+
+  // ============ APRESENTAÇÃO DE VENDA (deck) ============
+  function deckShort(n) {
+    if (!n) return 'R$ 0';
+    const abs = Math.abs(n);
+    if (abs >= 1000000) return 'R$ ' + (n / 1000000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + 'M';
+    if (abs >= 1000) return 'R$ ' + Math.round(n / 1000).toLocaleString('pt-BR') + 'k';
+    return 'R$ ' + Math.round(n).toLocaleString('pt-BR');
+  }
+  function deckBars(series, color) {
+    const W = 760, H = 230, padL = 6, padR = 6, padT = 22, padB = 30;
+    const n = series.length;
+    if (n === 0) return '';
+    let max = 1;
+    for (let i = 0; i < n; i++) max = Math.max(max, series[i].value);
+    const gap = n > 8 ? 6 : 12;
+    const bw = (W - padL - padR - gap * (n - 1)) / n;
+    let s = '';
+    for (let i = 0; i < n; i++) {
+      const it = series[i];
+      const bh = (H - padT - padB) * (it.value / max);
+      const x = padL + i * (bw + gap);
+      const y = H - padB - bh;
+      s += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="4" fill="' + color + '"/>';
+      s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#0f172a">' + deckShort(it.value) + '</text>';
+      s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - padB + 16) + '" text-anchor="middle" font-size="11" fill="#94a3b8">' + escapeHTML(it.label) + '</text>';
+    }
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="xMidYMid meet" role="img">' + s + '</svg>';
+  }
+
+  window.generateSalesDeck = function() {
+    const r = computeValuation();
+    if (!r.hasData) {
+      alert('Preencha os dados operacionais do ano (§ 01) para gerar a apresentação de venda.');
+      return;
+    }
+    const v = state.valuation || defaultValuation();
+    const baseYear = r.baseYear;
+    const m = getMonthlyAvgForYear(baseYear);
+    const ind = computeIndicators(m);
+
+    // Série mensal de faturamento (meses preenchidos)
+    const mk = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    const serie = [];
+    const inp = (state.inputs && state.inputs[baseYear]) || {};
+    for (let i = 0; i < mk.length; i++) {
+      const d = inp[mk[i]];
+      if (d && d.fat > 0) serie.push({ label: MONTH_NAMES_SHORT[mk[i]], value: d.fat });
+    }
+
+    // Crescimento ano contra ano
+    let growth = null, prevYear = null;
+    const years = (state.years || []).slice().sort();
+    const bi = years.indexOf(baseYear);
+    if (bi > 0) {
+      prevYear = years[bi - 1];
+      const pm = getMonthlyAvgForYear(prevYear);
+      if (pm.fat > 0) growth = (m.fat - pm.fat) / pm.fat;
+    }
+
+    // Margem da categoria livre (perfumaria) — rentabilidade
+    let livreMarg = 0, temMix = false;
+    try {
+      const agg = (getAggregatedYearlyMix(baseYear) || {}).data || {};
+      let lf = 0, lc = 0;
+      for (let i = 0; i < CATEGORIES.length; i++) {
+        const c = CATEGORIES[i]; const dd = agg[c.key] || {};
+        if (c.pmc === 'no') { lf += dd.fat || 0; lc += dd.cmv || 0; }
+      }
+      if (lf > 0) { livreMarg = (lf - lc) / lf; temMix = true; }
+    } catch (e) {}
+
+    // Pontos fortes (auto-selecionados)
+    const fortes = [];
+    if (growth !== null && growth > 0.01) fortes.push('Crescimento de <b>' + fmtPct(growth) + '</b> no faturamento médio vs ' + prevYear + '.');
+    if (ind.margem >= 0.30) fortes.push('Margem bruta saudável de <b>' + fmtPct(ind.margem) + '</b> (benchmark 30%–45%).');
+    if (r.ebitdaPct >= 0.06) fortes.push('Operação rentável: EBITDA de <b>' + fmtPct(r.ebitdaPct) + '</b> sobre a receita.');
+    if (r.score >= 55) fortes.push('Score do investidor <b>' + r.score + '/100</b> — ' + r.scoreVerdict.toLowerCase() + '.');
+    if (ind.fatFte >= 35000) fortes.push('Alta produtividade: <b>' + fmtBRL(ind.fatFte) + '</b> de faturamento por colaborador/mês.');
+    if (ind.ticket > 0) fortes.push('Ticket médio de <b>' + fmtBRL(ind.ticket) + '</b>.');
+    if ((parseBR(v.tempoOp) || 0) >= 3) fortes.push('<b>' + fmtDec(parseBR(v.tempoOp)) + ' anos</b> de operação consolidada no ponto.');
+    if ((parseBR(v.concorrentes) || 0) > 0 && (parseBR(v.concorrentes) || 0) <= 3) fortes.push('Baixa concorrência no entorno (<b>' + fmtDec(parseBR(v.concorrentes)) + '</b>).');
+    if (temMix && livreMarg >= 0.30) fortes.push('Categoria de preço livre (perfumaria) com margem de <b>' + fmtPct(livreMarg) + '</b> — âncora de rentabilidade.');
+    if (r.capitalLiberavel > 0) fortes.push('<b>' + fmtBRL(r.capitalLiberavel) + '</b> de capital recuperável no estoque (ganho imediato de caixa).');
+    if (fortes.length === 0) fortes.push('Operação ativa com base sólida de faturamento de <b>' + fmtBRL(r.fatAno) + '</b>/ano.');
+
+    const cidade = escapeHTML(v.cidade || '');
+    const estado = escapeHTML(v.estado || '');
+    const local = (cidade || estado) ? (cidade + (cidade && estado ? ' · ' : '') + estado) : 'Unidade Penha-Gravatá';
+    const hoje = new Date().toLocaleDateString('pt-BR');
+
+    function kpi(label, value, sub) {
+      return '<div class="k"><div class="kl">' + label + '</div><div class="kv">' + value + '</div>' + (sub ? '<div class="ks">' + sub + '</div>' : '') + '</div>';
+    }
+
+    let body = '';
+    body += '<header class="cover">' +
+      '<div class="eyebrow">Oportunidade de investimento · Farmácia</div>' +
+      '<h1>Drogarias Farmagnus</h1>' +
+      '<div class="loc">' + local + '</div>' +
+      '<div class="headline"><span>Valuation estimado</span><strong>' + fmtBRL(r.valBase) + '</strong>' +
+      '<small>faixa ' + fmtBRL(r.valMin) + ' – ' + fmtBRL(r.valMax) + ' · ' + fmtDec(r.multMin) + 'x–' + fmtDec(r.multMax) + 'x EBITDA</small></div>' +
+    '</header>';
+
+    body += '<section class="grid">' +
+      kpi('Faturamento anual', fmtBRL(r.fatAno), baseYear) +
+      kpi('EBITDA anual', fmtBRL(r.ebitdaAno), 'margem ' + fmtPct(r.ebitdaPct)) +
+      kpi('Margem bruta', fmtPct(ind.margem), 'benchmark 30–45%') +
+      kpi('Ticket médio', fmtBRL(ind.ticket), '') +
+      kpi('Score do investidor', r.score + '<small>/100</small>', r.scoreVerdict) +
+      kpi('Patrimônio operacional', fmtBRL(r.patrimonioOperacional), 'estoque + ativos − dívidas') +
+    '</section>';
+
+    if (serie.length > 0) {
+      body += '<section class="chart"><h2>Faturamento mensal · ' + baseYear + '</h2>' + deckBars(serie, '#16a34a') + '</section>';
+    }
+
+    if (growth !== null && growth > 0) {
+      body += '<section class="growth">▲ Crescimento de <strong>' + fmtPct(growth) + '</strong> no faturamento médio frente a ' + prevYear + '</section>';
+    }
+
+    body += '<section class="range"><h2>Faixa de valuation</h2><div class="range-row">' +
+      '<div class="re"><small>Conservador</small><span>' + fmtBRL(r.valMin) + '</span></div>' +
+      '<div class="rm"><small>Estimativa</small><span>' + fmtBRL(r.valBase) + '</span></div>' +
+      '<div class="re"><small>Otimista</small><span>' + fmtBRL(r.valMax) + '</span></div>' +
+    '</div><div class="rnote">Múltiplo de EBITDA ajustado pelo score (' + fmtDec(r.multAj) + 'x). Potencial de <strong>' + fmtBRL(r.valPotencial) + '</strong> após otimização do estoque.</div></section>';
+
+    body += '<section class="strong"><h2>Pontos fortes</h2><ul>';
+    for (let i = 0; i < fortes.length; i++) body += '<li>' + fortes[i] + '</li>';
+    body += '</ul></section>';
+
+    body += '<footer class="foot">Apresentação gerada pelo Diagnóstico Farmagnus em ' + hoje +
+      '. Estimativas indicativas baseadas nos números operacionais informados — não substituem laudo de avaliação.</footer>';
+
+    const css = '*{box-sizing:border-box;margin:0;padding:0}' +
+      'body{font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;background:#f1f5f9;color:#0f172a;padding:28px;line-height:1.45}' +
+      '.deck{max-width:860px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(15,23,42,.12)}' +
+      '.cover{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:40px 44px}' +
+      '.cover .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;font-weight:600}' +
+      '.cover h1{font-size:38px;font-weight:800;margin:8px 0 2px}' +
+      '.cover .loc{font-size:15px;opacity:.9}' +
+      '.headline{margin-top:22px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:16px 20px;display:flex;flex-direction:column}' +
+      '.headline span{font-size:12px;text-transform:uppercase;letter-spacing:.06em;opacity:.9}' +
+      '.headline strong{font-size:34px;font-weight:800;line-height:1.1}' +
+      '.headline small{opacity:.85;font-size:12.5px;margin-top:2px}' +
+      '.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:28px 44px 8px}' +
+      '.k{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px}' +
+      '.kl{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8;font-weight:600}' +
+      '.kv{font-size:22px;font-weight:800;margin:4px 0 2px}.kv small{font-size:13px;color:#94a3b8;font-weight:600}' +
+      '.ks{font-size:11px;color:#64748b}' +
+      'section{padding:18px 44px}h2{font-size:14px;font-weight:700;margin-bottom:12px;color:#334155}' +
+      '.chart svg{display:block}' +
+      '.growth{margin:6px 44px 0;background:#f0fdf4;border:1px solid #dcfce7;border-radius:12px;padding:14px 18px;color:#15803d;font-size:16px}' +
+      '.growth strong{font-weight:800}' +
+      '.range-row{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:12px;text-align:center;align-items:center}' +
+      '.re small,.rm small{display:block;font-size:11px;color:#94a3b8;margin-bottom:4px}' +
+      '.re span{font-size:18px;font-weight:700;color:#475569}' +
+      '.rm{background:#fef2f2;border:1px solid #fee2e2;border-radius:12px;padding:14px}' +
+      '.rm span{font-size:26px;font-weight:800;color:#dc2626}' +
+      '.rnote{margin-top:12px;font-size:12.5px;color:#64748b}' +
+      '.strong ul{list-style:none;display:flex;flex-direction:column;gap:9px}' +
+      '.strong li{position:relative;padding-left:26px;font-size:14px;color:#334155}' +
+      '.strong li:before{content:"";position:absolute;left:0;top:6px;width:14px;height:14px;border-radius:50%;background:#16a34a}' +
+      '.strong li:after{content:"";position:absolute;left:4px;top:9.5px;width:6px;height:3px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}' +
+      '.foot{padding:20px 44px 36px;font-size:11px;color:#94a3b8;border-top:1px solid #f1f5f9;margin-top:8px}' +
+      '@media print{body{background:#fff;padding:0}.deck{box-shadow:none;border-radius:0;max-width:100%}}' +
+      '@media(max-width:640px){.grid{grid-template-columns:1fr 1fr}.cover{padding:28px}section{padding:16px 24px}.grid{padding:20px 24px 4px}.growth{margin:6px 24px 0}}';
+
+    const html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+      '<title>Apresentação de Venda · Drogarias Farmagnus</title>' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' +
+      '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">' +
+      '<style>' + css + '</style></head><body><div class="deck">' + body + '</div></body></html>';
+
+    try {
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const d = new Date();
+      const stamp = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+      a.href = url;
+      a.download = 'Apresentacao_Venda_Farmagnus_' + stamp + '.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+    } catch (e) {
+      alert('Não foi possível gerar o arquivo: ' + e.message);
+    }
+  };
 
   // ============ COMPARATIVO ============
   // Builds the full indicator set from raw monthly averages
