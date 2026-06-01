@@ -1349,11 +1349,70 @@
   }
 
   @media print {
-    body { background: white; padding: 0; }
-    .save-indicator, .scenario-tabs, .topnav-actions, .topnav { display: none !important; }
-    .container { max-width: 100%; padding: 0; }
-    .section, .kpi-hero, .pmc-card-large { page-break-inside: avoid; }
-    input.num { border: 1px solid #ccc; background: white; }
+    @page { size: A4 portrait; margin: 9mm 10mm; }
+    html, body { background: #fff !important; }
+    body { padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Esconde elementos de interface (não-informativos) */
+    .topnav, .save-indicator, .scenario-tabs, .topnav-actions,
+    .chart-options-vertical, .chart-toggle-vertical,
+    .mix-view-tabs, .login-gate,
+    .comp-hero, #comparativo-view,
+    .kpi-hero-sparkline, .kpi-hero-icon { display: none !important; }
+    body.locked { overflow: visible !important; }
+
+    .container { max-width: 100% !important; padding: 0 !important; }
+
+    /* Não quebrar blocos no meio */
+    .section, .kpi-hero, .pmc-card-large, .kpi-card,
+    .diag-row, .data-table tr, .mix-table tr { page-break-inside: avoid; }
+
+    /* ----- Compactação geral ----- */
+    .hero { padding: 2px 0 6px !important; }
+    .hero-breadcrumb { margin-bottom: 4px !important; font-size: 9px !important; }
+    .hero-title { font-size: 21px !important; }
+    .hero-tagline { font-size: 9.5px !important; margin-top: 2px !important; }
+    .period-card { padding: 7px 12px !important; margin-bottom: 8px !important; gap: 14px !important; }
+    .section { padding: 8px 12px !important; margin-bottom: 8px !important; }
+    .section-head { margin-bottom: 6px !important; padding-bottom: 5px !important; }
+    .section-title { font-size: 12.5px !important; }
+    .section-desc { font-size: 8.5px !important; }
+
+    /* KPIs hero: 5 colunas compactas */
+    .kpi-hero-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 6px !important; margin-bottom: 8px !important; }
+    .kpi-hero { padding: 6px 8px !important; }
+    .kpi-hero-value { font-size: 14px !important; }
+    .kpi-hero-label { font-size: 8px !important; }
+    .kpi-hero-sub { font-size: 7px !important; }
+
+    /* §02 indicadores: 4 colunas */
+    .kpi-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 6px !important; }
+    .kpi-card { padding: 6px 9px !important; }
+
+    /* §01/§03 tabelas: caber na largura, sem cortar */
+    .table-wrap { overflow: visible !important; margin: 0 !important; padding: 0 !important; }
+    .data-table, .mix-table { min-width: 0 !important; width: 100% !important; }
+    .data-table { font-size: 8.5px !important; }
+    .data-table thead th { padding: 2px 4px !important; font-size: 7.5px !important; }
+    .data-table thead th.col-num { min-width: 0 !important; }
+    .data-table tbody td { padding: 2px 4px !important; }
+    .data-table tbody td.label { min-width: 0 !important; font-size: 8.5px !important; }
+    .data-table tbody td.label small { font-size: 7px !important; }
+    .data-table tbody td.col-num { padding: 1px 3px !important; }
+    input.num { min-width: 0 !important; width: 100% !important; padding: 1px 3px !important;
+      font-size: 8.5px !important; border: 1px solid #ddd !important; background: #fff !important; }
+    .mix-table th, .mix-table td { padding: 2px 5px !important; font-size: 8px !important; }
+    .mix-table .readonly-value, .readonly-value { font-size: 8px !important; }
+
+    /* §04 PMC */
+    .pmc-compare { gap: 8px !important; }
+    .pmc-card-large { padding: 8px 12px !important; }
+
+    /* §05 leitura crítica */
+    .diag-list { gap: 4px !important; }
+
+    /* Página 2 começa no §03 (Mix por categoria) */
+    .print-page-break { page-break-before: always !important; }
   }
 </style>
 </head>
@@ -1656,7 +1715,7 @@
     <div class="kpi-grid" id="kpi-grid"></div>
   </section>
 
-  <section class="card section">
+  <section class="card section print-page-break">
     <div id="mix-section"></div>
   </section>
 
