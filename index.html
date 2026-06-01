@@ -1000,6 +1000,12 @@
   }
   .val-input:focus { border-color: var(--red); }
   .val-input.num { text-align: right; font-variant-numeric: tabular-nums; }
+  /* Tabela de inputs no estilo da aba "Dados de entrada" (§01) */
+  .val-table td.col-num { width: 320px; text-align: right; }
+  .val-table td.col-num input, .val-table td.col-num select { width: 100%; }
+  .val-table td.col-num input.val-text, .val-table td.col-num select.val-input { text-align: left; }
+  .val-table thead th.col-num { text-align: right; min-width: 0; }
+  @media (max-width: 720px) { .val-table td.col-num { width: 150px; } }
   .val-mult-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 16px;
     padding-top: 14px; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--ink-soft); }
   .val-mult-row label { display: inline-flex; align-items: center; gap: 6px; }
@@ -1964,23 +1970,23 @@
       <div class="section-title"><span class="section-num">§ P</span>Perfil da loja</div>
       <div class="section-desc">dados informados uma única vez</div>
     </div>
-    <div class="val-grid">
-      <label class="val-field"><span>Cidade</span>
-        <input class="val-input" id="val-cidade" type="text" data-vfield="cidade" oninput="window.onValuationInput(this)" placeholder="Ex: Recife"></label>
-      <label class="val-field"><span>Estado (UF)</span>
-        <input class="val-input" id="val-estado" type="text" maxlength="2" data-vfield="estado" oninput="window.onValuationInput(this)" placeholder="Ex: PE"></label>
-      <label class="val-field"><span>Imóvel</span>
-        <select class="val-input" id="val-imovel" data-vfield="imovel" onchange="window.onValuationInput(this)">
-          <option value="alugada">Alugada</option>
-          <option value="propria">Própria</option>
-        </select></label>
-      <label class="val-field"><span>Área de vendas (m²)</span>
-        <input class="val-input" id="val-area" type="text" inputmode="decimal" data-vfield="area" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="100"></label>
-      <label class="val-field"><span>Tempo de operação (anos)</span>
-        <input class="val-input" id="val-tempoOp" type="text" inputmode="decimal" data-vfield="tempoOp" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="Ex: 6"></label>
-      <label class="val-field"><span>Concorrentes próximos</span>
-        <input class="val-input" id="val-concorrentes" type="text" inputmode="decimal" data-vfield="concorrentes" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="Ex: 3"></label>
-    </div>
+    <div class="table-wrap"><table class="data-table val-table">
+      <thead><tr><th>Indicador</th><th class="col-num">Valor</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Cidade</td>
+          <td class="col-num"><input class="val-input val-text" id="val-cidade" type="text" data-vfield="cidade" oninput="window.onValuationInput(this)" placeholder="Ex: Recife"></td></tr>
+        <tr><td class="label">Estado (UF)</td>
+          <td class="col-num"><input class="val-input val-text" id="val-estado" type="text" maxlength="2" data-vfield="estado" oninput="window.onValuationInput(this)" placeholder="Ex: PE"></td></tr>
+        <tr><td class="label">Imóvel</td>
+          <td class="col-num"><select class="val-input val-text" id="val-imovel" data-vfield="imovel" onchange="window.onValuationInput(this)"><option value="alugada">Alugada</option><option value="propria">Própria</option></select></td></tr>
+        <tr><td class="label">Área de vendas<small>em m²</small></td>
+          <td class="col-num"><input class="val-input num" id="val-area" type="text" inputmode="decimal" data-vfield="area" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="100"></td></tr>
+        <tr><td class="label">Tempo de operação<small>em anos</small></td>
+          <td class="col-num"><input class="val-input num" id="val-tempoOp" type="text" inputmode="decimal" data-vfield="tempoOp" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="Ex: 6"></td></tr>
+        <tr><td class="label">Concorrentes próximos<small>raio de proximidade</small></td>
+          <td class="col-num"><input class="val-input num" id="val-concorrentes" type="text" inputmode="decimal" data-vfield="concorrentes" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="Ex: 3"></td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="card section">
@@ -1988,18 +1994,21 @@
       <div class="section-title"><span class="section-num">§ D</span>Custos mensais (R$/mês)</div>
       <div class="section-desc">agrupados em blocos · base para o EBITDA</div>
     </div>
-    <div class="val-grid">
-      <label class="val-field"><span>Folha (equipe)<em>salários, encargos, pró-labore, benefícios</em></span>
-        <input class="val-input num" id="val-folha" type="text" inputmode="decimal" data-vfield="folha" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Ocupação (estrutura)<em>aluguel, condomínio, IPTU</em></span>
-        <input class="val-input num" id="val-ocupacao" type="text" inputmode="decimal" data-vfield="ocupacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Operação<em>energia, água, telefone, internet, material, limpeza</em></span>
-        <input class="val-input num" id="val-operacao" type="text" inputmode="decimal" data-vfield="operacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Tecnologia (sistemas)<em>ERP, Trier, Farmagnus, licenças</em></span>
-        <input class="val-input num" id="val-tecnologia" type="text" inputmode="decimal" data-vfield="tecnologia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Marketing<em>Google, Facebook, panfletagem, rádio</em></span>
-        <input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-    </div>
+    <div class="table-wrap"><table class="data-table val-table">
+      <thead><tr><th>Indicador</th><th class="col-num">Valor / mês</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Folha (equipe)<small>salários, encargos, pró-labore, benefícios</small></td>
+          <td class="col-num"><input class="val-input num" id="val-folha" type="text" inputmode="decimal" data-vfield="folha" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+        <tr><td class="label">Ocupação (estrutura)<small>aluguel, condomínio, IPTU</small></td>
+          <td class="col-num"><input class="val-input num" id="val-ocupacao" type="text" inputmode="decimal" data-vfield="ocupacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+        <tr><td class="label">Operação<small>energia, água, telefone, internet, material, limpeza</small></td>
+          <td class="col-num"><input class="val-input num" id="val-operacao" type="text" inputmode="decimal" data-vfield="operacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+        <tr><td class="label">Tecnologia (sistemas)<small>ERP, Trier, Farmagnus, licenças</small></td>
+          <td class="col-num"><input class="val-input num" id="val-tecnologia" type="text" inputmode="decimal" data-vfield="tecnologia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+        <tr><td class="label">Marketing<small>Google, Facebook, panfletagem, rádio</small></td>
+          <td class="col-num"><input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="card section">
@@ -2007,12 +2016,15 @@
       <div class="section-title"><span class="section-num">§ A</span>Patrimônio (R$)</div>
       <div class="section-desc">saldos atuais · ajusta o valor patrimonial</div>
     </div>
-    <div class="val-grid">
-      <label class="val-field"><span>Equipamentos (ativos)<em>computadores, mobiliário, ar-condicionado, geladeiras</em></span>
-        <input class="val-input num" id="val-equipamentos" type="text" inputmode="decimal" data-vfield="equipamentos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-      <label class="val-field"><span>Dívidas (saldo)<em>capital de giro, empréstimos, financiamentos</em></span>
-        <input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
-    </div>
+    <div class="table-wrap"><table class="data-table val-table">
+      <thead><tr><th>Indicador</th><th class="col-num">Saldo</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Equipamentos (ativos)<small>computadores, mobiliário, ar-condicionado, geladeiras</small></td>
+          <td class="col-num"><input class="val-input num" id="val-equipamentos" type="text" inputmode="decimal" data-vfield="equipamentos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+        <tr><td class="label">Dívidas (saldo)<small>capital de giro, empréstimos, financiamentos</small></td>
+          <td class="col-num"><input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td></tr>
+      </tbody>
+    </table></div>
     <div class="val-mult-row">
       <span class="val-mult-label">Múltiplo de EBITDA para o valuation:</span>
       <label>mín <input class="val-input num val-mult" id="val-multMin" type="text" inputmode="decimal" data-vfield="multMin" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="3"></label>
