@@ -167,6 +167,9 @@
     border-left: 1px solid var(--border);
     border-radius: 0 6px 6px 0;
   }
+  .year-tabs button.valuation-tab { margin-left: 2px; padding-left: 11px; }
+  .year-tabs button.valuation-tab.active { color: var(--green-dark); }
+  .year-tabs button.valuation-tab.active .dot { background: var(--green); }
 
   .btn {
     font: inherit; font-size: 11.5px; font-weight: 500;
@@ -976,9 +979,74 @@
     opacity: 1;
   }
 
-  /* COMPARATIVO VIEW */
-  body[data-view="comparativo"] #year-view { display: none; }
-  body[data-view="year"] #comparativo-view { display: none; }
+  /* VIEW SWITCHING (year / comparativo / valuation) */
+  #comparativo-view, #valuation-view { display: none; }
+  body[data-view="comparativo"] #comparativo-view { display: block; }
+  body[data-view="valuation"] #valuation-view { display: block; }
+  body[data-view="comparativo"] #year-view,
+  body[data-view="valuation"] #year-view { display: none; }
+
+  /* VALUATION VIEW */
+  .val-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .val-field { display: flex; flex-direction: column; gap: 5px; }
+  .val-field > span { font-size: 11px; font-weight: 600; color: var(--ink-soft); letter-spacing: .02em; }
+  .val-input {
+    font: inherit; font-size: 14px; width: 100%;
+    padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: #fff; color: var(--ink); outline: none; transition: border-color .15s;
+  }
+  .val-input:focus { border-color: var(--red); }
+  .val-input.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .val-mult-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 16px;
+    padding-top: 14px; border-top: 1px solid var(--border-light); font-size: 13px; color: var(--ink-soft); }
+  .val-mult-row label { display: inline-flex; align-items: center; gap: 6px; }
+  .val-mult { width: 64px; padding: 6px 8px; }
+
+  .val-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .val-stat { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--ink-faint);
+    border-radius: var(--radius); padding: 12px 14px; box-shadow: var(--shadow-sm); }
+  .val-stat.good { border-left-color: var(--green); }
+  .val-stat.warn { border-left-color: var(--amber); }
+  .val-stat.alert { border-left-color: var(--red); }
+  .val-stat-label { font-size: 11px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .04em; }
+  .val-stat-value { font-size: 22px; font-weight: 800; color: var(--ink); margin: 4px 0 2px; }
+  .val-stat-sub { font-size: 11px; color: var(--ink-muted); }
+
+  .val-score-card { border-left: 3px solid var(--green); }
+  .val-score-card.warn { border-left-color: var(--amber); }
+  .val-score-card.alert { border-left-color: var(--red); }
+  .val-score-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .val-score-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-muted); font-weight: 600; }
+  .val-score-verdict { font-size: 18px; font-weight: 800; color: var(--ink); margin-top: 2px; }
+  .val-score-num { font-size: 34px; font-weight: 800; color: var(--green); line-height: 1; white-space: nowrap; }
+  .val-score-card.warn .val-score-num { color: var(--amber); }
+  .val-score-card.alert .val-score-num { color: var(--red); }
+  .val-score-num small { font-size: 15px; color: var(--ink-muted); font-weight: 600; }
+  .val-score-bar { height: 8px; background: var(--border-light); border-radius: 100px; margin: 12px 0; overflow: hidden; }
+  .val-score-fill { height: 100%; background: var(--green); border-radius: 100px; }
+  .val-score-card.warn .val-score-fill { background: var(--amber); }
+  .val-score-card.alert .val-score-fill { background: var(--red); }
+  .val-score-parts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 24px; }
+  .val-score-part { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-soft); padding: 4px 0; border-bottom: 1px solid var(--border-light); }
+  .val-score-part strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .val-range { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 12px; align-items: center; text-align: center; }
+  .val-range-end small, .val-range-mid small { display: block; font-size: 11px; color: var(--ink-muted); margin-bottom: 4px; }
+  .val-range-end span { font-size: 18px; font-weight: 700; color: var(--ink-soft); }
+  .val-range-mid { background: var(--red-soft); border: 1px solid var(--red-tint); border-radius: var(--radius); padding: 12px; }
+  .val-range-mid span.big { font-size: 26px; font-weight: 800; color: var(--red); }
+  .val-crosscheck { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--ink-muted); }
+  .val-crosscheck strong { color: var(--ink-soft); }
+
+  .val-pot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .val-pot-note { margin-top: 14px; font-size: 12px; color: var(--ink-soft); background: var(--green-soft); border: 1px solid var(--green-tint); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .val-empty { text-align: center; color: var(--ink-muted); padding: 40px 20px; font-size: 14px; }
+  .val-method { font-size: 10.5px; color: var(--ink-muted); margin-top: 16px; line-height: 1.5; }
+
+  @media (max-width: 720px) {
+    .val-grid, .val-stat-grid, .val-pot-grid { grid-template-columns: repeat(2, 1fr); }
+    .val-score-parts, .val-range { grid-template-columns: 1fr; }
+  }
 
   .comp-hero {
     padding: 24px 0 20px;
@@ -1866,6 +1934,80 @@
   </div>
 </div><!-- /#comparativo-view -->
 
+<div id="valuation-view">
+  <section class="hero">
+    <div class="hero-breadcrumb">
+      <span>Relatório</span>
+      <span class="sep">·</span>
+      <span>Avaliação do negócio</span>
+      <span class="pill pill-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Valuation</span>
+      </span>
+    </div>
+    <h1 class="hero-title">Quanto vale <span class="hero-title-accent">a farmácia</span></h1>
+    <p class="hero-tagline">Informe o perfil da loja e as despesas — o Farmagnus calcula EBITDA, score do investidor e a faixa de valuation a partir dos seus números operacionais.</p>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ P</span>Perfil da loja</div>
+      <div class="section-desc">dados informados uma única vez</div>
+    </div>
+    <div class="val-grid">
+      <label class="val-field"><span>Cidade</span>
+        <input class="val-input" id="val-cidade" type="text" data-vfield="cidade" oninput="window.onValuationInput(this)" placeholder="Ex: Recife"></label>
+      <label class="val-field"><span>Estado (UF)</span>
+        <input class="val-input" id="val-estado" type="text" maxlength="2" data-vfield="estado" oninput="window.onValuationInput(this)" placeholder="Ex: PE"></label>
+      <label class="val-field"><span>Imóvel</span>
+        <select class="val-input" id="val-imovel" data-vfield="imovel" onchange="window.onValuationInput(this)">
+          <option value="alugada">Alugada</option>
+          <option value="propria">Própria</option>
+        </select></label>
+      <label class="val-field"><span>Área de vendas (m²)</span>
+        <input class="val-input" id="val-area" type="text" inputmode="decimal" data-vfield="area" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="100"></label>
+      <label class="val-field"><span>Tempo de operação (anos)</span>
+        <input class="val-input" id="val-tempoOp" type="text" inputmode="decimal" data-vfield="tempoOp" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="Ex: 6"></label>
+      <label class="val-field"><span>Concorrentes próximos</span>
+        <input class="val-input" id="val-concorrentes" type="text" inputmode="decimal" data-vfield="concorrentes" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="Ex: 3"></label>
+    </div>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ D</span>Despesas mensais (R$)</div>
+      <div class="section-desc">base para o cálculo do EBITDA</div>
+    </div>
+    <div class="val-grid">
+      <label class="val-field"><span>Salários</span>
+        <input class="val-input num" id="val-salarios" type="text" inputmode="decimal" data-vfield="salarios" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Encargos</span>
+        <input class="val-input num" id="val-encargos" type="text" inputmode="decimal" data-vfield="encargos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Pró-labore</span>
+        <input class="val-input num" id="val-prolabore" type="text" inputmode="decimal" data-vfield="prolabore" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Aluguel</span>
+        <input class="val-input num" id="val-aluguel" type="text" inputmode="decimal" data-vfield="aluguel" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Energia</span>
+        <input class="val-input num" id="val-energia" type="text" inputmode="decimal" data-vfield="energia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Marketing</span>
+        <input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Sistemas</span>
+        <input class="val-input num" id="val-sistemas" type="text" inputmode="decimal" data-vfield="sistemas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+      <label class="val-field"><span>Outras despesas</span>
+        <input class="val-input num" id="val-outras" type="text" inputmode="decimal" data-vfield="outras" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></label>
+    </div>
+    <div class="val-mult-row">
+      <span class="val-mult-label">Múltiplo de EBITDA para o valuation:</span>
+      <label>mín <input class="val-input num val-mult" id="val-multMin" type="text" inputmode="decimal" data-vfield="multMin" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="3"></label>
+      <label>máx <input class="val-input num val-mult" id="val-multMax" type="text" inputmode="decimal" data-vfield="multMax" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="5"></label>
+    </div>
+  </section>
+
+  <div id="valuation-results"></div>
+
+  <p class="val-method">Metodologia: EBITDA = (faturamento − CMV) anualizado − despesas operacionais anuais. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Score do investidor pondera rentabilidade, margem, giro, cobertura, produtividade, maturidade e concorrência. Estimativas indicativas — não substituem laudo de avaliação.</p>
+</div><!-- /#valuation-view -->
+
   <footer class="colophon">
     <div>DADOS SALVOS LOCALMENTE NO NAVEGADOR · <em>nada é enviado para fora do seu computador</em></div>
     <div id="last-saved">—</div>
@@ -2108,6 +2250,16 @@
       monthlyMix: { '2025': {}, '2026': {} },
       mixView: { '2025': 'ANO', '2026': 'ANO' },
       chartType: 'line',
+      valuation: defaultValuation(),
+    };
+  }
+  function defaultValuation() {
+    return {
+      cidade: '', estado: '', imovel: 'alugada', area: 100,
+      tempoOp: 0, concorrentes: 0,
+      salarios: 0, encargos: 0, prolabore: 0, aluguel: 0,
+      energia: 0, marketing: 0, sistemas: 0, outras: 0,
+      multMin: 3, multMax: 5,
     };
   }
   let state = defaultState();
@@ -2143,6 +2295,14 @@
     if (!state.chartType) state.chartType = 'line';
     if (!state.view) state.view = 'year';
     if (!state.compChartMetric) state.compChartMetric = 'fat';
+
+    // Valuation: garante o objeto e preenche campos faltantes com os defaults
+    if (!state.valuation || typeof state.valuation !== 'object') {
+      state.valuation = defaultValuation();
+    } else {
+      const dv = defaultValuation();
+      for (const k in dv) { if (!(k in state.valuation)) state.valuation[k] = dv[k]; }
+    }
 
     // Clean up orphan period keys (Q1-Q4, S1-S2, ANO) stored in state.inputs
     // from older versions. Only monthly keys (01-12) should live in inputs.
@@ -2783,6 +2943,15 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    if (target === 'valuation') {
+      state.view = 'valuation';
+      document.body.setAttribute('data-view', 'valuation');
+      syncTabUI();
+      renderValuation();
+      save();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     state.view = 'year';
     state.currentYear = target;
     document.body.setAttribute('data-view', 'year');
@@ -2804,7 +2973,7 @@
     let html = '';
     for (let i = 0; i < years.length; i++) {
       const y = years[i];
-      const active = (state.view !== 'comparativo' && state.currentYear === y) ? ' active' : '';
+      const active = (state.view === 'year' && state.currentYear === y) ? ' active' : '';
       html += '<button class="' + active.trim() + '" data-year="' + y + '" onclick="window.switchYear(\'' + y + '\')"><span class="dot"></span>' + y + '</button>';
     }
     html += '<button class="add-year-btn" onclick="window.addNewYear()" title="Adicionar próximo ano">' +
@@ -2812,6 +2981,8 @@
     '</button>';
     const compActive = (state.view === 'comparativo') ? ' active' : '';
     html += '<button class="comparativo-tab' + compActive + '" data-year="comparativo" onclick="window.switchYear(\'comparativo\')"><span class="dot"></span>Comparativo</button>';
+    const valActive = (state.view === 'valuation') ? ' active' : '';
+    html += '<button class="valuation-tab' + valActive + '" data-year="valuation" onclick="window.switchYear(\'valuation\')"><span class="dot"></span>Valuation</button>';
     wrap.innerHTML = html;
   }
 
@@ -2861,6 +3032,195 @@
     }
     recompute();
     save();
+  }
+
+  // ============ VALUATION ============
+  function valNum(field) {
+    return parseBR(state.valuation ? state.valuation[field] : 0) || 0;
+  }
+
+  function computeInvestorScore(o) {
+    const ind = o.ind || {}, ebitdaPct = o.ebitdaPct || 0, v = o.v || {};
+    function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+    const parts = [];
+    parts.push({ label: 'Rentabilidade (EBITDA %)', weight: 25, score: clamp01(ebitdaPct / 0.12) });
+    parts.push({ label: 'Margem bruta', weight: 20, score: clamp01(((ind.margem || 0) - 0.20) / 0.20) });
+    parts.push({ label: 'Giro de estoque', weight: 20, score: clamp01((ind.giro || 0) / 0.67) });
+    const cob = ind.cobertura || 0;
+    parts.push({ label: 'Cobertura de estoque', weight: 15, score: cob <= 0 ? 0 : clamp01((120 - cob) / 75) });
+    parts.push({ label: 'Produtividade (fat/FTE)', weight: 8, score: clamp01((ind.fatFte || 0) / 35000) });
+    parts.push({ label: 'Maturidade (tempo de operação)', weight: 7, score: clamp01((parseBR(v.tempoOp) || 0) / 5) });
+    parts.push({ label: 'Posição competitiva', weight: 5, score: clamp01((8 - (parseBR(v.concorrentes) || 0)) / 8) });
+    let total = 0, wsum = 0;
+    for (let i = 0; i < parts.length; i++) {
+      total += parts[i].score * parts[i].weight;
+      wsum += parts[i].weight;
+      parts[i].pts = Math.round(parts[i].score * parts[i].weight);
+    }
+    const score = wsum > 0 ? Math.round(total / wsum * 100) : 0;
+    let verdict, cls;
+    if (score >= 75) { verdict = 'Ativo muito atrativo'; cls = 'good'; }
+    else if (score >= 55) { verdict = 'Ativo atrativo'; cls = 'good'; }
+    else if (score >= 40) { verdict = 'Atratividade média'; cls = 'warn'; }
+    else { verdict = 'Requer reestruturação'; cls = 'alert'; }
+    return { score: score, parts: parts, verdict: verdict, cls: cls };
+  }
+
+  function computeValuation() {
+    const v = state.valuation || defaultValuation();
+    const baseYear = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
+      ? state.currentYear : getCurrentYearInProgress();
+    const m = getMonthlyAvgForYear(baseYear);
+    const ind = computeIndicators(m);
+
+    const fatMes = m.fat || 0;
+    const cmvMes = m.cmv || 0;
+    const fatAno = fatMes * 12;
+    const lucroBrutoAno = (fatMes - cmvMes) * 12;
+
+    const despMes = valNum('salarios') + valNum('encargos') + valNum('prolabore') + valNum('aluguel')
+      + valNum('energia') + valNum('marketing') + valNum('sistemas') + valNum('outras');
+    const despAno = despMes * 12;
+
+    const ebitdaAno = lucroBrutoAno - despAno;
+    const ebitdaPct = fatAno > 0 ? ebitdaAno / fatAno : 0;
+
+    const estqAtual = m.estq || 0;
+    const estqIdeal = ind.estqIdeal || 0;
+    const capitalParado = estqAtual - estqIdeal;
+    const capitalLiberavel = Math.max(0, capitalParado);
+
+    const sc = computeInvestorScore({ ind: ind, ebitdaPct: ebitdaPct, v: v });
+
+    const multMin = parseBR(v.multMin) > 0 ? parseBR(v.multMin) : 3;
+    const multMax = parseBR(v.multMax) > 0 ? parseBR(v.multMax) : 5;
+    const multAj = multMin + (multMax - multMin) * (sc.score / 100);
+    const ebitdaPos = Math.max(0, ebitdaAno);
+    const valBase = ebitdaPos * multAj;
+    const valMin = ebitdaPos * multMin;
+    const valMax = ebitdaPos * multMax;
+
+    // Cenário otimizado: estoque no ideal melhora giro/cobertura -> score e múltiplo sobem;
+    // o caixa liberado entra somado ao valor da operação.
+    const indOt = {
+      margem: ind.margem, fatFte: ind.fatFte,
+      giro: estqIdeal > 0 ? safe(cmvMes / estqIdeal) : ind.giro,
+      cobertura: cmvMes > 0 ? safe(estqIdeal / (cmvMes / 30)) : ind.cobertura,
+    };
+    const scOt = computeInvestorScore({ ind: indOt, ebitdaPct: ebitdaPct, v: v });
+    const multOt = multMin + (multMax - multMin) * (scOt.score / 100);
+    const valPotencial = ebitdaPos * multOt + capitalLiberavel;
+
+    return {
+      baseYear: baseYear, fatAno: fatAno, lucroBrutoAno: lucroBrutoAno, margem: ind.margem || 0,
+      despMes: despMes, despAno: despAno, ebitdaAno: ebitdaAno, ebitdaPct: ebitdaPct,
+      estqAtual: estqAtual, estqIdeal: estqIdeal, capitalParado: capitalParado, capitalLiberavel: capitalLiberavel,
+      score: sc.score, scoreParts: sc.parts, scoreVerdict: sc.verdict, scoreCls: sc.cls,
+      multMin: multMin, multMax: multMax, multAj: multAj, valBase: valBase, valMin: valMin, valMax: valMax,
+      scoreOt: scOt.score, multOt: multOt, valPotencial: valPotencial, ganho: valPotencial - valBase,
+      valFatMin: fatAno * 0.30, valFatMax: fatAno * 0.45,
+      hasData: fatAno > 0,
+    };
+  }
+
+  function renderValuation() {
+    const v = state.valuation || defaultValuation();
+    function set(id, val) { const el = $(id); if (el) el.value = val; }
+    set('val-cidade', v.cidade || '');
+    set('val-estado', v.estado || '');
+    const im = $('val-imovel'); if (im) im.value = v.imovel || 'alugada';
+    set('val-area', v.area || '');
+    set('val-tempoOp', v.tempoOp || '');
+    set('val-concorrentes', v.concorrentes || '');
+    const money = ['salarios','encargos','prolabore','aluguel','energia','marketing','sistemas','outras'];
+    for (let i = 0; i < money.length; i++) {
+      const f = money[i];
+      set('val-' + f, v[f] ? Number(v[f]).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '');
+    }
+    set('val-multMin', v.multMin || 3);
+    set('val-multMax', v.multMax || 5);
+    renderValuationResults();
+  }
+
+  window.onValuationInput = function(el) {
+    const f = el.getAttribute('data-vfield');
+    if (!f || !state.valuation) return;
+    const isNum = el.getAttribute('data-vnum') === '1';
+    state.valuation[f] = isNum ? parseBR(el.value) : el.value;
+    renderValuationResults();
+    save();
+  };
+
+  function valStatCard(label, value, sub, cls) {
+    return '<div class="val-stat ' + (cls || '') + '">' +
+      '<div class="val-stat-label">' + escapeHTML(label) + '</div>' +
+      '<div class="val-stat-value">' + value + '</div>' +
+      (sub ? '<div class="val-stat-sub">' + sub + '</div>' : '') +
+    '</div>';
+  }
+
+  function renderValuationResults() {
+    const box = $('valuation-results');
+    if (!box) return;
+    const r = computeValuation();
+    if (!r.hasData) {
+      box.innerHTML = '<div class="val-empty">Preencha os dados operacionais do ano (aba ' +
+        escapeHTML(r.baseYear) + ', § 01) para calcular o valuation.</div>';
+      return;
+    }
+
+    let html = '';
+
+    // Linha de métricas principais
+    html += '<div class="val-stat-grid">';
+    html += valStatCard('EBITDA anual', fmtBRL(r.ebitdaAno), 'lucro bruto − despesas operacionais', r.ebitdaAno > 0 ? 'good' : 'alert');
+    html += valStatCard('EBITDA %', fmtPct(r.ebitdaPct), 'sobre faturamento de ' + fmtBRL(r.fatAno), r.ebitdaPct >= 0.08 ? 'good' : r.ebitdaPct >= 0.04 ? 'warn' : 'alert');
+    html += valStatCard('Capital parado', fmtBRL(r.capitalParado), 'estoque atual − estoque ideal', r.capitalParado > 0 ? 'warn' : 'good');
+    html += valStatCard('Capital liberável', fmtBRL(r.capitalLiberavel), 'caixa preso recuperável no estoque', 'good');
+    html += '</div>';
+
+    // Score do investidor
+    html += '<section class="card section val-score-card ' + r.scoreCls + '">' +
+      '<div class="val-score-head">' +
+        '<div>' +
+          '<div class="val-score-eyebrow">Score do investidor</div>' +
+          '<div class="val-score-verdict">' + escapeHTML(r.scoreVerdict) + '</div>' +
+        '</div>' +
+        '<div class="val-score-num">' + r.score + '<small>/100</small></div>' +
+      '</div>' +
+      '<div class="val-score-bar"><div class="val-score-fill" style="width:' + r.score + '%"></div></div>' +
+      '<div class="val-score-parts">';
+    for (let i = 0; i < r.scoreParts.length; i++) {
+      const p = r.scoreParts[i];
+      html += '<div class="val-score-part"><span>' + escapeHTML(p.label) + '</span><strong>' + p.pts + '/' + p.weight + '</strong></div>';
+    }
+    html += '</div></section>';
+
+    // Valuation
+    html += '<section class="card section">' +
+      '<div class="section-head"><div class="section-title"><span class="section-num">§ V</span>Faixa de valuation</div>' +
+      '<div class="section-desc">múltiplo de EBITDA · ' + fmtDec(r.multMin) + 'x a ' + fmtDec(r.multMax) + 'x</div></div>' +
+      '<div class="val-range">' +
+        '<div class="val-range-end"><small>conservador (' + fmtDec(r.multMin) + 'x)</small><span>' + fmtBRL(r.valMin) + '</span></div>' +
+        '<div class="val-range-mid"><small>estimativa (' + fmtDec(r.multAj) + 'x · score ' + r.score + ')</small><span class="big">' + fmtBRL(r.valBase) + '</span></div>' +
+        '<div class="val-range-end"><small>otimista (' + fmtDec(r.multMax) + 'x)</small><span>' + fmtBRL(r.valMax) + '</span></div>' +
+      '</div>' +
+      '<div class="val-crosscheck">Referência por faturamento (0,30x–0,45x do anual): <strong>' + fmtBRL(r.valFatMin) + ' – ' + fmtBRL(r.valFatMax) + '</strong></div>' +
+    '</section>';
+
+    // Valuation potencial pós-otimização
+    html += '<section class="card section val-potential">' +
+      '<div class="section-head"><div class="section-title"><span class="section-num">§ V+</span>Valuation potencial após otimização do estoque</div></div>' +
+      '<div class="val-pot-grid">' +
+        valStatCard('Valuation atual', fmtBRL(r.valBase), 'score ' + r.score + ' · ' + fmtDec(r.multAj) + 'x', '') +
+        valStatCard('Valuation potencial', fmtBRL(r.valPotencial), 'score ' + r.scoreOt + ' · ' + fmtDec(r.multOt) + 'x + caixa liberado', 'good') +
+        valStatCard('Ganho potencial', '+' + fmtBRL(r.ganho), 'destrava giro, cobertura e ' + fmtBRL(r.capitalLiberavel) + ' de caixa', 'good') +
+      '</div>' +
+      '<div class="val-pot-note">Reduzir o estoque ao nível ideal (' + fmtBRL(r.estqIdeal) + ') libera ' + fmtBRL(r.capitalLiberavel) +
+        ' em caixa e melhora os indicadores de giro/cobertura, elevando o múltiplo aplicável.</div>' +
+    '</section>';
+
+    box.innerHTML = html;
   }
 
   // ============ COMPARATIVO ============
@@ -4237,10 +4597,13 @@
     recompute();
     recomputeMix();
 
-    // Restore last view (year or comparativo)
+    // Restore last view (year / comparativo / valuation)
     if (state.view === 'comparativo') {
       document.body.setAttribute('data-view', 'comparativo');
       renderComparativo();
+    } else if (state.view === 'valuation') {
+      document.body.setAttribute('data-view', 'valuation');
+      renderValuation();
     } else {
       document.body.setAttribute('data-view', 'year');
     }
