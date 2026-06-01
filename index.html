@@ -2478,7 +2478,20 @@
       save();
       return;
     }
-    // PRIORITY 1 — embedded state from a shared self-contained file
+    // PRIORITY 1 — dados próprios já salvos neste navegador (as edições do usuário vencem,
+    // inclusive a aba Valuation). Precisa vir ANTES do estado embutido, senão o snapshot
+    // baked-in sobrescreveria as alterações a cada recarregamento.
+    let raw = null;
+    try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) {}
+    if (raw) {
+      try {
+        state = JSON.parse(raw);
+        ensureStateShape();
+        return;
+      } catch(e) {}
+    }
+    // PRIORITY 2 — estado embutido (arquivo compartilhável / primeira carga). Semeia o
+    // localStorage na primeira visita; depois disso o localStorage acima passa a mandar.
     if (window.__FARMAGNUS_INITIAL_STATE__) {
       try {
         state = window.__FARMAGNUS_INITIAL_STATE__;
@@ -2488,15 +2501,6 @@
       } catch(e) {
         console.error('Embedded state load failed:', e);
       }
-    }
-    let raw = null;
-    try { raw = localStorage.getItem(STORAGE_KEY); } catch(e) {}
-    if (raw) {
-      try {
-        state = JSON.parse(raw);
-        ensureStateShape();
-        return;
-      } catch(e) {}
     }
     for (let i = 0; i < LEGACY_KEYS.length; i++) {
       let legacy = null;
