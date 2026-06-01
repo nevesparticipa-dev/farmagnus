@@ -2045,9 +2045,9 @@
           <td class="col-num"><input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
           <td class="col-pct" data-vpct="dividas">—</td></tr>
       </tbody>
-      <tfoot><tr><td class="label val-total-label">Total</td>
+      <tfoot><tr><td class="label val-total-label">Patrimônio líquido<small>ativos − dívidas</small></td>
         <td class="col-num val-total-val" data-vtotal="patrimonio">—</td>
-        <td class="col-pct val-total-val">100%</td></tr></tfoot>
+        <td class="col-pct val-total-val" data-vtotalpct="patrimonio">—</td></tr></tfoot>
     </table></div>
     <div class="val-mult-row">
       <span class="val-mult-label">Múltiplo de EBITDA para o valuation:</span>
@@ -3245,23 +3245,25 @@
   function renderValuationTotals() {
     const v = state.valuation || {};
     function setTxt(sel, txt) { const el = document.querySelector(sel); if (el) el.textContent = txt; }
-    function pct(part, total) {
-      if (total <= 0) return '—';
-      return (part / total * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
+    function pctStr(x) { return x.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%'; }
+
+    // Custos: cada bloco é uma parcela do total (somam 100%)
+    const custos = ['folha','ocupacao','operacao','tecnologia','marketing'];
+    let totC = 0;
+    for (let i = 0; i < custos.length; i++) totC += parseBR(v[custos[i]]) || 0;
+    for (let i = 0; i < custos.length; i++) {
+      setTxt('[data-vpct="' + custos[i] + '"]', totC > 0 ? pctStr((parseBR(v[custos[i]]) || 0) / totC * 100) : '—');
     }
-    const grupos = {
-      custos: ['folha','ocupacao','operacao','tecnologia','marketing'],
-      patrimonio: ['equipamentos','dividas'],
-    };
-    Object.keys(grupos).forEach(function(g) {
-      const campos = grupos[g];
-      let total = 0;
-      for (let i = 0; i < campos.length; i++) total += parseBR(v[campos[i]]) || 0;
-      for (let i = 0; i < campos.length; i++) {
-        setTxt('[data-vpct="' + campos[i] + '"]', pct(parseBR(v[campos[i]]) || 0, total));
-      }
-      setTxt('[data-vtotal="' + g + '"]', total > 0 ? fmtBRL(total) : '—');
-    });
+    setTxt('[data-vtotal="custos"]', totC > 0 ? fmtBRL(totC) : '—');
+
+    // Patrimônio: ativos somam, dívidas SUBTRAEM. % relativo aos ativos brutos.
+    const equip = parseBR(v.equipamentos) || 0;
+    const div = parseBR(v.dividas) || 0;
+    const liquido = equip - div;            // patrimônio líquido
+    setTxt('[data-vpct="equipamentos"]', equip > 0 ? pctStr(equip > 0 ? 100 : 0) : '—');
+    setTxt('[data-vpct="dividas"]', (equip > 0 && div > 0) ? '−' + pctStr(div / equip * 100) : (div > 0 ? '−100%' : '—'));
+    setTxt('[data-vtotal="patrimonio"]', (equip || div) ? fmtBRL(liquido) : '—');
+    setTxt('[data-vtotalpct="patrimonio"]', equip > 0 ? pctStr(liquido / equip * 100) : '—');
   }
 
   window.onValuationInput = function(el) {
