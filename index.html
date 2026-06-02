@@ -3420,6 +3420,35 @@
     }
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="xMidYMid meet" role="img">' + s + '</svg>';
   }
+  function deckGroupedBars(items, colorA, colorB, nameA, nameB) {
+    const W = 760, H = 252, padL = 6, padR = 6, padT = 24, padB = 48;
+    const n = items.length;
+    if (n === 0) return '';
+    let max = 1;
+    for (let i = 0; i < n; i++) max = Math.max(max, items[i].a, items[i].b);
+    const groupGap = 18, barGap = 4;
+    const gw = (W - padL - padR - groupGap * (n - 1)) / n;
+    const bw = (gw - barGap) / 2;
+    let s = '';
+    for (let i = 0; i < n; i++) {
+      const it = items[i];
+      const gx = padL + i * (gw + groupGap);
+      const pairs = [[it.a, colorA], [it.b, colorB]];
+      for (let j = 0; j < 2; j++) {
+        const val = pairs[j][0];
+        const bh = (H - padT - padB) * (val / max);
+        const x = gx + j * (bw + barGap);
+        const y = H - padB - bh;
+        s += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="3" fill="' + pairs[j][1] + '"/>';
+        if (val > 0) s += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) + '" text-anchor="middle" font-size="8.5" font-weight="700" fill="#475569">' + deckShort(val) + '</text>';
+      }
+      s += '<text x="' + (gx + gw / 2).toFixed(1) + '" y="' + (H - padB + 16) + '" text-anchor="middle" font-size="11" fill="#94a3b8">' + escapeHTML(it.label) + '</text>';
+    }
+    const ly = H - 14, cx = W / 2;
+    s += '<rect x="' + (cx - 150) + '" y="' + (ly - 9) + '" width="11" height="11" rx="2" fill="' + colorA + '"/><text x="' + (cx - 134) + '" y="' + ly + '" font-size="12" fill="#475569">' + escapeHTML(nameA) + '</text>';
+    s += '<rect x="' + (cx + 24) + '" y="' + (ly - 9) + '" width="11" height="11" rx="2" fill="' + colorB + '"/><text x="' + (cx + 40) + '" y="' + ly + '" font-size="12" fill="#475569">' + escapeHTML(nameB) + '</text>';
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="xMidYMid meet" role="img">' + s + '</svg>';
+  }
 
   window.generateSalesDeck = function() {
     const r = computeValuation();
@@ -3449,6 +3478,19 @@
       prevYear = years[bi - 1];
       const pm = getMonthlyAvgForYear(prevYear);
       if (pm.fat > 0) growth = (m.fat - pm.fat) / pm.fat;
+    }
+
+    // Comparativo de faturamento prevYear x baseYear (meses preenchidos no ano atual)
+    const compItems = [];
+    if (prevYear) {
+      const inpA = (state.inputs && state.inputs[prevYear]) || {};
+      for (let i = 0; i < mk.length; i++) {
+        const dB = inp[mk[i]];
+        if (dB && dB.fat > 0) {
+          const dA = inpA[mk[i]];
+          compItems.push({ label: MONTH_NAMES_SHORT[mk[i]], a: (dA && dA.fat) || 0, b: dB.fat });
+        }
+      }
     }
 
     // Margem da categoria livre (perfumaria) — rentabilidade
@@ -3504,8 +3546,11 @@
       kpi('Patrimônio operacional', fmtBRL(r.patrimonioOperacional), 'estoque + ativos − dívidas') +
     '</section>';
 
-    if (serie.length > 0) {
-      body += '<section class="chart"><h2>Faturamento mensal · ' + baseYear + '</h2>' + deckBars(serie, '#16a34a') + '</section>';
+    if (prevYear && compItems.length > 0) {
+      body += '<section class="chart"><h2>Faturamento · ' + escapeHTML(prevYear) + ' × ' + escapeHTML(baseYear) + '</h2>' +
+        deckGroupedBars(compItems, '#94a3b8', '#16a34a', prevYear, baseYear) + '</section>';
+    } else if (serie.length > 0) {
+      body += '<section class="chart"><h2>Faturamento mensal · ' + escapeHTML(baseYear) + '</h2>' + deckBars(serie, '#16a34a') + '</section>';
     }
 
     if (growth !== null && growth > 0) {
