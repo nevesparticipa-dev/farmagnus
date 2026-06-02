@@ -2081,6 +2081,9 @@
     <div class="table-wrap"><table class="data-table val-table">
       <thead><tr><th>Indicador</th><th class="col-num">Saldo</th><th class="col-pct">%</th></tr></thead>
       <tbody>
+        <tr><td class="label">Estoque atual (a custo)<small>saldo de mercadorias em estoque, a preço de custo</small></td>
+          <td class="col-num"><input class="val-input num" id="val-estoque" type="text" inputmode="decimal" data-vfield="estoque" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
+          <td class="col-pct" data-vpct="estoque">—</td></tr>
         <tr><td class="label">Equipamentos (ativos)<small>computadores, mobiliário, ar-condicionado, geladeiras</small></td>
           <td class="col-num"><input class="val-input num" id="val-equipamentos" type="text" inputmode="decimal" data-vfield="equipamentos" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
           <td class="col-pct" data-vpct="equipamentos">—</td></tr>
@@ -2088,7 +2091,7 @@
           <td class="col-num"><input class="val-input num" id="val-dividas" type="text" inputmode="decimal" data-vfield="dividas" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
           <td class="col-pct" data-vpct="dividas">—</td></tr>
       </tbody>
-      <tfoot><tr><td class="label val-total-label">Patrimônio líquido<small>ativos − dívidas</small></td>
+      <tfoot><tr><td class="label val-total-label">Patrimônio líquido<small>estoque + equipamentos − dívidas</small></td>
         <td class="col-num val-total-val" data-vtotal="patrimonio">—</td>
         <td class="col-pct val-total-val" data-vtotalpct="patrimonio">—</td></tr></tfoot>
     </table></div>
@@ -2109,7 +2112,7 @@
     <span class="val-deck-hint">Baixa um arquivo HTML com dashboard, gráfico e os pontos fortes destacados — pronto para enviar a investidores.</span>
   </div>
 
-  <p class="val-method">Metodologia: EBITDA = (Faturamento − CMV − Despesas operacionais), anualizado. As despesas operacionais vêm da aba DRE — comerciais + administrativas, na média dos meses lançados — quando houver dados; caso contrário, usam-se os custos informados acima (Folha + Ocupação + Operação + Tecnologia + Marketing). EBITDA % = EBITDA ÷ Receita. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo. Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
+  <p class="val-method">Metodologia: a base do valuation é a aba <strong>DRE</strong>, sempre na <strong>média dos meses lançados</strong>. EBITDA = Receita líquida (Venda − Deduções) − CMV − Despesas operacionais (comerciais + administrativas), anualizado (× 12). Sem meses no DRE, usa-se o § 01 (faturamento/CMV) e os custos informados manualmente. EBITDA % = EBITDA ÷ Receita líquida. Estoque, Equipamentos e Dívidas são lançados manualmente no Patrimônio (§ A); FTE vem do § 01. Capital parado = estoque − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo (ajustado pelo score). Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
 </div><!-- /#valuation-view -->
 
 <div id="dre-view">
@@ -2431,7 +2434,7 @@
       cidade: '', estado: '', imovel: 'alugada', area: 100,
       tempoOp: 0, concorrentes: 0,
       folha: 0, ocupacao: 0, operacao: 0, tecnologia: 0, marketing: 0,
-      equipamentos: 0, dividas: 0,
+      estoque: 0, equipamentos: 0, dividas: 0,
       multMin: 3, multMax: 5,
     };
   }
@@ -2497,6 +2500,17 @@
           if (emb[campos[i]] !== undefined) state.valuation[campos[i]] = emb[campos[i]];
         }
         state.valuation.appliedSeed = emb.seedVersion;
+      }
+    } catch (e) {}
+
+    // Estoque do valuation: campo manual no Patrimônio (§ A). Pré-semeia uma única vez
+    // com a média do estoque lançado no § 01 do ano em curso, para não iniciar zerado.
+    try {
+      if (!parseBR(state.valuation.estoque) && !state.valuation.estoqueSeeded) {
+        const yr = (state.currentYear && state.years.indexOf(state.currentYear) >= 0) ? state.currentYear : getCurrentYearInProgress();
+        const est = (getMonthlyAvgForYear(yr) || {}).estq || 0;
+        if (est > 0) state.valuation.estoque = Math.round(est * 100) / 100;
+        state.valuation.estoqueSeeded = 1;
       }
     } catch (e) {}
 
@@ -3304,24 +3318,47 @@
   // Despesas operacionais do DRE (comerciais + administrativas), média mensal dos meses lançados.
   // "Lançado" = mês com algum valor diferente de zero (mesmo critério da aba DRE).
   // Retorna { mensal, total, nMeses } ou null quando não há mês lançado.
-  function getDreDespOperacionaisMensal(year) {
+  // Médias mensais do DRE (apenas meses lançados) que servem de base ao valuation.
+  // "Lançado" = mês com algum valor diferente de zero (mesmo critério da aba DRE).
+  // Retorna null quando não há mês lançado no ano informado.
+  function getDreMonthlyAverages(year) {
     const vals = (state.dre && state.dre.values && state.dre.values[year]) || null;
     if (!vals) return null;
-    let totCom = 0, totAdm = 0, nMeses = 0;
+    let sVenda = 0, sDed = 0, sCmv = 0, sCom = 0, sAdm = 0, n = 0;
     for (let i = 0; i < DRE_MONTHS.length; i++) {
       const cell = vals[DRE_MONTHS[i]];
       if (!cell) continue;
       const lancado = Object.keys(cell).some(function(k) { return (parseBR(cell[k]) || 0) !== 0; });
       if (!lancado) continue;
-      totCom += parseBR(cell.desp_comerciais) || 0;
-      totAdm += parseBR(cell.desp_admin) || 0;
-      nMeses++;
+      sVenda += parseBR(cell.venda) || 0;
+      sDed += parseBR(cell.deducoes) || 0;
+      sCmv += parseBR(cell.custos) || 0;
+      sCom += parseBR(cell.desp_comerciais) || 0;
+      sAdm += parseBR(cell.desp_admin) || 0;
+      n++;
     }
-    if (nMeses === 0) return null;
-    const total = totCom + totAdm;
+    if (n === 0) return null;
+    const receitaLiquidaMes = (sVenda - sDed) / n;
+    const cmvMes = sCmv / n;
+    const lucroBrutoMes = receitaLiquidaMes - cmvMes;
+    const despComMes = sCom / n, despAdmMes = sAdm / n;
+    const despOperMes = despComMes + despAdmMes;
     return {
-      mensal: total / nMeses, total: total, nMeses: nMeses,
-      comerciaisMensal: totCom / nMeses, adminMensal: totAdm / nMeses,
+      nMeses: n,
+      vendaMes: sVenda / n, deducoesMes: sDed / n, receitaLiquidaMes: receitaLiquidaMes,
+      cmvMes: cmvMes, lucroBrutoMes: lucroBrutoMes,
+      despComMes: despComMes, despAdmMes: despAdmMes, despOperMes: despOperMes,
+      lucroOperacionalMes: lucroBrutoMes - despOperMes,
+    };
+  }
+
+  // Despesa operacional do DRE (comerciais + administrativas), média/mês — base da § D.
+  function getDreDespOperacionaisMensal(year) {
+    const a = getDreMonthlyAverages(year);
+    if (!a) return null;
+    return {
+      mensal: a.despOperMes, total: a.despOperMes * a.nMeses, nMeses: a.nMeses,
+      comerciaisMensal: a.despComMes, adminMensal: a.despAdmMes,
     };
   }
 
@@ -3330,29 +3367,43 @@
     const baseYear = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
       ? state.currentYear : getCurrentYearInProgress();
     const m = getMonthlyAvgForYear(baseYear);
-    const ind = computeIndicators(m);
 
-    const fatMes = m.fat || 0;
-    const cmvMes = m.cmv || 0;
-    const fatAno = fatMes * 12;
-    const lucroBrutoAno = (fatMes - cmvMes) * 12;
+    // Base do valuation = aba DRE (média/mês dos meses lançados). Sem DRE, cai para o § 01.
+    const dre = getDreMonthlyAverages(baseYear);
+    const despMesManual = valNum('folha') + valNum('ocupacao') + valNum('operacao') + valNum('tecnologia') + valNum('marketing');
+    const despFonte = dre ? 'dre' : 'manual';
 
-    const folha = valNum('folha'), ocupacao = valNum('ocupacao'), operacao = valNum('operacao');
-    const tecnologia = valNum('tecnologia'), marketing = valNum('marketing');
-    const despMesManual = folha + ocupacao + operacao + tecnologia + marketing;
-    // Quando o DRE tem meses lançados, o EBITDA usa a despesa operacional REAL do DRE
-    // (comerciais + administrativas), na média dos meses lançados. Os custos manuais
-    // viram referência de composição.
-    const dreDesp = getDreDespOperacionaisMensal(baseYear);
-    const despFonte = dreDesp ? 'dre' : 'manual';
-    const despMes = dreDesp ? dreDesp.mensal : despMesManual;
+    let receitaMes, cmvMes, lucroBrutoMes, despMes;
+    if (dre) {
+      receitaMes = dre.receitaLiquidaMes;       // Receita líquida (Venda − Deduções)
+      cmvMes = dre.cmvMes;
+      lucroBrutoMes = dre.lucroBrutoMes;
+      despMes = dre.despOperMes;                 // Despesas operacionais (comerciais + administrativas)
+    } else {
+      receitaMes = m.fat || 0;
+      cmvMes = m.cmv || 0;
+      lucroBrutoMes = receitaMes - cmvMes;
+      despMes = despMesManual;
+    }
+    const fatAno = receitaMes * 12;
+    const lucroBrutoAno = lucroBrutoMes * 12;
     const despAno = despMes * 12;
 
     const ebitdaAno = lucroBrutoAno - despAno;
     const ebitdaPct = fatAno > 0 ? ebitdaAno / fatAno : 0;
 
-    const estqAtual = m.estq || 0;
-    const estqIdeal = ind.estqIdeal || 0;
+    // Estoque: campo manual no Patrimônio (§ A). FTE/produtividade seguem vindo do § 01.
+    const estqAtual = valNum('estoque');
+    const fteMes = m.fte || 0;
+    const estqIdeal = cmvMes > 0 ? cmvMes / 0.80 : 0;
+    const ind = {
+      fat: receitaMes, cmv: cmvMes, estq: estqAtual,
+      margem: receitaMes > 0 ? lucroBrutoMes / receitaMes : 0,
+      giro: estqAtual > 0 ? safe(cmvMes / estqAtual) : 0,
+      cobertura: cmvMes > 0 ? safe(estqAtual / (cmvMes / 30)) : 0,
+      fatFte: fteMes > 0 ? safe(receitaMes / fteMes) : 0,
+      estqIdeal: estqIdeal,
+    };
     const capitalParado = estqAtual - estqIdeal;
     const capitalLiberavel = Math.max(0, capitalParado);
 
@@ -3387,15 +3438,16 @@
     return {
       baseYear: baseYear, fatAno: fatAno, lucroBrutoAno: lucroBrutoAno, margem: ind.margem || 0,
       despMes: despMes, despAno: despAno, despMesManual: despMesManual,
-      despFonte: despFonte, dreMeses: dreDesp ? dreDesp.nMeses : 0,
+      despFonte: despFonte, dreMeses: dre ? dre.nMeses : 0, receitaMes: receitaMes,
       ebitdaAno: ebitdaAno, ebitdaPct: ebitdaPct,
       estqAtual: estqAtual, estqIdeal: estqIdeal, capitalParado: capitalParado, capitalLiberavel: capitalLiberavel,
       score: sc.score, scoreParts: sc.parts, scoreVerdict: sc.verdict, scoreCls: sc.cls,
       multMin: multMin, multMax: multMax, multAj: multAj, valBase: valBase, valMin: valMin, valMax: valMax,
       scoreOt: scOt.score, multOt: multOt, valPotencial: valPotencial, ganho: valPotencial - valBase,
       valFatMin: fatAno * 0.30, valFatMax: fatAno * 0.45,
-      folha: folha, ocupacao: ocupacao, operacao: operacao, tecnologia: tecnologia, marketingMes: marketing,
-      equipamentos: equipamentos, dividas: dividas, patrimonioOperacional: patrimonioOperacional,
+      folha: valNum('folha'), ocupacao: valNum('ocupacao'), operacao: valNum('operacao'),
+      tecnologia: valNum('tecnologia'), marketingMes: valNum('marketing'),
+      estoque: estqAtual, equipamentos: equipamentos, dividas: dividas, patrimonioOperacional: patrimonioOperacional,
       valEquity: valEquity, valEquityPot: valEquityPot,
       hasData: fatAno > 0,
     };
@@ -3412,7 +3464,7 @@
     set('val-concorrentes', v.concorrentes || '');
     // § D (Custo mensal) é montado dinamicamente a partir do DRE; preenche os inputs manuais quando em fallback.
     renderValuationCustos();
-    const money = ['equipamentos','dividas'];
+    const money = ['estoque','equipamentos','dividas'];
     for (let i = 0; i < money.length; i++) {
       const f = money[i];
       set('val-' + f, v[f] ? Number(v[f]).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '');
@@ -3515,14 +3567,17 @@
     }
     setTxt('[data-vtotal="custos"]', totC > 0 ? fmtBRL(totC) : '—');
 
-    // Patrimônio: ativos somam, dívidas SUBTRAEM. % relativo aos ativos brutos.
+    // Patrimônio: ativos (estoque + equipamentos) somam, dívidas SUBTRAEM. % relativo aos ativos brutos.
+    const estq = parseBR(v.estoque) || 0;
     const equip = parseBR(v.equipamentos) || 0;
     const div = parseBR(v.dividas) || 0;
-    const liquido = equip - div;            // patrimônio líquido
-    setTxt('[data-vpct="equipamentos"]', equip > 0 ? pctStr(equip > 0 ? 100 : 0) : '—');
-    setTxt('[data-vpct="dividas"]', (equip > 0 && div > 0) ? '−' + pctStr(div / equip * 100) : (div > 0 ? '−100%' : '—'));
-    setTxt('[data-vtotal="patrimonio"]', (equip || div) ? fmtBRL(liquido) : '—');
-    setTxt('[data-vtotalpct="patrimonio"]', equip > 0 ? pctStr(liquido / equip * 100) : '—');
+    const ativos = estq + equip;            // ativos brutos
+    const liquido = ativos - div;           // patrimônio líquido
+    setTxt('[data-vpct="estoque"]', ativos > 0 ? pctStr(estq / ativos * 100) : '—');
+    setTxt('[data-vpct="equipamentos"]', ativos > 0 ? pctStr(equip / ativos * 100) : '—');
+    setTxt('[data-vpct="dividas"]', (ativos > 0 && div > 0) ? '−' + pctStr(div / ativos * 100) : (div > 0 ? '−100%' : '—'));
+    setTxt('[data-vtotal="patrimonio"]', (ativos || div) ? fmtBRL(liquido) : '—');
+    setTxt('[data-vtotalpct="patrimonio"]', ativos > 0 ? pctStr(liquido / ativos * 100) : '—');
   }
 
   window.onValuationInput = function(el) {
@@ -3548,8 +3603,8 @@
     if (!box) return;
     const r = computeValuation();
     if (!r.hasData) {
-      box.innerHTML = '<div class="val-empty">Preencha os dados operacionais do ano (aba ' +
-        escapeHTML(r.baseYear) + ', § 01) para calcular o valuation.</div>';
+      box.innerHTML = '<div class="val-empty">Lance os meses na aba <strong>DRE</strong> (' +
+        escapeHTML(r.baseYear) + ') — ou preencha o § 01 — para calcular o valuation.</div>';
       return;
     }
 
@@ -3558,7 +3613,7 @@
     // Linha de métricas principais
     html += '<div class="val-stat-grid">';
     html += valStatCard('EBITDA anual', fmtBRL(r.ebitdaAno), r.despFonte === 'dre' ? 'lucro bruto − desp. operacionais (DRE)' : 'lucro bruto − despesas operacionais', r.ebitdaAno > 0 ? 'good' : 'alert');
-    html += valStatCard('EBITDA %', fmtPct(r.ebitdaPct), 'sobre faturamento de ' + fmtBRL(r.fatAno), r.ebitdaPct >= 0.08 ? 'good' : r.ebitdaPct >= 0.04 ? 'warn' : 'alert');
+    html += valStatCard('EBITDA %', fmtPct(r.ebitdaPct), 'sobre receita líquida de ' + fmtBRL(r.fatAno), r.ebitdaPct >= 0.08 ? 'good' : r.ebitdaPct >= 0.04 ? 'warn' : 'alert');
     html += valStatCard('Capital parado', fmtBRL(r.capitalParado), 'estoque atual − estoque ideal', r.capitalParado > 0 ? 'warn' : 'good');
     html += valStatCard('Capital liberável', fmtBRL(r.capitalLiberavel), 'caixa preso recuperável no estoque', 'good');
     html += '</div>';
@@ -3589,7 +3644,7 @@
         '<div class="val-range-mid"><small>estimativa (' + fmtDec(r.multAj) + 'x · score ' + r.score + ')</small><span class="big">' + fmtBRL(r.valBase) + '</span></div>' +
         '<div class="val-range-end"><small>otimista (' + fmtDec(r.multMax) + 'x)</small><span>' + fmtBRL(r.valMax) + '</span></div>' +
       '</div>' +
-      '<div class="val-crosscheck">Referência por faturamento (0,30x–0,45x do anual): <strong>' + fmtBRL(r.valFatMin) + ' – ' + fmtBRL(r.valFatMax) + '</strong></div>' +
+      '<div class="val-crosscheck">Referência por receita líquida (0,30x–0,45x do anual): <strong>' + fmtBRL(r.valFatMin) + ' – ' + fmtBRL(r.valFatMax) + '</strong></div>' +
     '</section>';
 
     // Valuation potencial pós-otimização
@@ -3752,7 +3807,7 @@
     if ((parseBR(v.concorrentes) || 0) > 0 && (parseBR(v.concorrentes) || 0) <= 3) fortes.push('Baixa concorrência no entorno (<b>' + fmtDec(parseBR(v.concorrentes)) + '</b>).');
     if (temMix && livreMarg >= 0.30) fortes.push('Categoria de preço livre (perfumaria) com margem de <b>' + fmtPct(livreMarg) + '</b> — âncora de rentabilidade.');
     if (r.capitalLiberavel > 0) fortes.push('<b>' + fmtBRL(r.capitalLiberavel) + '</b> de capital recuperável no estoque (ganho imediato de caixa).');
-    if (fortes.length === 0) fortes.push('Operação ativa com base sólida de faturamento de <b>' + fmtBRL(r.fatAno) + '</b>/ano.');
+    if (fortes.length === 0) fortes.push('Operação ativa com base sólida de receita líquida de <b>' + fmtBRL(r.fatAno) + '</b>/ano.');
 
     const cidade = escapeHTML(v.cidade || '');
     const estado = escapeHTML(v.estado || '');
@@ -3773,9 +3828,9 @@
     '</header>';
 
     body += '<section class="grid">' +
-      kpi('Faturamento anual', fmtBRL(r.fatAno), baseYear) +
+      kpi('Receita líquida anual', fmtBRL(r.fatAno), baseYear) +
       kpi('EBITDA anual', fmtBRL(r.ebitdaAno), 'margem ' + fmtPct(r.ebitdaPct)) +
-      kpi('Margem bruta', fmtPct(ind.margem), 'benchmark 30–45%') +
+      kpi('Margem bruta', fmtPct(r.margem), 'benchmark 30–45%') +
       kpi('Ticket médio', fmtBRL(ind.ticket), '') +
       kpi('Score do investidor', r.score + '<small>/100</small>', r.scoreVerdict) +
       kpi('Patrimônio operacional', fmtBRL(r.patrimonioOperacional), 'estoque + ativos − dívidas') +
