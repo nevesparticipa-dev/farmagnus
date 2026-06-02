@@ -996,7 +996,7 @@
   .year-tabs button.dre-tab.active { color: #fff; }
   .year-tabs button.dre-tab.active .dot { background: #fff; }
   .dre-year-tabs { margin-bottom: 14px; }
-  .dre-data-table { min-width: 1120px; font-size: 12px; }
+  .dre-data-table { min-width: 1240px; font-size: 12px; }
   .dre-data-table th, .dre-data-table td { padding: 5px 8px; white-space: nowrap; }
   .dre-data-table thead th { font-size: 10px; }
   .dre-data-table td.col-num, .dre-data-table th.col-num { text-align: right; }
@@ -1009,6 +1009,9 @@
   .dre-data-table .neg { color: var(--red); }
   .dre-data-table th.dre-saldo-col, .dre-data-table td.dre-saldo {
     border-left: 1px solid var(--border); font-weight: 700; background: var(--bg); }
+  .dre-data-table th.dre-media-col, .dre-data-table td.dre-media {
+    border-left: 1px solid var(--border-light); font-weight: 700; background: var(--bg); color: var(--ink-soft); }
+  .dre-final td.dre-media { color: var(--red); }
   /* tipos de linha */
   .dre-child td.dre-rowlabel { padding-left: 26px; font-weight: 400; color: var(--ink-soft); }
   .dre-group td { font-weight: 700; }
@@ -3851,6 +3854,7 @@
     let head = '<th class="dre-rowlabel">Indicador</th>';
     for (let i = 0; i < DRE_MONTHS.length; i++) head += '<th class="col-num">' + MONTH_NAMES_SHORT[DRE_MONTHS[i]] + '</th>';
     head += '<th class="col-num dre-saldo-col">Saldo</th>';
+    head += '<th class="col-num dre-media-col">Média / mês</th>';
     let body = '';
     for (let r = 0; r < DRE_ROWS.length; r++) {
       const row = DRE_ROWS[r];
@@ -3868,6 +3872,7 @@
         }
       }
       body += '<td class="col-num dre-saldo" data-dresaldo="' + row.key + '">–</td>';
+      body += '<td class="col-num dre-media" data-dremedia="' + row.key + '">–</td>';
       body += '</tr>';
     }
     box.innerHTML = '<div class="table-wrap"><table class="data-table dre-data-table"><thead><tr>' + head +
@@ -3879,8 +3884,12 @@
     const year = state.dre.current;
     const vals = (state.dre.values && state.dre.values[year]) || {};
     const saldo = {};
+    let nMeses = 0;
     for (let i = 0; i < DRE_MONTHS.length; i++) {
       const mo = DRE_MONTHS[i];
+      const cell = vals[mo];
+      // Mês "lançado" = tem algum valor diferente de zero
+      if (cell && Object.keys(cell).some(function(k) { return (parseBR(cell[k]) || 0) !== 0; })) nMeses++;
       const col = computeDreColumn(vals[mo] || {});
       for (let r = 0; r < DRE_ROWS.length; r++) {
         const row = DRE_ROWS[r];
@@ -3889,15 +3898,18 @@
         else sv = col[row.key] || 0;
         saldo[row.key] = (saldo[row.key] || 0) + sv;
         if (row.kind !== 'input') {
-          const cell = document.querySelector('[data-drecell="' + row.key + ':' + mo + '"]');
-          if (cell) { cell.textContent = fmtDRE(sv); cell.classList.toggle('neg', sv < 0); }
+          const c = document.querySelector('[data-drecell="' + row.key + ':' + mo + '"]');
+          if (c) { c.textContent = fmtDRE(sv); c.classList.toggle('neg', sv < 0); }
         }
       }
     }
     for (let r = 0; r < DRE_ROWS.length; r++) {
       const row = DRE_ROWS[r];
-      const cell = document.querySelector('[data-dresaldo="' + row.key + '"]');
-      if (cell) { const sv = saldo[row.key] || 0; cell.textContent = fmtDRE(sv); cell.classList.toggle('neg', sv < 0); }
+      const sv = saldo[row.key] || 0;
+      const cs = document.querySelector('[data-dresaldo="' + row.key + '"]');
+      if (cs) { cs.textContent = fmtDRE(sv); cs.classList.toggle('neg', sv < 0); }
+      const cm = document.querySelector('[data-dremedia="' + row.key + '"]');
+      if (cm) { const mv = nMeses > 0 ? sv / nMeses : 0; cm.textContent = fmtDRE(mv); cm.classList.toggle('neg', mv < 0); }
     }
   }
 
