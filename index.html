@@ -981,12 +981,43 @@
     opacity: 1;
   }
 
-  /* VIEW SWITCHING (year / comparativo / valuation) */
-  #comparativo-view, #valuation-view { display: none; }
+  /* VIEW SWITCHING (year / comparativo / valuation / dre) */
+  #comparativo-view, #valuation-view, #dre-view { display: none; }
   body[data-view="comparativo"] #comparativo-view { display: block; }
   body[data-view="valuation"] #valuation-view { display: block; }
+  body[data-view="dre"] #dre-view { display: block; }
   body[data-view="comparativo"] #year-view,
-  body[data-view="valuation"] #year-view { display: none; }
+  body[data-view="valuation"] #year-view,
+  body[data-view="dre"] #year-view { display: none; }
+
+  /* DRE VIEW */
+  .year-tabs button.dre-tab { margin-left: 2px; padding-left: 11px; }
+  .year-tabs button.dre-tab .dot { background: var(--ink-faint); }
+  .year-tabs button.dre-tab.active { color: #fff; }
+  .year-tabs button.dre-tab.active .dot { background: #fff; }
+  .dre-year-tabs { margin-bottom: 14px; }
+  .dre-data-table { min-width: 1120px; font-size: 12px; }
+  .dre-data-table th, .dre-data-table td { padding: 5px 8px; white-space: nowrap; }
+  .dre-data-table thead th { font-size: 10px; }
+  .dre-data-table td.col-num, .dre-data-table th.col-num { text-align: right; }
+  .dre-data-table td.dre-rowlabel, .dre-data-table th.dre-rowlabel {
+    text-align: left; position: sticky; left: 0; z-index: 1; min-width: 248px;
+    background: var(--bg-card); }
+  .dre-input { width: 102px; min-width: 92px; padding: 4px 6px; font-size: 11.5px;
+    text-align: right; font-variant-numeric: tabular-nums; }
+  .dre-calc, .dre-saldo { font-variant-numeric: tabular-nums; color: var(--ink); }
+  .dre-data-table .neg { color: var(--red); }
+  .dre-data-table th.dre-saldo-col, .dre-data-table td.dre-saldo {
+    border-left: 1px solid var(--border); font-weight: 700; background: var(--bg); }
+  /* tipos de linha */
+  .dre-child td.dre-rowlabel { padding-left: 26px; font-weight: 400; color: var(--ink-soft); }
+  .dre-group td { font-weight: 700; }
+  .dre-subtotal td { font-weight: 700; background: var(--bg); border-top: 1px solid var(--border); }
+  .dre-subtotal td.dre-rowlabel { background: var(--bg); }
+  .dre-final td { font-weight: 800; background: var(--red-soft);
+    border-top: 2px solid var(--red-tint); border-bottom: 2px solid var(--red-tint); }
+  .dre-final td.dre-rowlabel { background: var(--red-soft); }
+  .dre-final td.dre-calc, .dre-final td.dre-saldo { color: var(--red); }
 
   /* VALUATION VIEW */
   .val-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
@@ -2093,6 +2124,31 @@
   <p class="val-method">Metodologia: EBITDA = (Faturamento − CMV − Folha − Ocupação − Operação − Tecnologia − Marketing), anualizado. EBITDA % = EBITDA ÷ Receita. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo. Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
 </div><!-- /#valuation-view -->
 
+<div id="dre-view">
+  <section class="hero">
+    <div class="hero-breadcrumb">
+      <span>Relatório</span>
+      <span class="sep">·</span>
+      <span>Demonstrativo de resultados</span>
+      <span class="pill pill-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="M7 15l3-3 3 3 4-5"/></svg>
+        <span>DRE</span>
+      </span>
+    </div>
+    <h1 class="hero-title">DRE <span class="hero-title-accent">Gerencial</span></h1>
+    <p class="hero-tagline">Demonstrativo mês a mês com os números apurados do BPO. Atualize a cada fechamento — envie a imagem do DRE para alimentar o mês.</p>
+  </section>
+
+  <section class="card section">
+    <div class="section-head">
+      <div class="section-title"><span class="section-num">§ R</span>Resultado mês a mês</div>
+      <div class="section-desc">valores em R$ · deduções e despesas entram como dedução</div>
+    </div>
+    <div class="dre-year-tabs year-tabs" id="dre-year-tabs"></div>
+    <div id="dre-table"></div>
+  </section>
+</div><!-- /#dre-view -->
+
   <footer class="colophon">
     <div>DADOS SALVOS LOCALMENTE NO NAVEGADOR · <em>nada é enviado para fora do seu computador</em></div>
     <div id="last-saved">—</div>
@@ -2226,6 +2282,46 @@
     { key: 'sim',  name: 'Similar',    pmc: 'yes', obs: 'PMC aplicável — disputa direta com genéricos.' },
   ];
 
+  // ===== DRE Gerencial =====
+  // Estrutura espelhando o DRE do BPO. 'input' = lançado; 'sum' = soma de filhos;
+  // 'calc' = subtotal calculado. sign: -1 para deduções/custos/despesas.
+  const DRE_ROWS = [
+    { key: 'receita_bruta',     label: 'Receita bruta',                        kind: 'sum',  css: 'group' },
+    { key: 'venda',             label: 'Venda de mercadorias',                 kind: 'input', sign: 1,  css: 'child' },
+    { key: 'deducoes',          label: '(−) Deduções da receita bruta',        kind: 'input', sign: -1 },
+    { key: 'receita_liquida',   label: '= Receita líquida',                    kind: 'calc', css: 'subtotal' },
+    { key: 'cmv',               label: '(−) CMV',                              kind: 'sum',  css: 'group' },
+    { key: 'custos',            label: 'Custos das mercadorias vendidas',      kind: 'input', sign: -1, css: 'child' },
+    { key: 'lucro_bruto',       label: '= Lucro bruto',                        kind: 'calc', css: 'subtotal' },
+    { key: 'desp_operacionais', label: '(−) Despesas operacionais',           kind: 'sum',  css: 'group' },
+    { key: 'desp_comerciais',   label: 'Despesas comerciais',                  kind: 'input', sign: -1, css: 'child' },
+    { key: 'desp_admin',        label: 'Despesas administrativas',             kind: 'input', sign: -1, css: 'child' },
+    { key: 'lucro_operacional', label: '= Lucro ou prejuízo operacional',      kind: 'calc', css: 'subtotal' },
+    { key: 'deprec',            label: '(−) Depreciação e amortização',        kind: 'input', sign: -1 },
+    { key: 'outras_rec_fin',    label: 'Outras receitas/financeiras',          kind: 'sum',  css: 'group' },
+    { key: 'outras_receitas',   label: 'Outras receitas',                      kind: 'input', sign: 1,  css: 'child' },
+    { key: 'receitas_fin',      label: 'Receitas financeiras',                 kind: 'input', sign: 1,  css: 'child' },
+    { key: 'outras_desp_fin',   label: '(−) Outras despesas/financeiras',      kind: 'sum',  css: 'group' },
+    { key: 'outras_despesas',   label: 'Outras despesas',                      kind: 'input', sign: -1, css: 'child' },
+    { key: 'despesas_fin',      label: 'Despesas financeiras',                 kind: 'input', sign: -1, css: 'child' },
+    { key: 'provisoes',         label: '(−) Provisões para IR e CSLL',         kind: 'input', sign: -1 },
+    { key: 'lucro_liquido',     label: '= Lucro ou prejuízo líquido do exercício', kind: 'calc', css: 'final' },
+  ];
+
+  // Números reais do DRE Gerencial (BPO) — valores em magnitude (positivos).
+  // Para alimentar um novo mês: adicione abaixo e incremente DRE_SEED.version.
+  const DRE_SEED = {
+    version: 1,
+    years: ['2026'],
+    values: {
+      '2026': {
+        '01': { venda: 413443.62, deducoes: 91517.77, custos: 197079.10, desp_comerciais: 4111.57, desp_admin: 92337.14, deprec: 0, outras_receitas: 897.90, receitas_fin: 59230.21, outras_despesas: 6760.80, despesas_fin: 2220.48, provisoes: 0 },
+        '02': { venda: 320998.37, deducoes: 68930.28, custos: 151180.07, desp_comerciais: 2863.00, desp_admin: 93089.90, deprec: 0, outras_receitas: 108.82, receitas_fin: 1352.07, outras_despesas: 5104.20, despesas_fin: 696.77, provisoes: 0 },
+        '03': { venda: 364384.34, deducoes: 79206.85, custos: 183261.66, desp_comerciais: 2797.00, desp_admin: 83471.86, deprec: 0, outras_receitas: 777.56, receitas_fin: 2802.68, outras_despesas: 4043.30, despesas_fin: 2126.56, provisoes: 0 },
+      },
+    },
+  };
+
   const DIAG_DEFS = [
     { key: 'margem', name: 'Margem bruta', fmt: 'pct',
       desc: 'Quanto sobra do faturamento após pagar o custo da mercadoria vendida.',
@@ -2336,7 +2432,11 @@
       mixView: { '2025': 'ANO', '2026': 'ANO' },
       chartType: 'line',
       valuation: defaultValuation(),
+      dre: defaultDre(),
     };
+  }
+  function defaultDre() {
+    return { years: ['2026'], current: '2026', values: { '2026': {} }, appliedSeed: 0 };
   }
   function defaultValuation() {
     return {
@@ -2409,6 +2509,30 @@
           if (emb[campos[i]] !== undefined) state.valuation[campos[i]] = emb[campos[i]];
         }
         state.valuation.appliedSeed = emb.seedVersion;
+      }
+    } catch (e) {}
+
+    // DRE: garante a estrutura e aplica a semeadura versionada (números do BPO)
+    if (!state.dre || typeof state.dre !== 'object') state.dre = defaultDre();
+    if (!Array.isArray(state.dre.years) || !state.dre.years.length) state.dre.years = ['2026'];
+    if (!state.dre.values || typeof state.dre.values !== 'object') state.dre.values = {};
+    for (let i = 0; i < state.dre.years.length; i++) {
+      if (!state.dre.values[state.dre.years[i]]) state.dre.values[state.dre.years[i]] = {};
+    }
+    if (!state.dre.current || state.dre.years.indexOf(state.dre.current) < 0) {
+      state.dre.current = state.dre.years[state.dre.years.length - 1];
+    }
+    try {
+      if (state.dre.appliedSeed !== DRE_SEED.version) {
+        for (const y in DRE_SEED.values) {
+          if (state.dre.years.indexOf(y) < 0) state.dre.years.push(y);
+          if (!state.dre.values[y]) state.dre.values[y] = {};
+          for (const mo in DRE_SEED.values[y]) {
+            state.dre.values[y][mo] = Object.assign({}, DRE_SEED.values[y][mo]);
+          }
+        }
+        state.dre.years.sort();
+        state.dre.appliedSeed = DRE_SEED.version;
       }
     } catch (e) {}
 
@@ -3064,6 +3188,15 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+    if (target === 'dre') {
+      state.view = 'dre';
+      document.body.setAttribute('data-view', 'dre');
+      syncTabUI();
+      renderDre();
+      save();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     state.view = 'year';
     state.currentYear = target;
     document.body.setAttribute('data-view', 'year');
@@ -3095,6 +3228,8 @@
     html += '<button class="comparativo-tab' + compActive + '" data-year="comparativo" onclick="window.switchYear(\'comparativo\')"><span class="dot"></span>Comparativo</button>';
     const valActive = (state.view === 'valuation') ? ' active' : '';
     html += '<button class="valuation-tab' + valActive + '" data-year="valuation" onclick="window.switchYear(\'valuation\')"><span class="dot"></span>Valuation</button>';
+    const dreActive = (state.view === 'dre') ? ' active' : '';
+    html += '<button class="dre-tab' + dreActive + '" data-year="dre" onclick="window.switchYear(\'dre\')"><span class="dot"></span>DRE</button>';
     wrap.innerHTML = html;
   }
 
@@ -3626,6 +3761,155 @@
     } catch (e) {
       alert('Não foi possível gerar o arquivo: ' + e.message);
     }
+  };
+
+  // ============ DRE ============
+  const DRE_MONTHS = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+
+  function fmtDRE(n) {
+    if (n == null || isNaN(n)) return '–';
+    if (n === 0) return '0,00';
+    const a = Math.abs(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return n < 0 ? '(' + a + ')' : a;
+  }
+
+  // Recebe as magnitudes lançadas de um mês e devolve todas as linhas com sinal
+  function computeDreColumn(cell) {
+    function g(k) { return parseBR(cell && cell[k]) || 0; }
+    const venda = g('venda');
+    const deducoes = -g('deducoes');
+    const custos = -g('custos');
+    const dcom = -g('desp_comerciais');
+    const dadm = -g('desp_admin');
+    const deprec = -g('deprec');
+    const orec = g('outras_receitas');
+    const rfin = g('receitas_fin');
+    const odesp = -g('outras_despesas');
+    const dfin = -g('despesas_fin');
+    const prov = -g('provisoes');
+    const receita_bruta = venda;
+    const receita_liquida = receita_bruta + deducoes;
+    const cmv = custos;
+    const lucro_bruto = receita_liquida + cmv;
+    const desp_operacionais = dcom + dadm;
+    const lucro_operacional = lucro_bruto + desp_operacionais;
+    const outras_rec_fin = orec + rfin;
+    const outras_desp_fin = odesp + dfin;
+    const lucro_liquido = lucro_operacional + deprec + outras_rec_fin + outras_desp_fin + prov;
+    return {
+      venda: venda, deducoes: deducoes, receita_bruta: receita_bruta, receita_liquida: receita_liquida,
+      custos: custos, cmv: cmv, lucro_bruto: lucro_bruto,
+      desp_comerciais: dcom, desp_admin: dadm, desp_operacionais: desp_operacionais, lucro_operacional: lucro_operacional,
+      deprec: deprec, outras_receitas: orec, receitas_fin: rfin, outras_rec_fin: outras_rec_fin,
+      outras_despesas: odesp, despesas_fin: dfin, outras_desp_fin: outras_desp_fin,
+      provisoes: prov, lucro_liquido: lucro_liquido,
+    };
+  }
+
+  function renderDre() {
+    renderDreYearTabs();
+    renderDreTable();
+  }
+
+  function renderDreYearTabs() {
+    const wrap = $('dre-year-tabs');
+    if (!wrap) return;
+    const ys = state.dre.years;
+    let h = '';
+    for (let i = 0; i < ys.length; i++) {
+      const active = ys[i] === state.dre.current ? ' active' : '';
+      h += '<button class="' + active.trim() + '" onclick="window.switchDreYear(\'' + ys[i] + '\')"><span class="dot"></span>' + ys[i] + '</button>';
+    }
+    h += '<button class="add-year-btn" onclick="window.addDreYear()" title="Adicionar ano">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>';
+    wrap.innerHTML = h;
+  }
+
+  window.switchDreYear = function(y) {
+    state.dre.current = y;
+    renderDre();
+    save();
+  };
+  window.addDreYear = function() {
+    const ys = state.dre.years;
+    const mx = Math.max.apply(null, ys.map(Number));
+    const ny = String(mx + 1);
+    if (ys.indexOf(ny) >= 0) { state.dre.current = ny; renderDre(); return; }
+    if (!confirm('Adicionar DRE do ano ' + ny + '?')) return;
+    ys.push(ny); ys.sort();
+    if (!state.dre.values[ny]) state.dre.values[ny] = {};
+    state.dre.current = ny;
+    renderDre();
+    save();
+  };
+
+  function renderDreTable() {
+    const box = $('dre-table');
+    if (!box) return;
+    const year = state.dre.current;
+    const vals = (state.dre.values && state.dre.values[year]) || {};
+    let head = '<th class="dre-rowlabel">Indicador</th>';
+    for (let i = 0; i < DRE_MONTHS.length; i++) head += '<th class="col-num">' + MONTH_NAMES_SHORT[DRE_MONTHS[i]] + '</th>';
+    head += '<th class="col-num dre-saldo-col">Saldo</th>';
+    let body = '';
+    for (let r = 0; r < DRE_ROWS.length; r++) {
+      const row = DRE_ROWS[r];
+      body += '<tr class="dre-row dre-' + (row.css || 'line') + '">';
+      body += '<td class="label dre-rowlabel">' + escapeHTML(row.label) + '</td>';
+      for (let i = 0; i < DRE_MONTHS.length; i++) {
+        const mo = DRE_MONTHS[i];
+        if (row.kind === 'input') {
+          const mag = (vals[mo] && vals[mo][row.key]) || '';
+          const valFmt = mag ? Number(mag).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+          body += '<td class="col-num"><input class="num dre-input" type="text" inputmode="decimal" value="' + valFmt +
+            '" data-dremonth="' + mo + '" data-drefield="' + row.key + '" oninput="window.onDreInput(this)" placeholder="0,00"></td>';
+        } else {
+          body += '<td class="col-num dre-calc" data-drecell="' + row.key + ':' + mo + '">–</td>';
+        }
+      }
+      body += '<td class="col-num dre-saldo" data-dresaldo="' + row.key + '">–</td>';
+      body += '</tr>';
+    }
+    box.innerHTML = '<div class="table-wrap"><table class="data-table dre-data-table"><thead><tr>' + head +
+      '</tr></thead><tbody>' + body + '</tbody></table></div>';
+    updateDreTotals();
+  }
+
+  function updateDreTotals() {
+    const year = state.dre.current;
+    const vals = (state.dre.values && state.dre.values[year]) || {};
+    const saldo = {};
+    for (let i = 0; i < DRE_MONTHS.length; i++) {
+      const mo = DRE_MONTHS[i];
+      const col = computeDreColumn(vals[mo] || {});
+      for (let r = 0; r < DRE_ROWS.length; r++) {
+        const row = DRE_ROWS[r];
+        let sv;
+        if (row.kind === 'input') sv = (row.sign || 1) * ((parseBR(vals[mo] && vals[mo][row.key])) || 0);
+        else sv = col[row.key] || 0;
+        saldo[row.key] = (saldo[row.key] || 0) + sv;
+        if (row.kind !== 'input') {
+          const cell = document.querySelector('[data-drecell="' + row.key + ':' + mo + '"]');
+          if (cell) { cell.textContent = fmtDRE(sv); cell.classList.toggle('neg', sv < 0); }
+        }
+      }
+    }
+    for (let r = 0; r < DRE_ROWS.length; r++) {
+      const row = DRE_ROWS[r];
+      const cell = document.querySelector('[data-dresaldo="' + row.key + '"]');
+      if (cell) { const sv = saldo[row.key] || 0; cell.textContent = fmtDRE(sv); cell.classList.toggle('neg', sv < 0); }
+    }
+  }
+
+  window.onDreInput = function(el) {
+    const mo = el.getAttribute('data-dremonth');
+    const f = el.getAttribute('data-drefield');
+    const year = state.dre.current;
+    if (!state.dre.values[year]) state.dre.values[year] = {};
+    if (!state.dre.values[year][mo]) state.dre.values[year][mo] = {};
+    state.dre.values[year][mo][f] = parseBR(el.value);
+    updateDreTotals();
+    save();
   };
 
   // ============ COMPARATIVO ============
@@ -5009,6 +5293,9 @@
     } else if (state.view === 'valuation') {
       document.body.setAttribute('data-view', 'valuation');
       renderValuation();
+    } else if (state.view === 'dre') {
+      document.body.setAttribute('data-view', 'dre');
+      renderDre();
     } else {
       document.body.setAttribute('data-view', 'year');
     }
