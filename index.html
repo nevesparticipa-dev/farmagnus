@@ -1042,6 +1042,10 @@
   .val-table th.col-pct, .val-table td.col-pct { width: 74px; text-align: right; color: var(--ink-muted);
     font-variant-numeric: tabular-nums; font-size: 12.5px; }
   .val-table tfoot td { border-top: 2px solid var(--border); border-bottom: none; padding-top: 10px; }
+  .val-dre-note { margin-top: 12px; padding: 10px 12px; border-radius: var(--radius-sm);
+    background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.32);
+    font-size: 12px; line-height: 1.45; color: var(--ink-soft); }
+  .val-dre-note strong { color: var(--ink); }
   .val-table tfoot .val-total-label { font-weight: 700; color: var(--ink); }
   .val-table tfoot .val-total-val { font-weight: 800; color: var(--red); font-variant-numeric: tabular-nums; text-align: right; }
   @media (max-width: 720px) { .val-table td.col-num { width: 150px; } }
@@ -2086,6 +2090,7 @@
         <td class="col-num val-total-val" data-vtotal="custos">—</td>
         <td class="col-pct val-total-val">100%</td></tr></tfoot>
     </table></div>
+    <div id="val-dre-note" class="val-dre-note" style="display:none"></div>
   </section>
 
   <section class="card section">
@@ -2124,7 +2129,7 @@
     <span class="val-deck-hint">Baixa um arquivo HTML com dashboard, gráfico e os pontos fortes destacados — pronto para enviar a investidores.</span>
   </div>
 
-  <p class="val-method">Metodologia: EBITDA = (Faturamento − CMV − Folha − Ocupação − Operação − Tecnologia − Marketing), anualizado. EBITDA % = EBITDA ÷ Receita. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo. Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
+  <p class="val-method">Metodologia: EBITDA = (Faturamento − CMV − Despesas operacionais), anualizado. As despesas operacionais vêm da aba DRE — comerciais + administrativas, na média dos meses lançados — quando houver dados; caso contrário, usam-se os custos informados acima (Folha + Ocupação + Operação + Tecnologia + Marketing). EBITDA % = EBITDA ÷ Receita. Capital parado = estoque médio − estoque ideal (CMV ÷ 0,80). Patrimônio operacional = Estoque + Equipamentos − Dívidas. Valuation = EBITDA × múltiplo. Valuation patrimonial (equity) = valor da operação − Dívidas. Estimativas indicativas — não substituem laudo de avaliação.</p>
 </div><!-- /#valuation-view -->
 
 <div id="dre-view">
@@ -3316,6 +3321,25 @@
     return { score: score, parts: parts, verdict: verdict, cls: cls };
   }
 
+  // Despesas operacionais do DRE (comerciais + administrativas), média mensal dos meses lançados.
+  // "Lançado" = mês com algum valor diferente de zero (mesmo critério da aba DRE).
+  // Retorna { mensal, total, nMeses } ou null quando não há mês lançado.
+  function getDreDespOperacionaisMensal(year) {
+    const vals = (state.dre && state.dre.values && state.dre.values[year]) || null;
+    if (!vals) return null;
+    let total = 0, nMeses = 0;
+    for (let i = 0; i < DRE_MONTHS.length; i++) {
+      const cell = vals[DRE_MONTHS[i]];
+      if (!cell) continue;
+      const lancado = Object.keys(cell).some(function(k) { return (parseBR(cell[k]) || 0) !== 0; });
+      if (!lancado) continue;
+      total += (parseBR(cell.desp_comerciais) || 0) + (parseBR(cell.desp_admin) || 0);
+      nMeses++;
+    }
+    if (nMeses === 0) return null;
+    return { mensal: total / nMeses, total: total, nMeses: nMeses };
+  }
+
   function computeValuation() {
     const v = state.valuation || defaultValuation();
     const baseYear = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
@@ -3330,7 +3354,13 @@
 
     const folha = valNum('folha'), ocupacao = valNum('ocupacao'), operacao = valNum('operacao');
     const tecnologia = valNum('tecnologia'), marketing = valNum('marketing');
-    const despMes = folha + ocupacao + operacao + tecnologia + marketing;
+    const despMesManual = folha + ocupacao + operacao + tecnologia + marketing;
+    // Quando o DRE tem meses lançados, o EBITDA usa a despesa operacional REAL do DRE
+    // (comerciais + administrativas), na média dos meses lançados. Os custos manuais
+    // viram referência de composição.
+    const dreDesp = getDreDespOperacionaisMensal(baseYear);
+    const despFonte = dreDesp ? 'dre' : 'manual';
+    const despMes = dreDesp ? dreDesp.mensal : despMesManual;
     const despAno = despMes * 12;
 
     const ebitdaAno = lucroBrutoAno - despAno;
@@ -3371,7 +3401,9 @@
 
     return {
       baseYear: baseYear, fatAno: fatAno, lucroBrutoAno: lucroBrutoAno, margem: ind.margem || 0,
-      despMes: despMes, despAno: despAno, ebitdaAno: ebitdaAno, ebitdaPct: ebitdaPct,
+      despMes: despMes, despAno: despAno, despMesManual: despMesManual,
+      despFonte: despFonte, dreMeses: dreDesp ? dreDesp.nMeses : 0,
+      ebitdaAno: ebitdaAno, ebitdaPct: ebitdaPct,
       estqAtual: estqAtual, estqIdeal: estqIdeal, capitalParado: capitalParado, capitalLiberavel: capitalLiberavel,
       score: sc.score, scoreParts: sc.parts, scoreVerdict: sc.verdict, scoreCls: sc.cls,
       multMin: multMin, multMax: multMax, multAj: multAj, valBase: valBase, valMin: valMin, valMax: valMax,
@@ -3426,6 +3458,24 @@
     setTxt('[data-vpct="dividas"]', (equip > 0 && div > 0) ? '−' + pctStr(div / equip * 100) : (div > 0 ? '−100%' : '—'));
     setTxt('[data-vtotal="patrimonio"]', (equip || div) ? fmtBRL(liquido) : '—');
     setTxt('[data-vtotalpct="patrimonio"]', equip > 0 ? pctStr(liquido / equip * 100) : '—');
+
+    // Nota: quando o DRE tem meses lançados, o EBITDA usa a despesa operacional real do DRE.
+    const baseYear = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
+      ? state.currentYear : getCurrentYearInProgress();
+    const dreDesp = getDreDespOperacionaisMensal(baseYear);
+    const note = $('val-dre-note');
+    if (note) {
+      if (dreDesp) {
+        const mesLabel = dreDesp.nMeses === 1 ? '1 mês lançado' : dreDesp.nMeses + ' meses lançados';
+        note.style.display = '';
+        note.innerHTML = '<strong>DRE ' + escapeHTML(baseYear) + ':</strong> despesa operacional real de <strong>' +
+          fmtBRL(dreDesp.mensal) + '/mês</strong> (média de ' + mesLabel + ') — este é o valor usado no cálculo do EBITDA. ' +
+          'Os custos acima servem de referência da composição.';
+      } else {
+        note.style.display = 'none';
+        note.innerHTML = '';
+      }
+    }
   }
 
   window.onValuationInput = function(el) {
@@ -3460,7 +3510,7 @@
 
     // Linha de métricas principais
     html += '<div class="val-stat-grid">';
-    html += valStatCard('EBITDA anual', fmtBRL(r.ebitdaAno), 'lucro bruto − despesas operacionais', r.ebitdaAno > 0 ? 'good' : 'alert');
+    html += valStatCard('EBITDA anual', fmtBRL(r.ebitdaAno), r.despFonte === 'dre' ? 'lucro bruto − desp. operacionais (DRE)' : 'lucro bruto − despesas operacionais', r.ebitdaAno > 0 ? 'good' : 'alert');
     html += valStatCard('EBITDA %', fmtPct(r.ebitdaPct), 'sobre faturamento de ' + fmtBRL(r.fatAno), r.ebitdaPct >= 0.08 ? 'good' : r.ebitdaPct >= 0.04 ? 'warn' : 'alert');
     html += valStatCard('Capital parado', fmtBRL(r.capitalParado), 'estoque atual − estoque ideal', r.capitalParado > 0 ? 'warn' : 'good');
     html += valStatCard('Capital liberável', fmtBRL(r.capitalLiberavel), 'caixa preso recuperável no estoque', 'good');
