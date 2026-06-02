@@ -3362,27 +3362,13 @@
     };
   }
 
-  // Ano de DRE que o valuation deve usar: o ano selecionado se tiver meses lançados;
-  // caso contrário, o ano de DRE mais recente que tenha dados. null se nenhum tiver.
-  function getValuationDreYear() {
-    const base = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
-      ? state.currentYear : getCurrentYearInProgress();
-    if (getDreMonthlyAverages(base)) return base;
-    const ys = (state.dre && Array.isArray(state.dre.years)) ? state.dre.years.slice().sort() : [];
-    for (let i = ys.length - 1; i >= 0; i--) {
-      if (getDreMonthlyAverages(ys[i])) return ys[i];
-    }
-    return null;
-  }
-
   function computeValuation() {
     const v = state.valuation || defaultValuation();
-    // Base do valuation = aba DRE (média/mês dos meses lançados). Usa o ano selecionado
-    // quando tem DRE; senão, o ano de DRE mais recente com dados. Sem nenhum, cai para o § 01.
-    const dreYear = getValuationDreYear();
-    const baseYear = dreYear || ((state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
-      ? state.currentYear : getCurrentYearInProgress());
+    const baseYear = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
+      ? state.currentYear : getCurrentYearInProgress();
     const m = getMonthlyAvgForYear(baseYear);
+
+    // Base do valuation = aba DRE (média/mês dos meses lançados). Sem DRE, cai para o § 01.
     const dre = getDreMonthlyAverages(baseYear);
     const despMesManual = valNum('folha') + valNum('ocupacao') + valNum('operacao') + valNum('tecnologia') + valNum('marketing');
     const despFonte = dre ? 'dre' : 'manual';
@@ -3500,7 +3486,7 @@
     const table = $('val-custos-table');
     if (!table) return;
     const v = state.valuation || {};
-    const baseYear = getValuationDreYear() || valBaseYear();
+    const baseYear = valBaseYear();
     const dre = getDreDespOperacionaisMensal(baseYear);
     const desc = $('val-custos-desc');
     const note = $('val-dre-note');
