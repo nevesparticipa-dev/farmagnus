@@ -510,6 +510,17 @@
   .data-table tbody tr:hover { background: var(--bg); }
   .data-table tbody tr:hover td.col-num.current { background: var(--red-tint); }
 
+  /* § 01 Dados de entrada: trava a coluna "Indicador" ao rolar horizontalmente */
+  #input-section .data-table thead th:first-child,
+  #input-section .data-table tbody td.label {
+    position: sticky; left: 0;
+    background: var(--bg-card);
+    box-shadow: 1px 0 0 var(--border);
+  }
+  #input-section .data-table thead th:first-child { z-index: 3; }
+  #input-section .data-table tbody td.label { z-index: 2; }
+  #input-section .data-table tbody tr:hover td.label { background: var(--bg); }
+
   /* INPUTS */
   input.num {
     font: inherit; font-family: 'Inter', monospace;
