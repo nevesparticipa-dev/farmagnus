@@ -1046,6 +1046,8 @@
     background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.32);
     font-size: 12px; line-height: 1.45; color: var(--ink-soft); }
   .val-dre-note strong { color: var(--ink); }
+  .val-dre-note.warn { background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.36); }
+  .val-table td.col-num.val-dre-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
   .val-table tfoot .val-total-label { font-weight: 700; color: var(--ink); }
   .val-table tfoot .val-total-val { font-weight: 800; color: var(--red); font-variant-numeric: tabular-nums; text-align: right; }
   @media (max-width: 720px) { .val-table td.col-num { width: 150px; } }
@@ -2064,32 +2066,10 @@
 
   <section class="card section">
     <div class="section-head">
-      <div class="section-title"><span class="section-num">§ D</span>Custos mensais (R$/mês)</div>
-      <div class="section-desc">agrupados em blocos · base para o EBITDA</div>
+      <div class="section-title"><span class="section-num">§ D</span>Custo mensal · Despesas operacionais</div>
+      <div class="section-desc" id="val-custos-desc">base do EBITDA</div>
     </div>
-    <div class="table-wrap"><table class="data-table val-table">
-      <thead><tr><th>Indicador</th><th class="col-num">Valor / mês</th><th class="col-pct">%</th></tr></thead>
-      <tbody>
-        <tr><td class="label">Folha (equipe)<small>salários, encargos, pró-labore, benefícios</small></td>
-          <td class="col-num"><input class="val-input num" id="val-folha" type="text" inputmode="decimal" data-vfield="folha" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
-          <td class="col-pct" data-vpct="folha">—</td></tr>
-        <tr><td class="label">Ocupação (estrutura)<small>aluguel, condomínio, IPTU</small></td>
-          <td class="col-num"><input class="val-input num" id="val-ocupacao" type="text" inputmode="decimal" data-vfield="ocupacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
-          <td class="col-pct" data-vpct="ocupacao">—</td></tr>
-        <tr><td class="label">Operação<small>energia, água, telefone, internet, material, limpeza</small></td>
-          <td class="col-num"><input class="val-input num" id="val-operacao" type="text" inputmode="decimal" data-vfield="operacao" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
-          <td class="col-pct" data-vpct="operacao">—</td></tr>
-        <tr><td class="label">Tecnologia (sistemas)<small>ERP, Trier, Farmagnus, licenças</small></td>
-          <td class="col-num"><input class="val-input num" id="val-tecnologia" type="text" inputmode="decimal" data-vfield="tecnologia" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
-          <td class="col-pct" data-vpct="tecnologia">—</td></tr>
-        <tr><td class="label">Marketing<small>Google, Facebook, panfletagem, rádio</small></td>
-          <td class="col-num"><input class="val-input num" id="val-marketing" type="text" inputmode="decimal" data-vfield="marketing" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>
-          <td class="col-pct" data-vpct="marketing">—</td></tr>
-      </tbody>
-      <tfoot><tr><td class="label val-total-label">Total de custos</td>
-        <td class="col-num val-total-val" data-vtotal="custos">—</td>
-        <td class="col-pct val-total-val">100%</td></tr></tfoot>
-    </table></div>
+    <div class="table-wrap"><table class="data-table val-table" id="val-custos-table"></table></div>
     <div id="val-dre-note" class="val-dre-note" style="display:none"></div>
   </section>
 
@@ -3327,17 +3307,22 @@
   function getDreDespOperacionaisMensal(year) {
     const vals = (state.dre && state.dre.values && state.dre.values[year]) || null;
     if (!vals) return null;
-    let total = 0, nMeses = 0;
+    let totCom = 0, totAdm = 0, nMeses = 0;
     for (let i = 0; i < DRE_MONTHS.length; i++) {
       const cell = vals[DRE_MONTHS[i]];
       if (!cell) continue;
       const lancado = Object.keys(cell).some(function(k) { return (parseBR(cell[k]) || 0) !== 0; });
       if (!lancado) continue;
-      total += (parseBR(cell.desp_comerciais) || 0) + (parseBR(cell.desp_admin) || 0);
+      totCom += parseBR(cell.desp_comerciais) || 0;
+      totAdm += parseBR(cell.desp_admin) || 0;
       nMeses++;
     }
     if (nMeses === 0) return null;
-    return { mensal: total / nMeses, total: total, nMeses: nMeses };
+    const total = totCom + totAdm;
+    return {
+      mensal: total / nMeses, total: total, nMeses: nMeses,
+      comerciaisMensal: totCom / nMeses, adminMensal: totAdm / nMeses,
+    };
   }
 
   function computeValuation() {
@@ -3425,7 +3410,9 @@
     set('val-area', v.area || '');
     set('val-tempoOp', v.tempoOp || '');
     set('val-concorrentes', v.concorrentes || '');
-    const money = ['folha','ocupacao','operacao','tecnologia','marketing','equipamentos','dividas'];
+    // § D (Custo mensal) é montado dinamicamente a partir do DRE; preenche os inputs manuais quando em fallback.
+    renderValuationCustos();
+    const money = ['equipamentos','dividas'];
     for (let i = 0; i < money.length; i++) {
       const f = money[i];
       set('val-' + f, v[f] ? Number(v[f]).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '');
@@ -3434,6 +3421,84 @@
     set('val-multMax', v.multMax || 5);
     renderValuationTotals();
     renderValuationResults();
+  }
+
+  // Monta a seção § D (Custo mensal). Quando o DRE tem meses lançados, exibe a despesa
+  // operacional (comerciais + administrativas) na média/mês — base do EBITDA. Sem DRE,
+  // cai para os campos manuais (folha, ocupação, operação, tecnologia, marketing).
+  function valBaseYear() {
+    return (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
+      ? state.currentYear : getCurrentYearInProgress();
+  }
+  function renderValuationCustos() {
+    const table = $('val-custos-table');
+    if (!table) return;
+    const v = state.valuation || {};
+    const baseYear = valBaseYear();
+    const dre = getDreDespOperacionaisMensal(baseYear);
+    const desc = $('val-custos-desc');
+    const note = $('val-dre-note');
+
+    if (dre) {
+      const tot = dre.mensal || 0;
+      function pct(x) { return tot > 0 ? (x / tot * 100).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%' : '—'; }
+      function row(label, sub, val) {
+        return '<tr><td class="label">' + escapeHTML(label) + (sub ? '<small>' + escapeHTML(sub) + '</small>' : '') + '</td>' +
+          '<td class="col-num val-dre-val">' + fmtBRL(val) + '</td>' +
+          '<td class="col-pct">' + pct(val) + '</td></tr>';
+      }
+      if (desc) desc.textContent = 'fonte: aba DRE ' + baseYear + ' · coluna Média / mês';
+      table.innerHTML =
+        '<thead><tr><th>(−) Despesas operacionais</th><th class="col-num">Média / mês</th><th class="col-pct">%</th></tr></thead>' +
+        '<tbody>' +
+          row('Despesas comerciais', 'DRE · média dos meses lançados', dre.comerciaisMensal) +
+          row('Despesas administrativas', 'DRE · média dos meses lançados', dre.adminMensal) +
+        '</tbody>' +
+        '<tfoot><tr><td class="label val-total-label">Total · despesas operacionais</td>' +
+          '<td class="col-num val-total-val">' + fmtBRL(tot) + '</td>' +
+          '<td class="col-pct val-total-val">100%</td></tr></tfoot>';
+      if (note) {
+        const mesLabel = dre.nMeses === 1 ? '1 mês lançado' : dre.nMeses + ' meses lançados';
+        note.className = 'val-dre-note';
+        note.style.display = '';
+        note.innerHTML = '<strong>Base do valuation:</strong> as despesas operacionais vêm da aba DRE ' +
+          escapeHTML(baseYear) + ', coluna <strong>Média / mês</strong> (' + mesLabel + ') — <strong>' +
+          fmtBRL(tot) + '/mês</strong>. Este é o valor usado no cálculo do EBITDA. Atualize os lançamentos na aba DRE para refletir aqui.';
+      }
+    } else {
+      const fields = [
+        { f: 'folha', label: 'Folha (equipe)', sub: 'salários, encargos, pró-labore, benefícios' },
+        { f: 'ocupacao', label: 'Ocupação (estrutura)', sub: 'aluguel, condomínio, IPTU' },
+        { f: 'operacao', label: 'Operação', sub: 'energia, água, telefone, internet, material, limpeza' },
+        { f: 'tecnologia', label: 'Tecnologia (sistemas)', sub: 'ERP, Trier, Farmagnus, licenças' },
+        { f: 'marketing', label: 'Marketing', sub: 'Google, Facebook, panfletagem, rádio' },
+      ];
+      let body = '';
+      for (let i = 0; i < fields.length; i++) {
+        const fd = fields[i];
+        body += '<tr><td class="label">' + escapeHTML(fd.label) + '<small>' + escapeHTML(fd.sub) + '</small></td>' +
+          '<td class="col-num"><input class="val-input num" id="val-' + fd.f + '" type="text" inputmode="decimal" data-vfield="' + fd.f + '" data-vnum="1" oninput="window.onValuationInput(this)" placeholder="0,00"></td>' +
+          '<td class="col-pct" data-vpct="' + fd.f + '">—</td></tr>';
+      }
+      if (desc) desc.textContent = 'sem DRE lançado · custos informados manualmente';
+      table.innerHTML =
+        '<thead><tr><th>Indicador</th><th class="col-num">Valor / mês</th><th class="col-pct">%</th></tr></thead>' +
+        '<tbody>' + body + '</tbody>' +
+        '<tfoot><tr><td class="label val-total-label">Total de custos</td>' +
+          '<td class="col-num val-total-val" data-vtotal="custos">—</td>' +
+          '<td class="col-pct val-total-val">100%</td></tr></tfoot>';
+      for (let i = 0; i < fields.length; i++) {
+        const el = $('val-' + fields[i].f);
+        if (el) el.value = v[fields[i].f] ? Number(v[fields[i].f]).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
+      }
+      if (note) {
+        note.className = 'val-dre-note warn';
+        note.style.display = '';
+        note.innerHTML = '<strong>Sem dados no DRE ' + escapeHTML(baseYear) + '.</strong> ' +
+          'Lance as despesas operacionais na aba DRE para que o valuation use os números reais (média/mês). ' +
+          'Enquanto isso, o EBITDA usa os custos informados acima.';
+      }
+    }
   }
 
   function renderValuationTotals() {
@@ -3458,24 +3523,6 @@
     setTxt('[data-vpct="dividas"]', (equip > 0 && div > 0) ? '−' + pctStr(div / equip * 100) : (div > 0 ? '−100%' : '—'));
     setTxt('[data-vtotal="patrimonio"]', (equip || div) ? fmtBRL(liquido) : '—');
     setTxt('[data-vtotalpct="patrimonio"]', equip > 0 ? pctStr(liquido / equip * 100) : '—');
-
-    // Nota: quando o DRE tem meses lançados, o EBITDA usa a despesa operacional real do DRE.
-    const baseYear = (state.currentYear && state.years && state.years.indexOf(state.currentYear) >= 0)
-      ? state.currentYear : getCurrentYearInProgress();
-    const dreDesp = getDreDespOperacionaisMensal(baseYear);
-    const note = $('val-dre-note');
-    if (note) {
-      if (dreDesp) {
-        const mesLabel = dreDesp.nMeses === 1 ? '1 mês lançado' : dreDesp.nMeses + ' meses lançados';
-        note.style.display = '';
-        note.innerHTML = '<strong>DRE ' + escapeHTML(baseYear) + ':</strong> despesa operacional real de <strong>' +
-          fmtBRL(dreDesp.mensal) + '/mês</strong> (média de ' + mesLabel + ') — este é o valor usado no cálculo do EBITDA. ' +
-          'Os custos acima servem de referência da composição.';
-      } else {
-        note.style.display = 'none';
-        note.innerHTML = '';
-      }
-    }
   }
 
   window.onValuationInput = function(el) {
