@@ -1525,7 +1525,12 @@
       <label class="login-label" for="login-user">Usuário</label>
       <input class="login-input" type="text" id="login-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required>
       <label class="login-label" for="login-pass">Senha</label>
-      <input class="login-input" type="password" id="login-pass" autocomplete="current-password" required>
+      <div class="login-pass-wrap">
+        <input class="login-input" type="password" id="login-pass" autocomplete="current-password" required>
+        <button type="button" class="login-eye" id="login-eye" aria-label="Mostrar senha" onclick="window.toggleLoginPass()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
       <div class="login-error" id="login-error" hidden>Usuário ou senha inválidos.</div>
       <button class="login-btn" type="submit">Entrar</button>
     </form>
@@ -1556,6 +1561,13 @@
     color: #0f172a; outline: none; transition: border-color .15s, background .15s;
   }
   .login-input:focus { border-color: #dc2626; background: #fff; }
+  .login-pass-wrap { position: relative; }
+  .login-pass-wrap .login-input { padding-right: 44px; }
+  .login-eye { position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+    display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;
+    padding: 0; border: none; background: transparent; color: #94a3b8; cursor: pointer; border-radius: 8px; }
+  .login-eye:hover { color: #475569; background: #f1f5f9; }
+  .login-eye svg { width: 18px; height: 18px; }
   .login-error { color: #dc2626; font-size: 13px; font-weight: 500; margin-top: 14px; }
   .login-btn {
     width: 100%; margin-top: 20px; padding: 12px; font-size: 15px; font-weight: 700;
@@ -1580,6 +1592,18 @@
   window.logoutFarmagnus = function () {
     try { sessionStorage.removeItem(KEY); } catch (e) {}
     location.reload();
+  };
+  var EYE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var EYE_OFF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  window.toggleLoginPass = function () {
+    var p = document.getElementById('login-pass');
+    var btn = document.getElementById('login-eye');
+    if (!p || !btn) return;
+    var show = p.type === 'password';
+    p.type = show ? 'text' : 'password';
+    btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+    btn.innerHTML = show ? EYE_OFF_SVG : EYE_SVG;
+    p.focus();
   };
   try {
     if (sessionStorage.getItem(KEY) === HASH) { unlock(); return; }
